@@ -18,13 +18,24 @@ You need to set the **Root Directory** in Vercel project settings.
    - Click "Edit"
    - Enter: `apps/web`
    - Click "Save"
+   - ✅ Enable: "Include files outside the root directory in the Build Step"
 
-4. **Verify Build Settings**:
-   - Go to Settings → General
-   - **Framework Preset**: Next.js (should be auto-detected)
-   - **Build Command**: `pnpm install && pnpm --filter ./apps/web build` (should auto-detect)
-   - **Output Directory**: `.next` (should auto-detect)
-   - **Install Command**: `pnpm install` (should auto-detect)
+4. **Override Build Command** (Important for monorepo):
+   - Scroll to "Framework Settings" section
+   - Find "Build Command"
+   - Click the "Override" toggle to enable it
+   - Enter: `pnpm install && pnpm --filter ./apps/web build`
+   - Click "Save"
+
+5. **Override Install Command**:
+   - Find "Install Command"
+   - Click the "Override" toggle to enable it
+   - Enter: `pnpm install`
+   - Click "Save"
+
+6. **Verify Other Settings**:
+   - **Framework Preset**: Next.js (should be auto-detected) ✅
+   - **Output Directory**: Leave as "Next.js default" (don't override) ✅
 
 5. **Redeploy**:
    - Go to Deployments tab
