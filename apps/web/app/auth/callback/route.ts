@@ -10,9 +10,33 @@ export async function GET(request: Request) {
     const supabase = await createClient()
     const { error } = await supabase.auth.exchangeCodeForSession(code)
     if (!error) {
-      // Check if user has completed onboarding
+      // Get the authenticated user
       const { data: { user } } = await supabase.auth.getUser()
       if (user) {
+        // Ensure profile exists (create if it doesn't)
+        const { data: existingProfile } = await supabase
+          .from('profiles')
+          .select('id, onboarding_completed')
+          .eq('id', user.id)
+          .single()
+
+        if (!existingProfile) {
+          // Profile doesn't exist, create it
+          const { error: insertError } = await supabase
+            .from('profiles')
+            .insert({
+              id: user.id,
+              email: user.email,
+              name: user.user_metadata?.full_name || user.user_metadata?.name || user.email,
+            })
+
+          if (insertError) {
+            console.error('Error creating profile:', insertError)
+            // Continue anyway - will be handled by onboarding
+          }
+        }
+
+        // Check if user has completed onboarding
         const { data: profile } = await supabase
           .from('profiles')
           .select('onboarding_completed')
