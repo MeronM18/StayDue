@@ -1,16 +1,44 @@
-import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
-import Link from "next/link";
+'use client'
 
-export default async function Home() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+import { createClient } from '@/lib/supabase/client'
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 
-  // If user is signed in, redirect to dashboard
-  if (user) {
-    redirect("/dashboard");
+export default function Home() {
+  const [loading, setLoading] = useState(false)
+  const router = useRouter()
+  const supabase = createClient()
+
+  const handleGoogleSignIn = async () => {
+    try {
+      setLoading(true)
+      
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+          // Production-ready: Minimal scopes for task management
+          // calendar.events: Read, create, update, delete events (tasks)
+          // calendar.calendarlist.readonly: See available calendars
+          scopes: 'https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/calendar.calendarlist.readonly',
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent', // Force consent screen to show calendar permission
+          },
+        },
+      })
+
+      if (error) {
+        console.error('Error signing in:', error)
+        alert('Error signing in. Please try again.')
+        setLoading(false)
+      }
+      // User will be redirected to Google OAuth, then back to callback
+    } catch (error) {
+      console.error('Unexpected error:', error)
+      alert('An unexpected error occurred. Please try again.')
+      setLoading(false)
+    }
   }
 
   return (
@@ -21,12 +49,13 @@ export default async function Home() {
         </h1>
         
         <div className="flex-1 flex items-center justify-center">
-          <Link
-            href="/auth/signin"
-            className="rounded-md bg-blue-600 px-8 py-3 text-white font-semibold hover:bg-blue-700 transition-colors"
+          <button
+            onClick={handleGoogleSignIn}
+            disabled={loading}
+            className="rounded-md bg-blue-600 px-8 py-3 text-white font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Sign in with Google
-          </Link>
+            {loading ? 'Signing in...' : 'Sign in with Google'}
+          </button>
         </div>
       </main>
     </div>
