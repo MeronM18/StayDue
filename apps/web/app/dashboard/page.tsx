@@ -13,6 +13,17 @@ export default async function DashboardPage() {
     redirect('/auth/signin')
   }
 
+  // Check if user has completed onboarding
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('onboarding_completed')
+    .eq('id', user.id)
+    .single()
+
+  if (!profile?.onboarding_completed) {
+    redirect('/onboarding')
+  }
+
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
       <div className="w-full max-w-4xl space-y-8 rounded-lg bg-white p-8 shadow-lg dark:bg-gray-800">
