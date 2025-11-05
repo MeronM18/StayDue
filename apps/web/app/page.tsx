@@ -17,10 +17,8 @@ export default function Home() {
         provider: 'google',
         options: {
           redirectTo: `${window.location.origin}/auth/callback`,
-          // Production-ready: Minimal scopes for task management
-          // calendar.events: Read, create, update, delete events (tasks)
-          // calendar.calendarlist.readonly: See available calendars
-          scopes: 'https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/calendar.calendarlist.readonly',
+          // Full calendar access scope
+          scopes: 'https://www.googleapis.com/auth/calendar',
           queryParams: {
             access_type: 'offline',
             prompt: 'consent', // Force consent screen to show calendar permission
