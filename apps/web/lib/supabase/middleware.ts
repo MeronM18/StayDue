@@ -44,9 +44,9 @@ export async function updateSession(request: NextRequest) {
     !request.nextUrl.pathname.startsWith('/onboarding') &&
     request.nextUrl.pathname !== '/'
   ) {
-    // no user, potentially respond by redirecting the user to the login page
+    // no user, redirect to home page
     const url = request.nextUrl.clone()
-    url.pathname = '/auth/signin'
+    url.pathname = '/'
     return NextResponse.redirect(url)
   }
 

@@ -10,7 +10,7 @@ export default async function DashboardPage() {
   } = await supabase.auth.getUser()
 
   if (!user) {
-    redirect('/auth/signin')
+    redirect('/')
   }
 
   // Check if user has completed onboarding
