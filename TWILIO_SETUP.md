@@ -7,8 +7,16 @@
 3. Sign up with:
    - Email and password, OR
    - Google account
-4. Verify your email if prompted
-5. Complete the sign-up process
+4. **Fill in account details** (if asked):
+   - **Postal Code**: Use your actual postal/zip code
+     - US: Use your zip code (e.g., `10001`, `90210`)
+     - UK: Use your postcode (e.g., `SW1A 1AA`)
+     - Canada: Use your postal code (e.g., `M5H 2N2`)
+     - Other countries: Use your actual postal code
+   - **Country**: Select your country
+   - **Purpose**: "SMS notifications for SaaS application" or similar
+5. Verify your email if prompted
+6. Complete the sign-up process
 
 ## Step 2: Get Your Trial Account Info
 
@@ -17,7 +25,7 @@ Twilio starts with a **Trial Account** (free credits for testing).
 1. After logging in, you'll see your **Dashboard**
 2. You'll see:
    - **Account SID**: Starts with `AC...`
-   - **Auth Token**: (Click "View" to reveal)
+   - **Auth Token**: (Click "View" to reveal)twiliotwi
    - **Trial Phone Number**: A phone number is assigned automatically
 
 ## Step 3: Get Your Account SID and Auth Token
