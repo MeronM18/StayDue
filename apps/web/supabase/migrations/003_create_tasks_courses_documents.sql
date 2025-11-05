@@ -66,6 +66,7 @@ CREATE INDEX IF NOT EXISTS tasks_due_date_idx ON tasks(due_date);
 CREATE INDEX IF NOT EXISTS tasks_status_idx ON tasks(status);
 CREATE INDEX IF NOT EXISTS tasks_task_type_idx ON tasks(task_type);
 CREATE INDEX IF NOT EXISTS tasks_calendar_event_id_idx ON tasks(calendar_event_id);
+CREATE INDEX IF NOT EXISTS tasks_document_id_idx ON tasks(document_id);
 
 -- Enable Row Level Security
 ALTER TABLE courses ENABLE ROW LEVEL SECURITY;
