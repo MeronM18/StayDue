@@ -142,6 +142,20 @@ export default function Home() {
                   </div>
                   <CourseTag course="Mathematics" />
                 </div>
+                <div className="bg-[#FAFAF5] border border-[#2E2E2E]/10 rounded p-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium text-[#2E2E2E]">English 201 Essay</span>
+                    <span className="text-xs text-[#2E2E2E] opacity-70 bg-[#F8BBD0]/30 px-2 py-1 rounded">Due Monday</span>
+                  </div>
+                  <CourseTag course="English" />
+                </div>
+                <div className="bg-[#FAFAF5] border border-[#2E2E2E]/10 rounded p-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium text-[#2E2E2E]">Biology 150 Lab Report</span>
+                    <span className="text-xs text-[#2E2E2E] opacity-70 bg-[#C8E6C9]/30 px-2 py-1 rounded">Due Next Week</span>
+                  </div>
+                  <CourseTag course="Science" />
+                </div>
               </div>
             </NoteCard>
           </div>
