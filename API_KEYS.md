@@ -145,22 +145,6 @@ UPSTASH_REDIS_REST_TOKEN=xxx
 
 ---
 
-## Twilio SMS (Optional)
-
-### Setup:
-1. Go to [twilio.com](https://twilio.com) and sign up
-2. Get a phone number
-3. Copy Account SID and Auth Token
-
-**Save in `.env.local`:**
-```
-TWILIO_ACCOUNT_SID=ACxxx
-TWILIO_AUTH_TOKEN=xxx
-TWILIO_PHONE_NUMBER=+1234567890
-```
-
----
-
 ## OpenAI (Optional)
 
 ### Setup:
@@ -193,7 +177,6 @@ NEXT_PUBLIC_APP_NAME=StayDue
 | Resend | API Keys section |
 | Stripe | Developers → API keys |
 | Upstash | Database → REST API section |
-| Twilio | Console Dashboard → Account Info |
 | OpenAI | API Keys section |
 
 ---
