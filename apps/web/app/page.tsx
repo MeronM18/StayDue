@@ -119,7 +119,6 @@ export default function Home() {
               <span>Setup in 2 Minutes</span>
             </div>
           </div>
-        </div>
 
           {/* Product Preview - Notebook Style */}
           <div className="mt-12 relative">
@@ -564,13 +563,13 @@ export default function Home() {
             <p className="text-xl text-[#2E2E2E] opacity-80 mb-8" style={{ lineHeight: '1.7' }}>
               Join thousands of students who never miss a deadline. Get started for free today.
             </p>
-            <button
+          <button
               onClick={handleGetStarted}
-              disabled={loading}
+            disabled={loading}
               className="bg-[#FFF176] text-[#2E2E2E] hover:bg-[#FFEB3B] transition-all px-8 py-4 rounded-lg font-bold text-lg shadow-[0_4px_6px_rgba(0,0,0,0.1)] hover:shadow-[0_6px_8px_rgba(0,0,0,0.15)] hover:-translate-y-0.5 border-2 border-[#2E2E2E]/10 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
+          >
               {loading ? 'Signing in...' : 'Get Started Free →'}
-            </button>
+          </button>
           </NoteCard>
         </div>
       </section>
