@@ -25,6 +25,9 @@
 - [x] Set up Resend (email service)
 - [x] Verify domain in Resend
 - [x] Test email sending
+- [ ] Set up Twilio (SMS/text messaging)
+- [ ] Get Twilio phone number
+- [ ] Test SMS sending
 - [ ] Set up PostHog (analytics) - Optional
 - [ ] Set up Stripe (payments) - Later
 - [ ] Set up Upstash (rate limiting) - Later
@@ -103,8 +106,11 @@
 ### User Features
 - [ ] User profiles
 - [ ] Settings page
-- [ ] Notifications
+- [ ] Notifications (email)
+- [ ] SMS notifications (Twilio)
+- [ ] Two-factor authentication (2FA) via SMS
 - [ ] Email preferences
+- [ ] SMS preferences
 - [ ] Account management
 
 ### Payments (When Ready)
@@ -141,6 +147,7 @@
 ### Current Status
 - ✅ **Infrastructure**: Complete
 - ✅ **Services**: Supabase, Sentry, Resend configured
+- ⬜ **SMS/Text**: Twilio not set up yet
 - ⬜ **Authentication**: Not started
 - ⬜ **Database Tables**: Not created
 - ⬜ **Marketing Site**: Not built
