@@ -1,20 +1,35 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Manrope, Nunito_Sans } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const manrope = Manrope({
+  variable: "--font-manrope",
   subsets: ["latin"],
+  display: "swap",
+  weight: ["400", "500", "600", "700", "800"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const nunitoSans = Nunito_Sans({
+  variable: "--font-nunito-sans",
   subsets: ["latin"],
+  display: "swap",
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
-  title: "StayDue",
-  description: "Stay on track with your tasks",
+  title: "StayDue - Never Miss a Due Date Again | Student Task Management",
+  description: "The student task management platform that keeps you organized. Sync with Google Calendar, upload syllabi, and stay on top of every assignment. Free forever.",
+  keywords: ["student task management", "assignment tracker", "due date reminder", "calendar sync", "syllabus upload", "student organizer"],
+  openGraph: {
+    title: "StayDue - Never Miss a Due Date Again",
+    description: "The student task management platform that keeps you organized. Sync with Google Calendar, upload syllabi, and stay on top of every assignment.",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "StayDue - Never Miss a Due Date Again",
+    description: "The student task management platform that keeps you organized.",
+  },
 };
 
 export default function RootLayout({
@@ -25,7 +40,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${manrope.variable} ${nunitoSans.variable} antialiased`}
       >
         {children}
       </body>
