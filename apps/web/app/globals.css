@@ -38,7 +38,7 @@ body {
   background-image: 
     linear-gradient(#D7E3FC 1px, transparent 1px),
     linear-gradient(90deg, #F8C8DC 2px, transparent 2px);
-  background-size: 100% 28px, 60px 100%;
+  background-size: 100% 28px, 120px 100%;
   background-position: 0 0, 0 0;
   color: #2E2E2E;
   font-family: var(--font-nunito-sans), system-ui, -apple-system, sans-serif;
