@@ -34,14 +34,16 @@
 }
 
 body {
-  background: #F3E5AB;
+  background-color: #FAFAF5;
   background-image: 
-    linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
-  background-size: 30px 30px;
-  color: var(--color-foreground);
+    linear-gradient(#D7E3FC 1px, transparent 1px),
+    linear-gradient(90deg, #F8C8DC 2px, transparent 2px);
+  background-size: 100% 28px, 60px 100%;
+  background-position: 0 0, 0 0;
+  color: #2E2E2E;
   font-family: var(--font-nunito-sans), system-ui, -apple-system, sans-serif;
   min-height: 100vh;
+  line-height: 1.6;
 }
 
 h1, h2, h3, h4, h5, h6 {

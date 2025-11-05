@@ -9,7 +9,7 @@ export function Navbar() {
   const [resourcesOpen, setResourcesOpen] = useState(false)
 
   return (
-    <nav className="sticky top-0 z-50 backdrop-blur-md bg-[#F3E5AB]/80 border-b border-gray-300/30">
+    <nav className="sticky top-0 z-50 backdrop-blur-md bg-[#FAFAF5]/90 border-b border-[#2E2E2E]/10">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo - Figma style colorful abstract logo */}
