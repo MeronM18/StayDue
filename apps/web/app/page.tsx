@@ -7,12 +7,51 @@ import { CourseTag } from '@/components/marketing/CourseTag'
 import { NoteCard } from '@/components/marketing/NoteCard'
 import { Highlight } from '@/components/marketing/Highlight'
 import { createClient } from '@/lib/supabase/client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 export default function Home() {
   const [loading, setLoading] = useState(false)
   const [expandedFAQ, setExpandedFAQ] = useState<number | null>(null)
+  const [displayedText1, setDisplayedText1] = useState('')
+  const [displayedText2, setDisplayedText2] = useState('')
+  const [showCursor1, setShowCursor1] = useState(true)
+  const [showCursor2, setShowCursor2] = useState(false)
   const supabase = createClient()
+
+  const fullText1 = 'Stay organized.'
+  const fullText2 = 'Never miss a deadline again.'
+
+  useEffect(() => {
+    let index1 = 0
+    let index2 = 0
+
+    const typeText1 = () => {
+      if (index1 < fullText1.length) {
+        setDisplayedText1(fullText1.slice(0, index1 + 1))
+        index1++
+        setTimeout(typeText1, 30)
+      } else {
+        setShowCursor1(false)
+        // Start typing second text after a short delay
+        setTimeout(() => {
+          setShowCursor2(true)
+          typeText2()
+        }, 100)
+      }
+    }
+
+    const typeText2 = () => {
+      if (index2 < fullText2.length) {
+        setDisplayedText2(fullText2.slice(0, index2 + 1))
+        index2++
+        setTimeout(typeText2, 30)
+      } else {
+        setShowCursor2(false)
+      }
+    }
+
+    typeText1()
+  }, [])
 
   const handleGetStarted = async () => {
     try {
@@ -78,9 +117,13 @@ export default function Home() {
           {/* Main Heading with Highlight */}
           <div className="mb-8">
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-4 leading-tight text-[#2E2E2E]">
-              <Highlight color="yellow">Stay organized.</Highlight>
+              <Highlight color="yellow">
+                {displayedText1}
+                {showCursor1 && <span className="animate-pulse">|</span>}
+              </Highlight>
               <br />
-              Never miss a deadline again.
+              {displayedText2}
+              {showCursor2 && <span className="animate-pulse">|</span>}
         </h1>
             <div className="mt-4 relative">
               <p className="text-xl text-[#2E2E2E] opacity-90" style={{ lineHeight: '1.8' }}>
