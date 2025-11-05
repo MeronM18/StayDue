@@ -13,38 +13,62 @@ export async function GET(request: Request) {
       // Get the authenticated user
       const { data: { user } } = await supabase.auth.getUser()
       if (user) {
-        // Ensure profile exists (create if it doesn't)
-        const { data: existingProfile } = await supabase
-          .from('profiles')
-          .select('id, onboarding_completed')
-          .eq('id', user.id)
-          .single()
-
-        if (!existingProfile) {
-          // Profile doesn't exist, create it
-          const { error: insertError } = await supabase
+        // Ensure profile exists (trigger should create it, but handle edge cases)
+        // Wait a bit for trigger to complete, then check
+        let profile = null
+        let attempts = 0
+        const maxAttempts = 3
+        
+        while (attempts < maxAttempts && !profile) {
+          const { data, error } = await supabase
             .from('profiles')
-            .insert({
-              id: user.id,
-              email: user.email,
-              name: user.user_metadata?.full_name || user.user_metadata?.name || user.email,
-            })
-
-          if (insertError) {
-            console.error('Error creating profile:', insertError)
-            // Continue anyway - will be handled by onboarding
+            .select('id, onboarding_completed')
+            .eq('id', user.id)
+            .single()
+          
+          if (data) {
+            profile = data
+            break
+          }
+          
+          // If profile doesn't exist and trigger should have created it, create it
+          if (error && error.code === 'PGRST116') {
+            const { error: insertError } = await supabase
+              .from('profiles')
+              .insert({
+                id: user.id,
+                email: user.email,
+                name: user.user_metadata?.full_name || user.user_metadata?.name || user.email,
+              })
+              .select()
+              .single()
+            
+            if (!insertError) {
+              profile = { id: user.id, onboarding_completed: false }
+              break
+            }
+          }
+          
+          attempts++
+          if (attempts < maxAttempts) {
+            // Wait 100ms before retry (trigger should complete quickly)
+            await new Promise(resolve => setTimeout(resolve, 100))
           }
         }
 
         // Check if user has completed onboarding
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('onboarding_completed')
-          .eq('id', user.id)
-          .single()
+        if (!profile) {
+          // Final check after retries
+          const { data: finalProfile } = await supabase
+            .from('profiles')
+            .select('onboarding_completed')
+            .eq('id', user.id)
+            .single()
+          profile = finalProfile
+        }
 
-        // If onboarding not completed, redirect to onboarding
-        if (!profile?.onboarding_completed) {
+        // If onboarding not completed or profile doesn't exist, redirect to onboarding
+        if (!profile || !profile.onboarding_completed) {
           const forwardedHost = request.headers.get('x-forwarded-host')
           const isLocalEnv = process.env.NODE_ENV === 'development'
           if (isLocalEnv) {
