@@ -40,6 +40,7 @@ ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 
 -- RLS Policies for organizations
 -- Users can read organizations they belong to
+DROP POLICY IF EXISTS "Users can read their organization" ON organizations;
 CREATE POLICY "Users can read their organization"
   ON organizations FOR SELECT
   USING (
@@ -50,17 +51,20 @@ CREATE POLICY "Users can read their organization"
 
 -- RLS Policies for profiles
 -- Users can read their own profile
+DROP POLICY IF EXISTS "Users can read own profile" ON profiles;
 CREATE POLICY "Users can read own profile"
   ON profiles FOR SELECT
   USING (auth.uid() = id);
 
 -- Users can update their own profile
+DROP POLICY IF EXISTS "Users can update own profile" ON profiles;
 CREATE POLICY "Users can update own profile"
   ON profiles FOR UPDATE
   USING (auth.uid() = id)
   WITH CHECK (auth.uid() = id);
 
 -- Users can insert their own profile (on signup)
+DROP POLICY IF EXISTS "Users can insert own profile" ON profiles;
 CREATE POLICY "Users can insert own profile"
   ON profiles FOR INSERT
   WITH CHECK (auth.uid() = id);
@@ -96,11 +100,13 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- Triggers for updated_at
+DROP TRIGGER IF EXISTS profiles_updated_at ON profiles;
 CREATE TRIGGER profiles_updated_at
   BEFORE UPDATE ON profiles
   FOR EACH ROW
   EXECUTE FUNCTION public.handle_updated_at();
 
+DROP TRIGGER IF EXISTS organizations_updated_at ON organizations;
 CREATE TRIGGER organizations_updated_at
   BEFORE UPDATE ON organizations
   FOR EACH ROW
