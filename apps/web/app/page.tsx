@@ -142,34 +142,6 @@ export default function Home() {
                   </div>
                   <CourseTag course="Mathematics" />
                 </div>
-                <div className="bg-[#FAFAF5] border border-[#2E2E2E]/10 rounded p-3">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-[#2E2E2E]">English 201 Essay</span>
-                    <span className="text-xs text-[#2E2E2E] opacity-70 bg-[#F8BBD0]/30 px-2 py-1 rounded">Due Monday</span>
-                  </div>
-                  <CourseTag course="English" />
-                </div>
-                <div className="bg-[#FAFAF5] border border-[#2E2E2E]/10 rounded p-3">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-[#2E2E2E]">Biology 150 Lab Report</span>
-                    <span className="text-xs text-[#2E2E2E] opacity-70 bg-[#C8E6C9]/30 px-2 py-1 rounded">Due Next Week</span>
-                  </div>
-                  <CourseTag course="Science" />
-                </div>
-                <div className="bg-[#FAFAF5] border border-[#2E2E2E]/10 rounded p-3">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-[#2E2E2E]">History 101 Quiz</span>
-                    <span className="text-xs text-[#2E2E2E] opacity-70 bg-[#FDE68A]/30 px-2 py-1 rounded">Due Thursday</span>
-                  </div>
-                  <CourseTag course="History" />
-                </div>
-                <div className="bg-[#FAFAF5] border border-[#2E2E2E]/10 rounded p-3">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-[#2E2E2E]">Business 220 Presentation</span>
-                    <span className="text-xs text-[#2E2E2E] opacity-70 bg-[#A7F3D0]/30 px-2 py-1 rounded">Due Next Friday</span>
-                  </div>
-                  <CourseTag course="Business" />
-                </div>
               </div>
             </NoteCard>
           </div>
@@ -177,15 +149,15 @@ export default function Home() {
       </section>
 
       {/* Trust by Association */}
-      <section className="py-12 px-6 lg:px-8 relative">
-        <div className="max-w-5xl mx-auto">
-          <p className="text-center text-sm text-[#2E2E2E] opacity-70 mb-6">Trusted by students at</p>
-          <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12 opacity-60">
-            <div className="text-xl font-bold text-[#2E2E2E]">Stanford</div>
-            <div className="text-xl font-bold text-[#2E2E2E]">MIT</div>
-            <div className="text-xl font-bold text-[#2E2E2E]">Harvard</div>
-            <div className="text-xl font-bold text-[#2E2E2E]">Berkeley</div>
-            <div className="text-xl font-bold text-[#2E2E2E]">UCLA</div>
+      <section className="w-full py-12 px-6 lg:px-8 bg-[#E8F4F8] border-y border-[#2E2E2E]/10">
+        <div className="max-w-7xl mx-auto">
+          <p className="text-center text-sm text-[#2E2E2E] opacity-70 mb-6 font-medium">Trusted by students at</p>
+          <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12">
+            <div className="text-xl font-bold text-[#2E2E2E] opacity-80">Stanford</div>
+            <div className="text-xl font-bold text-[#2E2E2E] opacity-80">MIT</div>
+            <div className="text-xl font-bold text-[#2E2E2E] opacity-80">Harvard</div>
+            <div className="text-xl font-bold text-[#2E2E2E] opacity-80">Berkeley</div>
+            <div className="text-xl font-bold text-[#2E2E2E] opacity-80">UCLA</div>
           </div>
         </div>
       </section>
