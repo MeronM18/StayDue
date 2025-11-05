@@ -72,7 +72,25 @@ TWILIO_PHONE_NUMBER=+1234567890
 
 ## Step 7: Test SMS Sending
 
-Once configured, you can test sending SMS using a script (similar to the email test).
+Once configured, test sending SMS:
+
+```bash
+cd /Users/meron/Documents/Coding_Projects/StayDue/staydue
+node test-sms-simple.js +1234567890 "Test message from StayDue"
+```
+
+**Replace:**
+- `+1234567890` with the phone number you verified in Twilio (include `+` and country code)
+- `"Test message"` with your message (optional - defaults to a test message)
+
+**Example:**
+```bash
+node test-sms-simple.js +1234567890 "Hello! This is a test from StayDue"
+```
+
+**Important for Trial Accounts:**
+- You can only send SMS to phone numbers you've verified in Twilio
+- Go to Phone Numbers → Verified Caller IDs to verify numbers
 
 ## Quick Reference
 
