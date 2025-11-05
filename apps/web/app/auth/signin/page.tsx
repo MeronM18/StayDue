@@ -1,6 +1,9 @@
 'use client'
 
 import { createClient } from '@/lib/supabase/client'
+
+// Force dynamic rendering - this page should never be statically generated
+export const dynamic = 'force-dynamic'
 import { Button } from '@staydue/ui'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
