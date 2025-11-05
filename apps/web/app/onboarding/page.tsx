@@ -105,7 +105,7 @@ export default function OnboardingPage() {
 
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) {
-        router.push('/auth/signin')
+        router.push('/')
         return
       }
 
@@ -115,7 +115,7 @@ export default function OnboardingPage() {
         : formData.mainAcademicGoal
 
       // Update profile with onboarding data
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('profiles')
         .update({
           college_university: formData.collegeUniversity.trim(),
@@ -129,15 +129,24 @@ export default function OnboardingPage() {
           updated_at: new Date().toISOString(),
         })
         .eq('id', user.id)
+        .select()
 
       if (error) {
         console.error('Error saving onboarding:', error)
-        alert('Error saving your information. Please try again.')
+        alert(`Error saving your information: ${error.message}. Please try again.`)
         return
       }
 
-      // Redirect to dashboard
+      if (!data || data.length === 0) {
+        console.error('No profile found to update')
+        alert('Error: Profile not found. Please try signing in again.')
+        router.push('/')
+        return
+      }
+
+      // Successfully saved - redirect to dashboard
       router.push('/dashboard')
+      router.refresh()
     } catch (error) {
       console.error('Unexpected error:', error)
       alert('An unexpected error occurred. Please try again.')
