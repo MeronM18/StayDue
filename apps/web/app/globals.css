@@ -73,7 +73,7 @@ main,
 
 /* Ensure navbar covers the red line and background completely */
 nav[class*="sticky"] {
-  background-color: #F5F5F5 !important;
+  background-color: #E8F4F8 !important;
   opacity: 1 !important;
 }
 
@@ -89,7 +89,7 @@ nav[class*="sticky"] {
   left: 0;
   right: 0;
   height: 100vh;
-  background-color: #F5F5F5;
+  background-color: #E8F4F8;
   z-index: -1;
   pointer-events: none;
 }
