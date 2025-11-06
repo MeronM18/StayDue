@@ -162,13 +162,6 @@ function SignInForm() {
               <p className="text-sm text-red-600 text-center">{errors.submit}</p>
             </div>
           )}
-
-          <div className="mt-6 text-center">
-            <p className="text-sm" style={{ color: '#2E2E2E', fontFamily: 'var(--font-nunito-sans)' }}>
-              Don't have an account?{' '}
-              <Link href="/auth/signup" className="underline cursor-pointer">Sign Up</Link>
-            </p>
-          </div>
         </div>
       </div>
     </div>
