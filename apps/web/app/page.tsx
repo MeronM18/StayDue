@@ -57,10 +57,24 @@ export default function Home() {
   const handleGetStarted = async () => {
     try {
       setLoading(true)
+      
+      // Build redirect URL with preserved params
+      const redirectUrl = new URL(`${window.location.origin}/auth/callback`)
+      const params = new URLSearchParams(window.location.search)
+      
+      // Preserve UTM and other marketing params
+      const paramsToPreserve = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'ref', 'referral']
+      paramsToPreserve.forEach(param => {
+        const value = params.get(param)
+        if (value) {
+          redirectUrl.searchParams.set(param, value)
+        }
+      })
+
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
+          redirectTo: redirectUrl.toString(),
           scopes: 'https://www.googleapis.com/auth/calendar',
           queryParams: {
             access_type: 'offline',
@@ -71,12 +85,17 @@ export default function Home() {
 
       if (error) {
         console.error('Error signing in:', error)
-        alert('Error signing in. Please try again.')
+        alert(`Error signing in: ${error.message || 'Please try again.'}`)
         setLoading(false)
+        return
       }
+
+      // If successful, redirect will happen automatically
+      // Don't set loading to false here as redirect is in progress
     } catch (error) {
       console.error('Unexpected error:', error)
-      alert('An unexpected error occurred. Please try again.')
+      const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred'
+      alert(`Error: ${errorMessage}. Please try again.`)
       setLoading(false)
     }
   }

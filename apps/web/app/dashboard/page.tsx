@@ -1,28 +1,9 @@
-import { createClient } from '@/lib/supabase/server'
-import { redirect } from 'next/navigation'
+import { requireOnboarding } from '@/lib/auth-helpers'
 import { Button } from '@staydue/ui'
 import SignOutButton from './sign-out-button'
 
 export default async function DashboardPage() {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) {
-    redirect('/')
-  }
-
-  // Check if user has completed onboarding
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('onboarding_completed')
-    .eq('id', user.id)
-    .single()
-
-  if (!profile?.onboarding_completed) {
-    redirect('/onboarding')
-  }
+  const { user, profile } = await requireOnboarding()
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">

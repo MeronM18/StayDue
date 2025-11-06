@@ -1,7 +1,7 @@
 'use client'
 
 import { createClient } from '@/lib/supabase/client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 
 type AcademicGoal = 
@@ -25,6 +25,7 @@ export default function OnboardingPage() {
   const router = useRouter()
   const supabase = createClient()
   const [loading, setLoading] = useState(false)
+  const [checkingAuth, setCheckingAuth] = useState(true)
   const [step, setStep] = useState(1)
   
   const [formData, setFormData] = useState({
@@ -38,6 +39,42 @@ export default function OnboardingPage() {
   })
 
   const [errors, setErrors] = useState<Record<string, string>>({})
+
+  // Check authentication and onboarding status on mount
+  useEffect(() => {
+    const checkAuthAndOnboarding = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser()
+        
+        if (!user) {
+          // Not authenticated - redirect to home
+          router.push('/')
+          return
+        }
+
+        // Check if onboarding already completed
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('onboarding_completed')
+          .eq('id', user.id)
+          .single()
+
+        if (profile?.onboarding_completed) {
+          // Already completed - redirect to dashboard
+          router.push('/dashboard')
+          return
+        }
+
+        // User is authenticated and onboarding not completed - allow access
+        setCheckingAuth(false)
+      } catch (error) {
+        console.error('Error checking auth:', error)
+        router.push('/')
+      }
+    }
+
+    checkAuthAndOnboarding()
+  }, [router, supabase])
 
   const validateStep = (currentStep: number): boolean => {
     const newErrors: Record<string, string> = {}
@@ -300,6 +337,18 @@ export default function OnboardingPage() {
       default:
         return null
     }
+  }
+
+  // Show loading state while checking auth
+  if (checkingAuth) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-white px-4 py-16">
+        <div className="text-center">
+          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-blue-600 border-r-transparent"></div>
+          <p className="mt-4 text-gray-600">Loading...</p>
+        </div>
+      </div>
+    )
   }
 
   return (

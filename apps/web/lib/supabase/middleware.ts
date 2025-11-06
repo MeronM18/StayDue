@@ -37,22 +37,61 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  if (
-    !user &&
-    !request.nextUrl.pathname.startsWith('/auth') &&
-    !request.nextUrl.pathname.startsWith('/api') &&
-    !request.nextUrl.pathname.startsWith('/onboarding') &&
-    request.nextUrl.pathname !== '/'
-  ) {
-    // no user, redirect to home page
+  // Define public routes that don't require authentication
+  const publicRoutes = ['/', '/auth', '/terms', '/privacy']
+  const isPublicRoute = publicRoutes.some(route => 
+    request.nextUrl.pathname === route || request.nextUrl.pathname.startsWith('/auth')
+  )
+
+  // If user is not authenticated
+  if (!user) {
+    // Allow access to public routes and onboarding
+    if (isPublicRoute || request.nextUrl.pathname.startsWith('/onboarding')) {
+      return supabaseResponse
+    }
+    // Redirect to home page for protected routes
     const url = request.nextUrl.clone()
     url.pathname = '/'
     return NextResponse.redirect(url)
   }
 
-  // Allow onboarding page access
-  if (request.nextUrl.pathname.startsWith('/onboarding')) {
-    return supabaseResponse
+  // User is authenticated - check onboarding status for protected routes
+  if (user && !isPublicRoute) {
+    // Check onboarding status for dashboard and other protected routes
+    if (request.nextUrl.pathname.startsWith('/dashboard') || 
+        request.nextUrl.pathname.startsWith('/courses') ||
+        request.nextUrl.pathname.startsWith('/tasks')) {
+      
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('onboarding_completed')
+        .eq('id', user.id)
+        .single()
+
+      // If onboarding not completed, redirect to onboarding
+      if (!profile?.onboarding_completed) {
+        const url = request.nextUrl.clone()
+        url.pathname = '/onboarding'
+        // Preserve the intended destination
+        url.searchParams.set('redirect', request.nextUrl.pathname)
+        return NextResponse.redirect(url)
+      }
+    }
+
+    // If user tries to access onboarding but already completed it, redirect to dashboard
+    if (request.nextUrl.pathname.startsWith('/onboarding')) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('onboarding_completed')
+        .eq('id', user.id)
+        .single()
+
+      if (profile?.onboarding_completed) {
+        const url = request.nextUrl.clone()
+        url.pathname = '/dashboard'
+        return NextResponse.redirect(url)
+      }
+    }
   }
 
   // IMPORTANT: You *must* return the supabaseResponse object as it is. If you're
