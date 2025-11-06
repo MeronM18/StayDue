@@ -15,6 +15,12 @@ export default function Home() {
   const [displayedText2, setDisplayedText2] = useState('')
   const [showCursor1, setShowCursor1] = useState(true)
   const [showCursor2, setShowCursor2] = useState(false)
+  const [isVisible, setIsVisible] = useState(false)
+
+  // Page fade-in animation
+  useEffect(() => {
+    setIsVisible(true)
+  }, [])
 
   const fullText1 = 'Stay organized.'
   const fullText2 = 'Never miss a deadline again.'
@@ -96,7 +102,10 @@ export default function Home() {
   ]
 
   return (
-    <div className="min-h-screen relative">
+    <div 
+      className="min-h-screen relative transition-opacity duration-500 ease-in-out" 
+      style={{ opacity: isVisible ? 1 : 0 }}
+    >
       <NotebookDecorations />
       <div className="relative z-10">
       <Navbar />

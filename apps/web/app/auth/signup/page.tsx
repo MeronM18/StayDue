@@ -12,6 +12,12 @@ function SignUpForm() {
   const supabase = createClient()
   const [googleLoading, setGoogleLoading] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [isVisible, setIsVisible] = useState(false)
+
+  // Page fade-in animation
+  useEffect(() => {
+    setIsVisible(true)
+  }, [])
 
   // Reset loading state when page becomes visible (user navigated back)
   useEffect(() => {
@@ -78,7 +84,13 @@ function SignUpForm() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-4 py-16 relative" style={{ backgroundColor: '#FAFAF5' }}>
+    <div 
+      className="flex min-h-screen items-center justify-center px-4 py-16 relative transition-opacity duration-500 ease-in-out" 
+      style={{ 
+        backgroundColor: '#FAFAF5',
+        opacity: isVisible ? 1 : 0
+      }}
+    >
       {/* Login Link - Top Right of Page */}
       <div className="absolute top-6 right-6">
         <Link href="/auth/signin" className="text-[#2E2E2E] hover:text-gray-700 font-medium cursor-pointer">
@@ -89,7 +101,7 @@ function SignUpForm() {
       <div className="w-full max-w-md">
         {/* StayDue Branding */}
         <div className="text-center mb-8">
-          <div className="flex justify-center items-center gap-3 mb-4">
+          <div className="flex justify-center items-center gap-1 mb-4">
             <Image 
               src="/assets/stayduelogo.png" 
               alt="StayDue Logo" 
@@ -106,7 +118,7 @@ function SignUpForm() {
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold mb-4" style={{ color: '#2E2E2E', fontFamily: 'var(--font-manrope)' }}>Create Account</h1>
           <p className="text-lg" style={{ color: '#2E2E2E', fontFamily: 'var(--font-nunito-sans)' }}>
-            New to StayDue? Sign up with Google to get started
+            Get started with StayDue — sign up using your Google account
           </p>
         </div>
 

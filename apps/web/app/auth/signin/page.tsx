@@ -12,6 +12,12 @@ function SignInForm() {
   const supabase = createClient()
   const [googleLoading, setGoogleLoading] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [isVisible, setIsVisible] = useState(false)
+
+  // Page fade-in animation
+  useEffect(() => {
+    setIsVisible(true)
+  }, [])
 
   // Reset loading state when page becomes visible (user navigated back)
   useEffect(() => {
@@ -77,7 +83,13 @@ function SignInForm() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-4 py-16 relative" style={{ backgroundColor: '#FAFAF5' }}>
+    <div 
+      className="flex min-h-screen items-center justify-center px-4 py-16 relative transition-opacity duration-500 ease-in-out" 
+      style={{ 
+        backgroundColor: '#FAFAF5',
+        opacity: isVisible ? 1 : 0
+      }}
+    >
       {/* Back Button - Top Left of Page */}
       <div className="absolute top-6 left-6">
         <Link href="/" className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg bg-white text-black hover:bg-gray-50 transition-colors cursor-pointer">
@@ -88,7 +100,7 @@ function SignInForm() {
       <div className="w-full max-w-md">
         {/* StayDue Branding */}
         <div className="text-center mb-8">
-          <div className="flex justify-center items-center gap-3 mb-4">
+          <div className="flex justify-center items-center gap-1 mb-4">
             <Image 
               src="/assets/stayduelogo.png" 
               alt="StayDue Logo" 
