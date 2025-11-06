@@ -4,16 +4,13 @@ import { createClient } from '@/lib/supabase/client'
 import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 
 function SignUpForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const supabase = createClient()
-  const [loading, setLoading] = useState(false)
   const [googleLoading, setGoogleLoading] = useState(false)
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
   const [errors, setErrors] = useState<Record<string, string>>({})
 
   // Remove notebook theme on signup page
@@ -39,91 +36,10 @@ function SignUpForm() {
     }
   }, [])
 
-  const validateForm = (): boolean => {
-    const newErrors: Record<string, string> = {}
-
-    if (!email.trim()) {
-      newErrors.email = 'Email is required'
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      newErrors.email = 'Please enter a valid email address'
-    }
-
-    if (!password) {
-      newErrors.password = 'Password is required'
-    } else if (password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters'
-    }
-
-    if (!confirmPassword) {
-      newErrors.confirmPassword = 'Please confirm your password'
-    } else if (password !== confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match'
-    }
-
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
-
-  const handleEmailSignUp = async (e: React.FormEvent) => {
-    e.preventDefault()
-
-    if (!validateForm()) {
-      return
-    }
-
-    try {
-      setLoading(true)
-      setErrors({})
-
-      // Build redirect URL with preserved params
-      const redirectUrl = new URL(`${window.location.origin}/auth/callback`)
-      const params = new URLSearchParams(window.location.search)
-      
-      // Preserve UTM and other marketing params
-      const paramsToPreserve = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'ref', 'referral']
-      paramsToPreserve.forEach(param => {
-        const value = params.get(param)
-        if (value) {
-          redirectUrl.searchParams.set(param, value)
-        }
-      })
-
-      const { data, error } = await supabase.auth.signUp({
-        email: email.trim(),
-        password,
-        options: {
-          emailRedirectTo: redirectUrl.toString(),
-        },
-      })
-
-      if (error) {
-        setErrors({ submit: error.message })
-        setLoading(false)
-        return
-      }
-
-      // Check if email confirmation is required
-      if (data?.user && !data.session) {
-        // Email confirmation required
-        router.push('/auth/verify-email?email=' + encodeURIComponent(email))
-        return
-      }
-
-      // If session exists, user is signed in (auto-confirmed)
-      if (data.session) {
-        // Redirect to callback to handle onboarding check
-        router.push(redirectUrl.toString())
-      }
-    } catch (error) {
-      console.error('Unexpected error:', error)
-      setErrors({ submit: 'An unexpected error occurred. Please try again.' })
-      setLoading(false)
-    }
-  }
-
   const handleGoogleSignUp = async () => {
     try {
       setGoogleLoading(true)
+      setErrors({})
       
       // Build redirect URL with preserved params
       const redirectUrl = new URL(`${window.location.origin}/auth/callback`)
@@ -158,7 +74,6 @@ function SignUpForm() {
       }
 
       // If successful, redirect will happen automatically
-      // Don't set loading to false here as redirect is in progress
     } catch (error) {
       console.error('Unexpected error:', error)
       const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred'
@@ -168,21 +83,42 @@ function SignUpForm() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-white px-4 py-16">
-      <div className="w-full max-w-md space-y-8">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold text-gray-900">Create Your Account</h1>
-          <p className="mt-2 text-gray-600">
-            Get started with StayDue today
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 via-white to-indigo-50 px-4 py-16">
+      <div className="w-full max-w-md">
+        {/* Logo and Branding */}
+        <div className="text-center mb-8">
+          <div className="flex justify-center mb-4">
+            <Image 
+              src="/assets/stayduelogo.png" 
+              alt="StayDue Logo" 
+              width={80}
+              height={70}
+              className="h-auto w-auto"
+              priority
+            />
+          </div>
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">StayDue</h1>
+          <p className="text-lg text-gray-600">
+            Never miss a deadline again
           </p>
         </div>
 
-        <div className="rounded-lg bg-white p-8 shadow-lg border border-gray-200">
+        {/* Sign Up Card */}
+        <div className="rounded-xl bg-white p-8 shadow-xl border border-gray-200">
+          <div className="text-center mb-6">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              Create Your Account
+            </h2>
+            <p className="text-gray-600">
+              Get started with StayDue today
+            </p>
+          </div>
+
           {/* Continue with Google Button */}
           <button
             onClick={handleGoogleSignUp}
-            disabled={googleLoading || loading}
-            className="w-full flex items-center justify-center gap-3 rounded-md border-2 border-gray-300 px-4 py-3 text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+            disabled={googleLoading}
+            className="w-full flex items-center justify-center gap-3 rounded-lg border-2 border-gray-300 px-6 py-4 text-gray-700 hover:bg-gray-50 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-semibold text-base shadow-sm hover:shadow-md"
           >
             {googleLoading ? (
               <>
@@ -214,82 +150,11 @@ function SignUpForm() {
             )}
           </button>
 
-          <div className="my-6 flex items-center">
-            <div className="flex-1 border-t border-gray-300"></div>
-            <span className="px-4 text-sm text-gray-500">or</span>
-            <div className="flex-1 border-t border-gray-300"></div>
-          </div>
-
-          {/* Email/Password Form */}
-          <form onSubmit={handleEmailSignUp} className="space-y-4">
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                Email
-              </label>
-              <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
-                className="w-full rounded-md border border-gray-300 px-4 py-3 text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
-                disabled={loading || googleLoading}
-              />
-              {errors.email && (
-                <p className="mt-1 text-sm text-red-600">{errors.email}</p>
-              )}
+          {errors.submit && (
+            <div className="mt-4 rounded-md bg-red-50 border border-red-200 p-3">
+              <p className="text-sm text-red-600 text-center">{errors.submit}</p>
             </div>
-
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                Password
-              </label>
-              <input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="At least 6 characters"
-                className="w-full rounded-md border border-gray-300 px-4 py-3 text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
-                disabled={loading || googleLoading}
-              />
-              {errors.password && (
-                <p className="mt-1 text-sm text-red-600">{errors.password}</p>
-              )}
-            </div>
-
-            <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
-                Confirm Password
-              </label>
-              <input
-                id="confirmPassword"
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Confirm your password"
-                className="w-full rounded-md border border-gray-300 px-4 py-3 text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
-                disabled={loading || googleLoading}
-              />
-              {errors.confirmPassword && (
-                <p className="mt-1 text-sm text-red-600">{errors.confirmPassword}</p>
-              )}
-            </div>
-
-            {errors.submit && (
-              <div className="rounded-md bg-red-50 border border-red-200 p-3">
-                <p className="text-sm text-red-600">{errors.submit}</p>
-              </div>
-            )}
-
-            <button
-              type="submit"
-              disabled={loading || googleLoading}
-              className="w-full rounded-md bg-blue-600 px-4 py-3 text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
-            >
-              {loading ? 'Creating account...' : 'Create Account'}
-            </button>
-          </form>
+          )}
 
           <div className="mt-6 text-center text-sm">
             <p className="text-gray-600">
@@ -299,6 +164,13 @@ function SignUpForm() {
               </Link>
             </p>
           </div>
+        </div>
+
+        {/* Trust Indicators */}
+        <div className="mt-8 text-center">
+          <p className="text-xs text-gray-500">
+            By continuing, you agree to StayDue's Terms of Service and Privacy Policy
+          </p>
         </div>
       </div>
     </div>
