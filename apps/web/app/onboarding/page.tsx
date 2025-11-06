@@ -40,6 +40,31 @@ export default function OnboardingPage() {
 
   const [errors, setErrors] = useState<Record<string, string>>({})
 
+  // Remove notebook theme on onboarding page
+  useEffect(() => {
+    // Hide red line and remove notebook background
+    const style = document.createElement('style')
+    style.setAttribute('data-onboarding-styles', 'true')
+    style.textContent = `
+      body::before {
+        display: none !important;
+      }
+      body {
+        background-color: #ffffff !important;
+        background-image: none !important;
+      }
+    `
+    document.head.appendChild(style)
+
+    return () => {
+      // Cleanup: remove style when component unmounts
+      const onboardingStyle = document.head.querySelector('style[data-onboarding-styles="true"]')
+      if (onboardingStyle) {
+        document.head.removeChild(onboardingStyle)
+      }
+    }
+  }, [])
+
   // Check authentication and onboarding status on mount
   useEffect(() => {
     const checkAuthAndOnboarding = async () => {

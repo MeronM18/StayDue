@@ -7,17 +7,14 @@ import { CourseTag } from '@/components/marketing/CourseTag'
 import { NoteCard } from '@/components/marketing/NoteCard'
 import { Highlight } from '@/components/marketing/Highlight'
 import { NotebookDecorations } from '@/components/marketing/NotebookDecorations'
-import { createClient } from '@/lib/supabase/client'
 import { useState, useEffect } from 'react'
 
 export default function Home() {
-  const [loading, setLoading] = useState(false)
   const [expandedFAQ, setExpandedFAQ] = useState<number | null>(null)
   const [displayedText1, setDisplayedText1] = useState('')
   const [displayedText2, setDisplayedText2] = useState('')
   const [showCursor1, setShowCursor1] = useState(true)
   const [showCursor2, setShowCursor2] = useState(false)
-  const supabase = createClient()
 
   const fullText1 = 'Stay organized.'
   const fullText2 = 'Never miss a deadline again.'
@@ -54,50 +51,21 @@ export default function Home() {
     typeText1()
   }, [])
 
-  const handleGetStarted = async () => {
-    try {
-      setLoading(true)
-      
-      // Build redirect URL with preserved params
-      const redirectUrl = new URL(`${window.location.origin}/auth/callback`)
-      const params = new URLSearchParams(window.location.search)
-      
-      // Preserve UTM and other marketing params
-      const paramsToPreserve = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'ref', 'referral']
-      paramsToPreserve.forEach(param => {
-        const value = params.get(param)
-        if (value) {
-          redirectUrl.searchParams.set(param, value)
-        }
-      })
-
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: redirectUrl.toString(),
-          scopes: 'https://www.googleapis.com/auth/calendar',
-          queryParams: {
-            access_type: 'offline',
-            prompt: 'consent',
-          },
-        },
-      })
-
-      if (error) {
-        console.error('Error signing in:', error)
-        alert(`Error signing in: ${error.message || 'Please try again.'}`)
-        setLoading(false)
-        return
+  const handleGetStarted = () => {
+    // Build redirect URL with preserved params
+    const redirectUrl = new URL(`${window.location.origin}/auth/signup`)
+    const params = new URLSearchParams(window.location.search)
+    
+    // Preserve UTM and other marketing params
+    const paramsToPreserve = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'ref', 'referral']
+    paramsToPreserve.forEach(param => {
+      const value = params.get(param)
+      if (value) {
+        redirectUrl.searchParams.set(param, value)
       }
+    })
 
-      // If successful, redirect will happen automatically
-      // Don't set loading to false here as redirect is in progress
-    } catch (error) {
-      console.error('Unexpected error:', error)
-      const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred'
-      alert(`Error: ${errorMessage}. Please try again.`)
-      setLoading(false)
-    }
+    window.location.href = redirectUrl.toString()
   }
 
   const faqs = [
@@ -159,10 +127,9 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row gap-4 mb-8">
             <button
               onClick={handleGetStarted}
-              disabled={loading}
-              className="bg-[#FFEB3B] text-[#2E2E2E] hover:bg-[#FFEB3B]/95 transition-all px-8 py-4 rounded-lg font-bold text-lg shadow-[0_4px_6px_rgba(0,0,0,0.1)] hover:shadow-[0_6px_8px_rgba(0,0,0,0.15)] hover:-translate-y-0.5 border-2 border-[#2E2E2E]/10 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+              className="bg-[#FFEB3B] text-[#2E2E2E] hover:bg-[#FFEB3B]/95 transition-all px-8 py-4 rounded-lg font-bold text-lg shadow-[0_4px_6px_rgba(0,0,0,0.1)] hover:shadow-[0_6px_8px_rgba(0,0,0,0.15)] hover:-translate-y-0.5 border-2 border-[#2E2E2E]/10 cursor-pointer"
             >
-              {loading ? 'Signing in...' : 'Get Started'}
+              Get Started
             </button>
           </div>
 
@@ -625,10 +592,9 @@ export default function Home() {
             </p>
           <button
               onClick={handleGetStarted}
-            disabled={loading}
-              className="bg-[#FFEB3B] text-[#2E2E2E] hover:bg-[#FFEB3B]/95 transition-all px-8 py-4 rounded-lg font-bold text-lg shadow-[0_4px_6px_rgba(0,0,0,0.1)] hover:shadow-[0_6px_8px_rgba(0,0,0,0.15)] hover:-translate-y-0.5 border-2 border-[#2E2E2E]/10 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+              className="bg-[#FFEB3B] text-[#2E2E2E] hover:bg-[#FFEB3B]/95 transition-all px-8 py-4 rounded-lg font-bold text-lg shadow-[0_4px_6px_rgba(0,0,0,0.1)] hover:shadow-[0_6px_8px_rgba(0,0,0,0.15)] hover:-translate-y-0.5 border-2 border-[#2E2E2E]/10 cursor-pointer"
           >
-              {loading ? 'Signing in...' : 'Get Started Free'}
+              Get Started Free
           </button>
           </NoteCard>
         </div>
