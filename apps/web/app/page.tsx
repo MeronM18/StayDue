@@ -146,7 +146,6 @@ export default function Home() {
           <div className="mt-12 relative">
             <NoteCard rotation={1} hasPaperclip className="max-w-2xl mx-auto">
               <div className="text-center mb-4">
-                <div className="text-2xl mb-2">📓</div>
                 <h3 className="text-xl font-bold text-[#2E2E2E]">Your Digital Notebook</h3>
               </div>
               <div className="space-y-3">
