@@ -130,9 +130,9 @@ export default function Home() {
         </h1>
             <div className="mt-4 relative">
               <p className="text-xl text-[#2E2E2E] opacity-90" style={{ lineHeight: '1.8' }}>
-                <Highlight color="mint">Turn your syllabus into a smart schedule and never miss a due date again.</Highlight>
+                <Highlight color="mint">Turn your syllabus into a smart schedule and never miss a due date again. StayDue automatically extracts assignments, syncs with your calendar, and sends reminders so you can focus on learning.</Highlight>
+                <span className="absolute -right-8 top-0 text-2xl opacity-60">✏️</span>
               </p>
-              <div className="absolute -left-8 top-0 text-2xl opacity-60">✏️</div>
             </div>
           </div>
 
