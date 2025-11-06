@@ -9,10 +9,10 @@ export function Navbar() {
 
   return (
     <nav 
-      className="sticky top-0 z-[100] border-b border-[#E5E5E5] w-full nav-extended-bg" 
+      className="fixed top-0 z-[100] border-b border-[#E5E5E5] w-full nav-extended-bg" 
       style={{ 
-        backgroundColor: '#E8F4F8', 
-        position: 'sticky', 
+        backgroundColor: '#F5F5F5', 
+        position: 'fixed', 
         top: 0, 
         isolation: 'isolate',
         boxShadow: '0 1px 0 0 #E5E5E5',
@@ -22,7 +22,7 @@ export function Navbar() {
         WebkitBackdropFilter: 'none'
       }}
     >
-      <div className="max-w-7xl mx-auto px-6 lg:px-8" style={{ backgroundColor: '#E8F4F8', position: 'relative' }}>
+      <div className="max-w-7xl mx-auto px-6 lg:px-8" style={{ backgroundColor: '#F5F5F5', position: 'relative' }}>
         <div className="flex justify-between items-center" style={{ height: '83px' }}>
           {/* Logo Section - Left */}
           <Link href="/" className="flex items-center space-x-2 group">
@@ -41,19 +41,19 @@ export function Navbar() {
           <div className="hidden md:flex items-center space-x-8 absolute left-1/2 transform -translate-x-1/2">
             <Link 
               href="/pricing" 
-              className="text-[#000000] hover:text-[#000000]/80 transition-colors text-base font-medium"
+              className="text-[#000000] hover:text-[#000000]/80 transition-colors text-[15px] font-medium"
             >
               How it Works
             </Link>
             <Link 
               href="/#how-it-works" 
-              className="text-[#000000] hover:text-[#000000]/80 transition-colors text-base font-medium"
+              className="text-[#000000] hover:text-[#000000]/80 transition-colors text-[15px] font-medium"
             >
               Pricing
             </Link>
             <Link 
               href="/#contact" 
-              className="text-[#000000] hover:text-[#000000]/80 transition-colors text-base font-medium"
+              className="text-[#000000] hover:text-[#000000]/80 transition-colors text-[15px] font-medium"
             >
               Contact
             </Link>
@@ -94,24 +94,24 @@ export function Navbar() {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden py-4 space-y-4 border-t border-[#E5E5E5] bg-[#E8F4F8]" style={{ backgroundColor: '#E8F4F8' }}>
+          <div className="md:hidden py-4 space-y-4 border-t border-[#E5E5E5] bg-[#F5F5F5]" style={{ backgroundColor: '#F5F5F5' }}>
             <Link
               href="/pricing"
-              className="block text-[#000000] hover:text-[#000000]/80 transition-colors text-base font-medium"
+              className="block text-[#000000] hover:text-[#000000]/80 transition-colors text-[15px] font-medium"
               onClick={() => setMobileMenuOpen(false)}
             >
               Pricing
             </Link>
             <Link
               href="/#how-it-works"
-              className="block text-[#000000] hover:text-[#000000]/80 transition-colors text-base font-medium"
+              className="block text-[#000000] hover:text-[#000000]/80 transition-colors text-[15px] font-medium"
               onClick={() => setMobileMenuOpen(false)}
             >
               How it works
             </Link>
             <Link
               href="/#contact"
-              className="block text-[#000000] hover:text-[#000000]/80 transition-colors text-base font-medium"
+              className="block text-[#000000] hover:text-[#000000]/80 transition-colors text-[15px] font-medium"
               onClick={() => setMobileMenuOpen(false)}
             >
               Contact
