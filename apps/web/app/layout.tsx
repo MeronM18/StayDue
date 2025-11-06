@@ -21,6 +21,10 @@ export const metadata: Metadata = {
   title: "StayDue - Never Miss a Due Date Again | Student Task Management",
   description: "The student task management platform that keeps you organized. Sync with Google Calendar, upload syllabi, and stay on top of every assignment. Free forever.",
   keywords: ["student task management", "assignment tracker", "due date reminder", "calendar sync", "syllabus upload", "student organizer"],
+  icons: {
+    icon: "/icon.png",
+    apple: "/icon.png",
+  },
   openGraph: {
     title: "StayDue - Never Miss a Due Date Again",
     description: "The student task management platform that keeps you organized. Sync with Google Calendar, upload syllabi, and stay on top of every assignment.",
