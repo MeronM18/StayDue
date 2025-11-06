@@ -171,7 +171,7 @@ function SignUpForm() {
         {/* Terms and Privacy */}
         <div className="mt-6 text-center">
           <p className="text-sm" style={{ color: '#2E2E2E', fontFamily: 'var(--font-nunito-sans)' }}>
-            By clicking continue, you agree to our{' '}
+            By signing up with Google, you agree to our{' '}
             <Link href="/terms" className="underline cursor-pointer">Terms of Service</Link>
             {' '}and{' '}
             <Link href="/privacy" className="underline cursor-pointer">Privacy Policy</Link>.
