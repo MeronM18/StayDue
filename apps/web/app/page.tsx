@@ -143,7 +143,7 @@ export default function Home() {
               disabled={loading}
               className="bg-[#FFEB3B] text-[#2E2E2E] hover:bg-[#FFEB3B]/95 transition-all px-8 py-4 rounded-lg font-bold text-lg shadow-[0_4px_6px_rgba(0,0,0,0.1)] hover:shadow-[0_6px_8px_rgba(0,0,0,0.15)] hover:-translate-y-0.5 border-2 border-[#2E2E2E]/10 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
-              {loading ? 'Signing in...' : 'Get Started →'}
+              {loading ? 'Signing in...' : 'Get Started'}
             </button>
           </div>
 
@@ -609,7 +609,7 @@ export default function Home() {
             disabled={loading}
               className="bg-[#FFEB3B] text-[#2E2E2E] hover:bg-[#FFEB3B]/95 transition-all px-8 py-4 rounded-lg font-bold text-lg shadow-[0_4px_6px_rgba(0,0,0,0.1)] hover:shadow-[0_6px_8px_rgba(0,0,0,0.15)] hover:-translate-y-0.5 border-2 border-[#2E2E2E]/10 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
-              {loading ? 'Signing in...' : 'Get Started Free →'}
+              {loading ? 'Signing in...' : 'Get Started Free'}
           </button>
           </NoteCard>
         </div>
