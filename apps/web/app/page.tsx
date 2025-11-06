@@ -141,7 +141,7 @@ export default function Home() {
             <button
               onClick={handleGetStarted}
               disabled={loading}
-              className="bg-[#FFEB3B] text-[#2E2E2E] hover:bg-[#FFEB3B]/95 transition-all px-8 py-4 rounded-lg font-bold text-lg shadow-[0_4px_6px_rgba(0,0,0,0.1)] hover:shadow-[0_6px_8px_rgba(0,0,0,0.15)] hover:-translate-y-0.5 border-2 border-[#2E2E2E]/10 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-[#FFEB3B] text-[#2E2E2E] hover:bg-[#FFEB3B]/95 transition-all px-8 py-4 rounded-lg font-bold text-lg shadow-[0_4px_6px_rgba(0,0,0,0.1)] hover:shadow-[0_6px_8px_rgba(0,0,0,0.15)] hover:-translate-y-0.5 border-2 border-[#2E2E2E]/10 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               {loading ? 'Signing in...' : 'Get Started →'}
             </button>
@@ -384,7 +384,7 @@ export default function Home() {
                   <span className="text-[#2E2E2E] opacity-80">Basic reminders</span>
                 </li>
               </ul>
-              <button className="w-full bg-[#FFEB3B] text-[#2E2E2E] hover:bg-[#FFEB3B]/95 transition-colors py-3 rounded-lg font-bold border-2 border-[#2E2E2E]/10">
+              <button className="w-full bg-[#FFEB3B] text-[#2E2E2E] hover:bg-[#FFEB3B]/95 transition-colors py-3 rounded-lg font-bold border-2 border-[#2E2E2E]/10 cursor-pointer">
                 Get Started
               </button>
             </NoteCard>
@@ -421,7 +421,7 @@ export default function Home() {
                   <span className="text-[#2E2E2E] opacity-80">Syllabus AI extraction</span>
                 </li>
               </ul>
-              <button onClick={handleGetStarted} className="w-full bg-[#B2EBF2] text-[#2E2E2E] hover:bg-[#80DEEA] transition-colors py-3 rounded-lg font-bold border-2 border-[#2E2E2E]/10">
+              <button onClick={handleGetStarted} className="w-full bg-[#B2EBF2] text-[#2E2E2E] hover:bg-[#80DEEA] transition-colors py-3 rounded-lg font-bold border-2 border-[#2E2E2E]/10 cursor-pointer">
                 Get Started
               </button>
             </NoteCard>
@@ -455,7 +455,7 @@ export default function Home() {
                   <span className="text-[#2E2E2E] opacity-80">API access</span>
                 </li>
               </ul>
-              <button className="w-full bg-[#F8BBD0] text-[#2E2E2E] hover:bg-[#F48FB1] transition-colors py-3 rounded-lg font-bold border-2 border-[#2E2E2E]/10">
+              <button className="w-full bg-[#F8BBD0] text-[#2E2E2E] hover:bg-[#F48FB1] transition-colors py-3 rounded-lg font-bold border-2 border-[#2E2E2E]/10 cursor-pointer">
                 Get Started
               </button>
             </NoteCard>
@@ -569,7 +569,7 @@ export default function Home() {
               <NoteCard key={index} rotation={index % 2 === 0 ? -0.5 : 0.5} className="overflow-hidden">
                 <button
                   onClick={() => setExpandedFAQ(expandedFAQ === index ? null : index)}
-                  className="w-full text-left hover:opacity-80 transition-opacity"
+                  className="w-full text-left hover:opacity-80 transition-opacity cursor-pointer"
                 >
                   <div className="flex items-center justify-between mb-2">
                     <span className="font-bold text-[#2E2E2E]">{faq.question}</span>
@@ -607,7 +607,7 @@ export default function Home() {
           <button
               onClick={handleGetStarted}
             disabled={loading}
-              className="bg-[#FFEB3B] text-[#2E2E2E] hover:bg-[#FFEB3B]/95 transition-all px-8 py-4 rounded-lg font-bold text-lg shadow-[0_4px_6px_rgba(0,0,0,0.1)] hover:shadow-[0_6px_8px_rgba(0,0,0,0.15)] hover:-translate-y-0.5 border-2 border-[#2E2E2E]/10 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-[#FFEB3B] text-[#2E2E2E] hover:bg-[#FFEB3B]/95 transition-all px-8 py-4 rounded-lg font-bold text-lg shadow-[0_4px_6px_rgba(0,0,0,0.1)] hover:shadow-[0_6px_8px_rgba(0,0,0,0.15)] hover:-translate-y-0.5 border-2 border-[#2E2E2E]/10 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
               {loading ? 'Signing in...' : 'Get Started Free →'}
           </button>
