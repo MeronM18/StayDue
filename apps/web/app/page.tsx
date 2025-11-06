@@ -6,7 +6,6 @@ import { Footer } from '@/components/marketing/Footer'
 import { CourseTag } from '@/components/marketing/CourseTag'
 import { NoteCard } from '@/components/marketing/NoteCard'
 import { Highlight } from '@/components/marketing/Highlight'
-import { NotebookDecorations } from '@/components/marketing/NotebookDecorations'
 import { useState, useEffect } from 'react'
 
 export default function Home() {
@@ -106,7 +105,6 @@ export default function Home() {
       className="min-h-screen relative transition-opacity duration-500 ease-in-out" 
       style={{ opacity: isVisible ? 1 : 0 }}
     >
-      <NotebookDecorations />
       <div className="relative z-10">
       <Navbar />
 
@@ -127,7 +125,6 @@ export default function Home() {
             <div className="mt-4 relative">
               <p className="text-xl text-[#2E2E2E] opacity-90" style={{ lineHeight: '1.8' }}>
                 <Highlight color="mint">Turn your syllabus into a smart schedule and never miss a due date again. StayDue automatically extracts assignments, syncs with your calendar, and sends reminders so you can focus on learning.</Highlight>
-                <span className="absolute -right-8 top-0 text-2xl opacity-60">✏️</span>
               </p>
             </div>
           </div>
@@ -144,7 +141,7 @@ export default function Home() {
 
           {/* Product Preview - Notebook Style */}
           <div className="mt-12 relative">
-            <NoteCard rotation={1} hasPaperclip className="max-w-2xl mx-auto">
+            <NoteCard rotation={1} className="max-w-2xl mx-auto">
               <div className="text-center mb-4">
                 <h3 className="text-xl font-bold text-[#2E2E2E]">Your Digital Notebook</h3>
               </div>
@@ -213,8 +210,7 @@ export default function Home() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* Benefit 1 */}
-            <NoteCard rotation={-1.5} hasPaperclip>
-              <div className="text-2xl mb-3">🎯</div>
+            <NoteCard rotation={-1.5}>
               <h3 className="text-xl font-bold text-[#2E2E2E] mb-2">Never Miss Deadlines</h3>
               <p className="text-[#2E2E2E] opacity-80 text-sm" style={{ lineHeight: '1.6' }}>
                 Get automatic reminders before assignments are due. Never lose track of important dates again.
@@ -223,7 +219,6 @@ export default function Home() {
 
             {/* Benefit 2 */}
             <NoteCard rotation={1}>
-              <div className="text-2xl mb-3">📅</div>
               <h3 className="text-xl font-bold text-[#2E2E2E] mb-2">Sync with Google Calendar</h3>
               <p className="text-[#2E2E2E] opacity-80 text-sm" style={{ lineHeight: '1.6' }}>
                 All your assignments automatically appear in your Google Calendar. One less thing to manage.
@@ -231,8 +226,7 @@ export default function Home() {
             </NoteCard>
 
             {/* Benefit 3 */}
-            <NoteCard rotation={-1} hasPaperclip>
-              <div className="text-2xl mb-3">📤</div>
+            <NoteCard rotation={-1}>
               <h3 className="text-xl font-bold text-[#2E2E2E] mb-2">Upload Syllabi</h3>
               <p className="text-[#2E2E2E] opacity-80 text-sm" style={{ lineHeight: '1.6' }}>
                 Upload your course syllabi and we'll automatically extract all assignments and due dates for you.
@@ -241,7 +235,6 @@ export default function Home() {
 
             {/* Benefit 4 */}
             <NoteCard rotation={1.5}>
-              <div className="text-2xl mb-3">📊</div>
               <h3 className="text-xl font-bold text-[#2E2E2E] mb-2">Track Your Progress</h3>
               <p className="text-[#2E2E2E] opacity-80 text-sm" style={{ lineHeight: '1.6' }}>
                 See how you're doing across all your courses with visual progress tracking and analytics.
@@ -250,7 +243,6 @@ export default function Home() {
 
             {/* Benefit 5 */}
             <NoteCard rotation={-1}>
-              <div className="text-2xl mb-3">📚</div>
               <h3 className="text-xl font-bold text-[#2E2E2E] mb-2">Organize by Course</h3>
               <p className="text-[#2E2E2E] opacity-80 text-sm" style={{ lineHeight: '1.6' }}>
                 Keep all your courses organized in one place. Add course codes, instructors, and semester info.
@@ -258,8 +250,7 @@ export default function Home() {
             </NoteCard>
 
             {/* Benefit 6 */}
-            <NoteCard rotation={1} hasPaperclip>
-              <div className="text-2xl mb-3">⏰</div>
+            <NoteCard rotation={1}>
               <h3 className="text-xl font-bold text-[#2E2E2E] mb-2">Save Time Daily</h3>
               <p className="text-[#2E2E2E] opacity-80 text-sm" style={{ lineHeight: '1.6' }}>
                 Stop spending hours organizing. StayDue does the heavy lifting so you can focus on what matters.
@@ -309,7 +300,7 @@ export default function Home() {
 
           <div className="grid md:grid-cols-3 gap-8">
             {/* Step 1 */}
-            <NoteCard rotation={1} hasPaperclip className="text-center">
+            <NoteCard rotation={1} className="text-center">
               <div className="text-4xl font-bold text-[#2E2E2E] mb-4">1</div>
               <h3 className="text-xl font-bold text-[#2E2E2E] mb-3">Sign Up with Google</h3>
               <p className="text-[#2E2E2E] opacity-80 text-sm" style={{ lineHeight: '1.6' }}>
@@ -327,7 +318,7 @@ export default function Home() {
             </NoteCard>
 
             {/* Step 3 */}
-            <NoteCard rotation={1.5} hasPaperclip className="text-center">
+            <NoteCard rotation={1.5} className="text-center">
               <div className="text-4xl font-bold text-[#2E2E2E] mb-4">3</div>
               <h3 className="text-xl font-bold text-[#2E2E2E] mb-3">Stay Organized</h3>
               <p className="text-[#2E2E2E] opacity-80 text-sm" style={{ lineHeight: '1.6' }}>
@@ -354,7 +345,7 @@ export default function Home() {
 
           <div className="grid md:grid-cols-3 gap-6">
             {/* Starter Plan */}
-            <NoteCard rotation={-1} hasPaperclip>
+            <NoteCard rotation={-1}>
               <h3 className="text-2xl font-bold text-[#2E2E2E] mb-2">Starter</h3>
               <div className="mb-6">
                 <span className="text-4xl font-bold text-[#2E2E2E]">Free</span>
@@ -421,7 +412,7 @@ export default function Home() {
             </NoteCard>
 
             {/* Pro+ Plan */}
-            <NoteCard rotation={-1.5} hasPaperclip>
+            <NoteCard rotation={-1.5}>
               <h3 className="text-2xl font-bold text-[#2E2E2E] mb-2">Pro+</h3>
               <div className="mb-6">
                 <span className="text-4xl font-bold text-[#2E2E2E]">$19</span>
@@ -496,7 +487,7 @@ export default function Home() {
             </NoteCard>
 
             {/* Testimonial 2 */}
-            <NoteCard rotation={1.5} hasPaperclip>
+            <NoteCard rotation={1.5}>
               <div className="flex items-center gap-1 mb-4">
                 {[...Array(5)].map((_, i) => (
                   <svg key={i} className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
