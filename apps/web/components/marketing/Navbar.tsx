@@ -16,14 +16,14 @@ export function Navbar() {
         top: 0, 
         isolation: 'isolate',
         boxShadow: '0 1px 0 0 #E5E5E5',
-        minHeight: '82px',
+        minHeight: '83px',
         overflow: 'visible',
         backdropFilter: 'none',
         WebkitBackdropFilter: 'none'
       }}
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-8" style={{ backgroundColor: '#F5F5F5', position: 'relative' }}>
-        <div className="flex justify-between items-center" style={{ height: '82px' }}>
+        <div className="flex justify-between items-center" style={{ height: '83px' }}>
           {/* Logo Section - Left */}
           <Link href="/" className="flex items-center space-x-2 group">
             <Image 
@@ -34,7 +34,7 @@ export function Navbar() {
               className="h-12 w-auto"
               priority
             />
-            <span className="text-xl font-bold text-[#000000]">StayDue</span>
+            <span className="text-2xl font-bold text-[#000000]">StayDue</span>
           </Link>
 
           {/* Desktop Navigation - Center */}
@@ -43,13 +43,13 @@ export function Navbar() {
               href="/pricing" 
               className="text-[#000000] hover:text-[#000000]/80 transition-colors text-[15px] font-medium"
             >
-              Pricing
+              How it Works
             </Link>
             <Link 
               href="/#how-it-works" 
               className="text-[#000000] hover:text-[#000000]/80 transition-colors text-[15px] font-medium"
             >
-              How it works
+              Pricing
             </Link>
             <Link 
               href="/#contact" 
@@ -63,7 +63,7 @@ export function Navbar() {
           <div className="hidden md:flex items-center">
             <Link
               href="/auth/signin"
-              className="bg-[#2D2D32] text-white hover:bg-[#000000] hover:border-2 hover:border-white transition-all text-[15px] font-medium px-6 py-3 rounded-lg cursor-pointer border-2 border-transparent"
+              className="bg-[#2D2D32] text-white hover:bg-[#000000] hover:border-2 hover:border-white transition-all text-[15px] font-bold px-6 py-3 rounded-lg cursor-pointer border-2 border-transparent"
             >
               Log in
             </Link>
@@ -119,7 +119,7 @@ export function Navbar() {
             <div className="pt-4 border-t border-[#E5E5E5]">
               <Link
                 href="/auth/signin"
-                className="block bg-[#2D2D32] text-white hover:bg-[#000000] hover:border-2 hover:border-white transition-all text-[15px] font-medium px-6 py-3 rounded-lg text-center border-2 border-transparent"
+                className="block bg-[#2D2D32] text-white hover:bg-[#000000] hover:border-2 hover:border-white transition-all text-[15px] font-bold px-6 py-3 rounded-lg text-center border-2 border-transparent"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Log in
