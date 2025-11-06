@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Manrope, Nunito_Sans } from "next/font/google";
+import React from "react";
 import "./globals.css";
 
 const manrope = Manrope({
@@ -32,11 +33,11 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
       <body
@@ -47,3 +48,5 @@ export default function RootLayout({
     </html>
   );
 }
+
+export default RootLayout;

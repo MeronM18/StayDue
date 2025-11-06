@@ -6,6 +6,7 @@ import { Footer } from '@/components/marketing/Footer'
 import { CourseTag } from '@/components/marketing/CourseTag'
 import { NoteCard } from '@/components/marketing/NoteCard'
 import { Highlight } from '@/components/marketing/Highlight'
+import { NotebookDecorations } from '@/components/marketing/NotebookDecorations'
 import { createClient } from '@/lib/supabase/client'
 import { useState, useEffect } from 'react'
 
@@ -108,7 +109,9 @@ export default function Home() {
   ]
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen relative">
+      <NotebookDecorations />
+      <div className="relative z-10">
       <Navbar />
 
       {/* Hero Section - Notebook Style */}
@@ -127,7 +130,7 @@ export default function Home() {
         </h1>
             <div className="mt-4 relative">
               <p className="text-xl text-[#2E2E2E] opacity-90" style={{ lineHeight: '1.8' }}>
-                <Highlight color="mint">Turn your syllabus into a smart schedule and never miss a deadline again.</Highlight>
+                <Highlight color="mint">Turn your syllabus into a smart schedule and never miss a due date again.</Highlight>
               </p>
               <div className="absolute -left-8 top-0 text-2xl opacity-60">✏️</div>
             </div>
@@ -632,6 +635,7 @@ export default function Home() {
       </section>
 
       <Footer />
+      </div>
     </div>
   )
 }

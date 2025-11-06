@@ -9,7 +9,7 @@ interface HighlightProps {
 }
 
 const highlightColors = {
-  yellow: 'bg-[#FFF176]/85',
+  yellow: 'bg-[#FFEB3B]/95',
   mint: 'bg-[#B2EBF2]/70',
   pink: 'bg-[#F8BBD0]/70',
 }
