@@ -72,7 +72,8 @@ main,
 }
 
 /* Ensure navbar covers the red line and background completely */
-nav[class*="fixed"] {
+nav[class*="sticky"],
+nav[style*="fixed"] {
   background-color: #F5F5F5 !important;
   opacity: 1 !important;
 }

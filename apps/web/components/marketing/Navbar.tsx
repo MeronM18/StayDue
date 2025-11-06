@@ -13,7 +13,9 @@ export function Navbar() {
       style={{ 
         backgroundColor: '#F5F5F5', 
         position: 'fixed', 
-        top: 0, 
+        top: 0,
+        left: 0,
+        right: 0,
         isolation: 'isolate',
         boxShadow: '0 1px 0 0 #E5E5E5',
         minHeight: '83px',
@@ -41,19 +43,19 @@ export function Navbar() {
           <div className="hidden md:flex items-center space-x-8 absolute left-1/2 transform -translate-x-1/2">
             <Link 
               href="/pricing" 
-              className="text-[#000000] hover:text-[#000000]/80 transition-colors text-[15px] font-medium"
+              className="text-[#000000] hover:text-[#000000]/80 transition-colors text-base font-medium"
             >
               How it Works
             </Link>
             <Link 
               href="/#how-it-works" 
-              className="text-[#000000] hover:text-[#000000]/80 transition-colors text-[15px] font-medium"
+              className="text-[#000000] hover:text-[#000000]/80 transition-colors text-base font-medium"
             >
               Pricing
             </Link>
             <Link 
               href="/#contact" 
-              className="text-[#000000] hover:text-[#000000]/80 transition-colors text-[15px] font-medium"
+              className="text-[#000000] hover:text-[#000000]/80 transition-colors text-base font-medium"
             >
               Contact
             </Link>
@@ -97,21 +99,21 @@ export function Navbar() {
           <div className="md:hidden py-4 space-y-4 border-t border-[#E5E5E5] bg-[#F5F5F5]" style={{ backgroundColor: '#F5F5F5' }}>
             <Link
               href="/pricing"
-              className="block text-[#000000] hover:text-[#000000]/80 transition-colors text-[15px] font-medium"
+              className="block text-[#000000] hover:text-[#000000]/80 transition-colors text-base font-medium"
               onClick={() => setMobileMenuOpen(false)}
             >
               Pricing
             </Link>
             <Link
               href="/#how-it-works"
-              className="block text-[#000000] hover:text-[#000000]/80 transition-colors text-[15px] font-medium"
+              className="block text-[#000000] hover:text-[#000000]/80 transition-colors text-base font-medium"
               onClick={() => setMobileMenuOpen(false)}
             >
               How it works
             </Link>
             <Link
               href="/#contact"
-              className="block text-[#000000] hover:text-[#000000]/80 transition-colors text-[15px] font-medium"
+              className="block text-[#000000] hover:text-[#000000]/80 transition-colors text-base font-medium"
               onClick={() => setMobileMenuOpen(false)}
             >
               Contact

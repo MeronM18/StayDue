@@ -115,7 +115,7 @@ export default function Home() {
       <Navbar />
 
       {/* Hero Section - Notebook Style */}
-      <section className="pt-28 pb-24 px-6 lg:px-8 relative">
+      <section className="pt-32 pb-24 px-6 lg:px-8 relative">
         <div className="max-w-5xl mx-auto">
           {/* Main Heading with Highlight */}
           <div className="mb-8">
