@@ -4,90 +4,32 @@ import { createClient } from '@/lib/supabase/client'
 import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 
 function SignInForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const supabase = createClient()
-  const [loading, setLoading] = useState(false)
   const [googleLoading, setGoogleLoading] = useState(false)
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
   const [errors, setErrors] = useState<Record<string, string>>({})
 
-  // Remove notebook theme on signin page
+  // Reset loading state when page becomes visible (user navigated back)
   useEffect(() => {
-    const style = document.createElement('style')
-    style.setAttribute('data-signin-styles', 'true')
-    style.textContent = `
-      body::before {
-        display: none !important;
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        setGoogleLoading(false)
       }
-      body {
-        background-color: #ffffff !important;
-        background-image: none !important;
-      }
-    `
-    document.head.appendChild(style)
+    }
+
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    
+    // Also reset on mount in case user navigated back
+    setGoogleLoading(false)
 
     return () => {
-      const signinStyle = document.head.querySelector('style[data-signin-styles="true"]')
-      if (signinStyle) {
-        document.head.removeChild(signinStyle)
-      }
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
     }
   }, [])
-
-  const handleEmailSignIn = async (e: React.FormEvent) => {
-    e.preventDefault()
-
-    if (!email.trim()) {
-      setErrors({ email: 'Email is required' })
-      return
-    }
-    if (!password) {
-      setErrors({ password: 'Password is required' })
-      return
-    }
-
-    try {
-      setLoading(true)
-      setErrors({})
-
-      // Build redirect URL with preserved params
-      const redirectUrl = new URL(`${window.location.origin}/auth/callback`)
-      const params = new URLSearchParams(window.location.search)
-      
-      // Preserve UTM and other marketing params
-      const paramsToPreserve = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'ref', 'referral']
-      paramsToPreserve.forEach(param => {
-        const value = params.get(param)
-        if (value) {
-          redirectUrl.searchParams.set(param, value)
-        }
-      })
-
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: email.trim(),
-        password,
-      })
-
-      if (error) {
-        setErrors({ submit: error.message })
-        setLoading(false)
-        return
-      }
-
-      if (data.session) {
-        // Redirect to callback to handle onboarding check
-        router.push(redirectUrl.toString())
-      }
-    } catch (error) {
-      console.error('Unexpected error:', error)
-      setErrors({ submit: 'An unexpected error occurred. Please try again.' })
-      setLoading(false)
-    }
-  }
 
   const handleGoogleSignIn = async () => {
     try {
@@ -135,18 +77,33 @@ function SignInForm() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-white px-4 py-16">
+    <div className="flex min-h-screen items-center justify-center px-4 py-16 relative" style={{ backgroundColor: '#FAFAF5' }}>
+      {/* Back Button - Top Left of Page */}
+      <div className="absolute top-6 left-6">
+        <Link href="/" className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg bg-white text-black hover:bg-gray-50 transition-colors cursor-pointer">
+          <span>&lt;</span> Back
+        </Link>
+      </div>
+
       <div className="w-full max-w-md">
-        {/* Back Button - Top Left */}
-        <div className="mb-8">
-          <Link href="/" className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg bg-white text-black hover:bg-gray-50 transition-colors cursor-pointer">
-            <span>&lt;</span> Back
-          </Link>
+        {/* StayDue Branding */}
+        <div className="text-center mb-8">
+          <div className="flex justify-center items-center gap-3 mb-4">
+            <Image 
+              src="/assets/stayduelogo.png" 
+              alt="StayDue Logo" 
+              width={48}
+              height={42}
+              className="h-auto w-auto"
+              priority
+            />
+            <h1 className="text-3xl font-bold" style={{ color: '#2E2E2E', fontFamily: 'var(--font-manrope)' }}>StayDue</h1>
+          </div>
         </div>
 
         {/* Main Content */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-black mb-8">Welcome back!</h1>
+          <h1 className="text-4xl font-bold mb-8" style={{ color: '#2E2E2E', fontFamily: 'var(--font-manrope)' }}>Welcome back!</h1>
         </div>
 
         {/* Sign In Card */}
@@ -154,8 +111,9 @@ function SignInForm() {
           {/* Sign In with Google Button */}
           <button
             onClick={handleGoogleSignIn}
-            disabled={googleLoading || loading}
+            disabled={googleLoading}
             className="w-full flex items-center justify-center gap-3 rounded-lg border-2 border-black px-6 py-4 text-black hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-medium text-base bg-white cursor-pointer"
+            style={{ fontFamily: 'var(--font-manrope)' }}
           >
             {googleLoading ? (
               <>
@@ -194,7 +152,7 @@ function SignInForm() {
           )}
 
           <div className="mt-6 text-center">
-            <p className="text-sm text-black">
+            <p className="text-sm" style={{ color: '#2E2E2E', fontFamily: 'var(--font-nunito-sans)' }}>
               Don't have an account?{' '}
               <Link href="/auth/signup" className="underline cursor-pointer">Sign Up</Link>
             </p>

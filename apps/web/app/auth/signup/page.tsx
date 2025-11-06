@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/client'
 import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 
 function SignUpForm() {
   const router = useRouter()
@@ -12,26 +13,21 @@ function SignUpForm() {
   const [googleLoading, setGoogleLoading] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
 
-  // Remove notebook theme on signup page
+  // Reset loading state when page becomes visible (user navigated back)
   useEffect(() => {
-    const style = document.createElement('style')
-    style.setAttribute('data-signup-styles', 'true')
-    style.textContent = `
-      body::before {
-        display: none !important;
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        setGoogleLoading(false)
       }
-      body {
-        background-color: #ffffff !important;
-        background-image: none !important;
-      }
-    `
-    document.head.appendChild(style)
+    }
+
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    
+    // Also reset on mount in case user navigated back
+    setGoogleLoading(false)
 
     return () => {
-      const signupStyle = document.head.querySelector('style[data-signup-styles="true"]')
-      if (signupStyle) {
-        document.head.removeChild(signupStyle)
-      }
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
     }
   }, [])
 
@@ -82,19 +78,34 @@ function SignUpForm() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-white px-4 py-16">
+    <div className="flex min-h-screen items-center justify-center px-4 py-16 relative" style={{ backgroundColor: '#FAFAF5' }}>
+      {/* Login Link - Top Right of Page */}
+      <div className="absolute top-6 right-6">
+        <Link href="/auth/signin" className="text-[#2E2E2E] hover:text-gray-700 font-medium cursor-pointer">
+          Login
+        </Link>
+      </div>
+
       <div className="w-full max-w-md">
-        {/* Login Link - Top Right */}
-        <div className="flex justify-end mb-8">
-          <Link href="/auth/signin" className="text-black hover:text-gray-700 font-medium cursor-pointer">
-            Login
-          </Link>
+        {/* StayDue Branding */}
+        <div className="text-center mb-8">
+          <div className="flex justify-center items-center gap-3 mb-4">
+            <Image 
+              src="/assets/stayduelogo.png" 
+              alt="StayDue Logo" 
+              width={48}
+              height={42}
+              className="h-auto w-auto"
+              priority
+            />
+            <h1 className="text-3xl font-bold" style={{ color: '#2E2E2E', fontFamily: 'var(--font-manrope)' }}>StayDue</h1>
+          </div>
         </div>
 
         {/* Main Content */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-black mb-4">Create Account</h1>
-          <p className="text-lg text-black">
+          <h1 className="text-4xl font-bold mb-4" style={{ color: '#2E2E2E', fontFamily: 'var(--font-manrope)' }}>Create Account</h1>
+          <p className="text-lg" style={{ color: '#2E2E2E', fontFamily: 'var(--font-nunito-sans)' }}>
             New to StayDue? Sign up with Google to get started
           </p>
         </div>
@@ -106,6 +117,7 @@ function SignUpForm() {
             onClick={handleGoogleSignUp}
             disabled={googleLoading}
             className="w-full flex items-center justify-center gap-3 rounded-lg border-2 border-black px-6 py-4 text-black hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-medium text-base bg-white cursor-pointer"
+            style={{ fontFamily: 'var(--font-manrope)' }}
           >
             {googleLoading ? (
               <>
@@ -146,7 +158,7 @@ function SignUpForm() {
 
         {/* Terms and Privacy */}
         <div className="mt-6 text-center">
-          <p className="text-sm text-black">
+          <p className="text-sm" style={{ color: '#2E2E2E', fontFamily: 'var(--font-nunito-sans)' }}>
             By clicking continue, you agree to our{' '}
             <Link href="/terms" className="underline cursor-pointer">Terms of Service</Link>
             {' '}and{' '}
