@@ -145,25 +145,6 @@ export default function Home() {
             >
               {loading ? 'Signing in...' : 'Get Started →'}
             </button>
-            <button className="bg-[#B2EBF2] text-[#2E2E2E] border-2 border-[#2E2E2E]/10 hover:bg-[#80DEEA] transition-all px-8 py-4 rounded-lg font-bold text-lg shadow-[0_4px_6px_rgba(0,0,0,0.1)]">
-              Try It Free
-            </button>
-          </div>
-
-          {/* Trust Indicators */}
-          <div className="flex flex-wrap items-center gap-6 text-sm text-[#2E2E2E] opacity-80">
-            <div className="flex items-center gap-2">
-              <span className="text-lg">✓</span>
-              <span>Free Forever</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-lg">✓</span>
-              <span>No Credit Card</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-lg">✓</span>
-              <span>Setup in 2 Minutes</span>
-            </div>
           </div>
 
           {/* Product Preview - Notebook Style */}
