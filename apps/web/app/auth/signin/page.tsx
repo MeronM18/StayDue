@@ -139,7 +139,7 @@ function SignInForm() {
       <div className="w-full max-w-md">
         {/* Back Button - Top Left */}
         <div className="mb-8">
-          <Link href="/" className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg bg-white text-black hover:bg-gray-50 transition-colors">
+          <Link href="/" className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg bg-white text-black hover:bg-gray-50 transition-colors cursor-pointer">
             <span>&lt;</span> Back
           </Link>
         </div>
@@ -155,7 +155,7 @@ function SignInForm() {
           <button
             onClick={handleGoogleSignIn}
             disabled={googleLoading || loading}
-            className="w-full flex items-center justify-center gap-3 rounded-lg border-2 border-black px-6 py-4 text-black hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-medium text-base bg-white"
+            className="w-full flex items-center justify-center gap-3 rounded-lg border-2 border-black px-6 py-4 text-black hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-medium text-base bg-white cursor-pointer"
           >
             {googleLoading ? (
               <>
@@ -196,7 +196,7 @@ function SignInForm() {
           <div className="mt-6 text-center">
             <p className="text-sm text-black">
               Don't have an account?{' '}
-              <Link href="/auth/signup" className="underline">Sign Up</Link>
+              <Link href="/auth/signup" className="underline cursor-pointer">Sign Up</Link>
             </p>
           </div>
         </div>

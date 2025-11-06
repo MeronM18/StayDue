@@ -86,7 +86,7 @@ function SignUpForm() {
       <div className="w-full max-w-md">
         {/* Login Link - Top Right */}
         <div className="flex justify-end mb-8">
-          <Link href="/auth/signin" className="text-black hover:text-gray-700 font-medium">
+          <Link href="/auth/signin" className="text-black hover:text-gray-700 font-medium cursor-pointer">
             Login
           </Link>
         </div>
@@ -105,7 +105,7 @@ function SignUpForm() {
           <button
             onClick={handleGoogleSignUp}
             disabled={googleLoading}
-            className="w-full flex items-center justify-center gap-3 rounded-lg border-2 border-black px-6 py-4 text-black hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-medium text-base bg-white"
+            className="w-full flex items-center justify-center gap-3 rounded-lg border-2 border-black px-6 py-4 text-black hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-medium text-base bg-white cursor-pointer"
           >
             {googleLoading ? (
               <>
@@ -148,9 +148,9 @@ function SignUpForm() {
         <div className="mt-6 text-center">
           <p className="text-sm text-black">
             By clicking continue, you agree to our{' '}
-            <Link href="/terms" className="underline">Terms of Service</Link>
+            <Link href="/terms" className="underline cursor-pointer">Terms of Service</Link>
             {' '}and{' '}
-            <Link href="/privacy" className="underline">Privacy Policy</Link>.
+            <Link href="/privacy" className="underline cursor-pointer">Privacy Policy</Link>.
           </p>
         </div>
       </div>
