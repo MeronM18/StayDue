@@ -136,20 +136,26 @@ function SignInForm() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-white px-4 py-16">
-      <div className="w-full max-w-md space-y-8">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold text-gray-900">Welcome Back</h1>
-          <p className="mt-2 text-gray-600">
-            Sign in to your StayDue account
-          </p>
+      <div className="w-full max-w-md">
+        {/* Back Button - Top Left */}
+        <div className="mb-8">
+          <Link href="/" className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg bg-white text-black hover:bg-gray-50 transition-colors">
+            <span>&lt;</span> Back
+          </Link>
         </div>
 
-        <div className="rounded-lg bg-white p-8 shadow-lg border border-gray-200">
-          {/* Continue with Google Button */}
+        {/* Main Content */}
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-black mb-8">Welcome back!</h1>
+        </div>
+
+        {/* Sign In Card */}
+        <div className="rounded-lg bg-white border border-gray-300 p-6">
+          {/* Sign In with Google Button */}
           <button
             onClick={handleGoogleSignIn}
             disabled={googleLoading || loading}
-            className="w-full flex items-center justify-center gap-3 rounded-md border-2 border-gray-300 px-4 py-3 text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+            className="w-full flex items-center justify-center gap-3 rounded-lg border-2 border-black px-6 py-4 text-black hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-medium text-base bg-white"
           >
             {googleLoading ? (
               <>
@@ -176,76 +182,21 @@ function SignInForm() {
                     d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                   />
                 </svg>
-                <span>Continue with Google</span>
+                <span>Sign In with Google</span>
               </>
             )}
           </button>
 
-          <div className="my-6 flex items-center">
-            <div className="flex-1 border-t border-gray-300"></div>
-            <span className="px-4 text-sm text-gray-500">or</span>
-            <div className="flex-1 border-t border-gray-300"></div>
-          </div>
-
-          {/* Email/Password Form */}
-          <form onSubmit={handleEmailSignIn} className="space-y-4">
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                Email
-              </label>
-              <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
-                className="w-full rounded-md border border-gray-300 px-4 py-3 text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
-                disabled={loading || googleLoading}
-              />
-              {errors.email && (
-                <p className="mt-1 text-sm text-red-600">{errors.email}</p>
-              )}
+          {errors.submit && (
+            <div className="mt-4 rounded-md bg-red-50 border border-red-200 p-3">
+              <p className="text-sm text-red-600 text-center">{errors.submit}</p>
             </div>
+          )}
 
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                Password
-              </label>
-              <input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter your password"
-                className="w-full rounded-md border border-gray-300 px-4 py-3 text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
-                disabled={loading || googleLoading}
-              />
-              {errors.password && (
-                <p className="mt-1 text-sm text-red-600">{errors.password}</p>
-              )}
-            </div>
-
-            {errors.submit && (
-              <div className="rounded-md bg-red-50 border border-red-200 p-3">
-                <p className="text-sm text-red-600">{errors.submit}</p>
-              </div>
-            )}
-
-            <button
-              type="submit"
-              disabled={loading || googleLoading}
-              className="w-full rounded-md bg-blue-600 px-4 py-3 text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
-            >
-              {loading ? 'Signing in...' : 'Sign In'}
-            </button>
-          </form>
-
-          <div className="mt-6 text-center text-sm">
-            <p className="text-gray-600">
+          <div className="mt-6 text-center">
+            <p className="text-sm text-black">
               Don't have an account?{' '}
-              <Link href="/auth/signup" className="text-blue-600 hover:text-blue-700 font-medium">
-                Sign up
-              </Link>
+              <Link href="/auth/signup" className="underline">Sign Up</Link>
             </p>
           </div>
         </div>

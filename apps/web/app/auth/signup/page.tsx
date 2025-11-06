@@ -4,7 +4,6 @@ import { createClient } from '@/lib/supabase/client'
 import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import Image from 'next/image'
 
 function SignUpForm() {
   const router = useRouter()
@@ -83,42 +82,30 @@ function SignUpForm() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 via-white to-indigo-50 px-4 py-16">
+    <div className="flex min-h-screen items-center justify-center bg-white px-4 py-16">
       <div className="w-full max-w-md">
-        {/* Logo and Branding */}
+        {/* Login Link - Top Right */}
+        <div className="flex justify-end mb-8">
+          <Link href="/auth/signin" className="text-black hover:text-gray-700 font-medium">
+            Login
+          </Link>
+        </div>
+
+        {/* Main Content */}
         <div className="text-center mb-8">
-          <div className="flex justify-center mb-4">
-            <Image 
-              src="/assets/stayduelogo.png" 
-              alt="StayDue Logo" 
-              width={80}
-              height={70}
-              className="h-auto w-auto"
-              priority
-            />
-          </div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">StayDue</h1>
-          <p className="text-lg text-gray-600">
-            Never miss a deadline again
+          <h1 className="text-4xl font-bold text-black mb-4">Create Account</h1>
+          <p className="text-lg text-black">
+            New to StayDue? Sign up with Google to get started
           </p>
         </div>
 
         {/* Sign Up Card */}
-        <div className="rounded-xl bg-white p-8 shadow-xl border border-gray-200">
-          <div className="text-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              Create Your Account
-            </h2>
-            <p className="text-gray-600">
-              Get started with StayDue today
-            </p>
-          </div>
-
-          {/* Continue with Google Button */}
+        <div className="rounded-lg bg-white border border-gray-300 p-6">
+          {/* Sign Up with Google Button */}
           <button
             onClick={handleGoogleSignUp}
             disabled={googleLoading}
-            className="w-full flex items-center justify-center gap-3 rounded-lg border-2 border-gray-300 px-6 py-4 text-gray-700 hover:bg-gray-50 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-semibold text-base shadow-sm hover:shadow-md"
+            className="w-full flex items-center justify-center gap-3 rounded-lg border-2 border-black px-6 py-4 text-black hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-medium text-base bg-white"
           >
             {googleLoading ? (
               <>
@@ -145,7 +132,7 @@ function SignUpForm() {
                     d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                   />
                 </svg>
-                <span>Continue with Google</span>
+                <span>Sign Up with Google</span>
               </>
             )}
           </button>
@@ -155,21 +142,15 @@ function SignUpForm() {
               <p className="text-sm text-red-600 text-center">{errors.submit}</p>
             </div>
           )}
-
-          <div className="mt-6 text-center text-sm">
-            <p className="text-gray-600">
-              Already have an account?{' '}
-              <Link href="/auth/signin" className="text-blue-600 hover:text-blue-700 font-medium">
-                Sign in
-              </Link>
-            </p>
-          </div>
         </div>
 
-        {/* Trust Indicators */}
-        <div className="mt-8 text-center">
-          <p className="text-xs text-gray-500">
-            By continuing, you agree to StayDue's Terms of Service and Privacy Policy
+        {/* Terms and Privacy */}
+        <div className="mt-6 text-center">
+          <p className="text-sm text-black">
+            By clicking continue, you agree to our{' '}
+            <Link href="/terms" className="underline">Terms of Service</Link>
+            {' '}and{' '}
+            <Link href="/privacy" className="underline">Privacy Policy</Link>.
           </p>
         </div>
       </div>
