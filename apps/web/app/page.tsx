@@ -137,11 +137,11 @@ export default function Home() {
           </div>
 
           {/* CTAs - Sticky Label Style */}
-          <div className="flex flex-col sm:flex-row gap-4 mb-8">
+          <div className="flex flex-col sm:flex-row gap-4 mb-8 justify-end">
             <button
               onClick={handleGetStarted}
               disabled={loading}
-              className="bg-[#FFF176] text-[#2E2E2E] hover:bg-[#FFEB3B] transition-all px-8 py-4 rounded-lg font-bold text-lg shadow-[0_4px_6px_rgba(0,0,0,0.1)] hover:shadow-[0_6px_8px_rgba(0,0,0,0.15)] hover:-translate-y-0.5 border-2 border-[#2E2E2E]/10 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-[#FFEB3B] text-[#2E2E2E] hover:bg-[#FFEB3B]/95 transition-all px-8 py-4 rounded-lg font-bold text-lg shadow-[0_4px_6px_rgba(0,0,0,0.1)] hover:shadow-[0_6px_8px_rgba(0,0,0,0.15)] hover:-translate-y-0.5 border-2 border-[#2E2E2E]/10 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? 'Signing in...' : 'Get Started →'}
             </button>
@@ -158,7 +158,7 @@ export default function Home() {
                 <div className="bg-[#FAFAF5] border border-[#2E2E2E]/10 rounded p-3">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm font-medium text-[#2E2E2E]">CS 101 Assignment</span>
-                    <span className="text-xs text-[#2E2E2E] opacity-70 bg-[#FFF176]/30 px-2 py-1 rounded">Due Tomorrow</span>
+                    <span className="text-xs text-[#2E2E2E] opacity-70 bg-[#FFEB3B]/30 px-2 py-1 rounded">Due Tomorrow</span>
                   </div>
                   <CourseTag course="Computer Science" />
                 </div>
@@ -384,7 +384,7 @@ export default function Home() {
                   <span className="text-[#2E2E2E] opacity-80">Basic reminders</span>
                 </li>
               </ul>
-              <button className="w-full bg-[#FFF176] text-[#2E2E2E] hover:bg-[#FFEB3B] transition-colors py-3 rounded-lg font-bold border-2 border-[#2E2E2E]/10">
+              <button className="w-full bg-[#FFEB3B] text-[#2E2E2E] hover:bg-[#FFEB3B]/95 transition-colors py-3 rounded-lg font-bold border-2 border-[#2E2E2E]/10">
                 Get Started
               </button>
             </NoteCard>
@@ -514,7 +514,7 @@ export default function Home() {
                 "The Google Calendar sync is a game-changer. Everything is in one place now and I can see my assignments on my phone calendar. So convenient!"
               </p>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-[#FFF176] rounded-full flex items-center justify-center text-[#2E2E2E] font-bold border-2 border-[#2E2E2E]/20">
+                <div className="w-10 h-10 bg-[#FFEB3B] rounded-full flex items-center justify-center text-[#2E2E2E] font-bold border-2 border-[#2E2E2E]/20">
                   JK
                 </div>
                 <div>
@@ -607,7 +607,7 @@ export default function Home() {
           <button
               onClick={handleGetStarted}
             disabled={loading}
-              className="bg-[#FFF176] text-[#2E2E2E] hover:bg-[#FFEB3B] transition-all px-8 py-4 rounded-lg font-bold text-lg shadow-[0_4px_6px_rgba(0,0,0,0.1)] hover:shadow-[0_6px_8px_rgba(0,0,0,0.15)] hover:-translate-y-0.5 border-2 border-[#2E2E2E]/10 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-[#FFEB3B] text-[#2E2E2E] hover:bg-[#FFEB3B]/95 transition-all px-8 py-4 rounded-lg font-bold text-lg shadow-[0_4px_6px_rgba(0,0,0,0.1)] hover:shadow-[0_6px_8px_rgba(0,0,0,0.15)] hover:-translate-y-0.5 border-2 border-[#2E2E2E]/10 disabled:opacity-50 disabled:cursor-not-allowed"
           >
               {loading ? 'Signing in...' : 'Get Started Free →'}
           </button>

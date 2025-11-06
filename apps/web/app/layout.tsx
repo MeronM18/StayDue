@@ -22,8 +22,11 @@ export const metadata: Metadata = {
   description: "The student task management platform that keeps you organized. Sync with Google Calendar, upload syllabi, and stay on top of every assignment. Free forever.",
   keywords: ["student task management", "assignment tracker", "due date reminder", "calendar sync", "syllabus upload", "student organizer"],
   icons: {
-    icon: "/icon.png",
-    apple: "/icon.png",
+    icon: [
+      { url: '/assets/stayduelogo.png', sizes: 'any' },
+      { url: '/assets/stayduelogo.png', type: 'image/png' },
+    ],
+    apple: '/assets/stayduelogo.png',
   },
   openGraph: {
     title: "StayDue - Never Miss a Due Date Again",
