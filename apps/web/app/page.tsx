@@ -137,7 +137,7 @@ export default function Home() {
           </div>
 
           {/* CTAs - Sticky Label Style */}
-          <div className="flex flex-col sm:flex-row gap-4 mb-8 justify-center">
+          <div className="flex flex-col sm:flex-row gap-4 mb-8">
             <button
               onClick={handleGetStarted}
               disabled={loading}
