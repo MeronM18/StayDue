@@ -28,36 +28,47 @@ export async function GET(request: NextRequest) {
 
     const trimmedQuery = query.trim()
     const apiUrl = `https://universities.hipolabs.com/search?name=${encodeURIComponent(trimmedQuery)}`
+    
+    console.log(`[Universities API] Fetching: ${apiUrl}`)
 
     // Fetch with timeout
-    const response = await fetchWithTimeout(
-      apiUrl,
-      {
-        headers: {
-          'Accept': 'application/json',
-          'User-Agent': 'StayDue/1.0',
+    let response: Response
+    try {
+      response = await fetchWithTimeout(
+        apiUrl,
+        {
+          headers: {
+            'Accept': 'application/json',
+          },
+          cache: 'no-store',
         },
-        // Add cache control
-        cache: 'no-store',
-      },
-      8000 // 8 second timeout
-    )
-
-    if (!response.ok) {
-      console.error(`University API returned ${response.status} for query: ${trimmedQuery}`)
-      return NextResponse.json(
-        { error: `API error: ${response.status}`, suggestions: [] },
-        { status: 200 } // Return 200 with empty suggestions instead of error
+        8000 // 8 second timeout
       )
+    } catch (fetchError: any) {
+      console.error(`[Universities API] Fetch error for "${trimmedQuery}":`, fetchError.message)
+      return NextResponse.json([])
     }
 
-    const data = await response.json()
+    if (!response.ok) {
+      console.error(`[Universities API] HTTP ${response.status} for query: ${trimmedQuery}`)
+      return NextResponse.json([])
+    }
+
+    let data: any
+    try {
+      data = await response.json()
+    } catch (parseError) {
+      console.error(`[Universities API] JSON parse error for "${trimmedQuery}":`, parseError)
+      return NextResponse.json([])
+    }
 
     // Ensure data is an array
     if (!Array.isArray(data)) {
-      console.error('University API returned non-array data:', typeof data)
-      return NextResponse.json([]) // Return empty array instead of error
+      console.error(`[Universities API] Non-array response for "${trimmedQuery}":`, typeof data, data)
+      return NextResponse.json([])
     }
+
+    console.log(`[Universities API] Found ${data.length} results for "${trimmedQuery}"`)
 
     // Filter and format the results
     const suggestions = data
@@ -67,6 +78,8 @@ export async function GET(request: NextRequest) {
         name: uni.name.trim(),
         country: (uni.country || '').trim(),
       }))
+
+    console.log(`[Universities API] Returning ${suggestions.length} formatted suggestions for "${trimmedQuery}"`)
 
     return NextResponse.json(suggestions, {
       headers: {
