@@ -4,14 +4,14 @@ import Link from 'next/link'
 export const dynamic = 'force-dynamic'
 
 interface PageProps {
-  searchParams: {
+  searchParams: Promise<{
     error?: string
     description?: string
-  }
+  }>
 }
 
-export default function AuthCodeError({ searchParams }: PageProps) {
-  const { error, description } = searchParams
+export default async function AuthCodeError({ searchParams }: PageProps) {
+  const { error, description } = await searchParams
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
