@@ -338,15 +338,7 @@ export default function OnboardingPage() {
 
   const renderWelcomeScreen = () => {
     return (
-      <div 
-        className="flex flex-col items-center justify-center min-h-screen px-4 py-16"
-        style={{
-          backgroundImage: 'url(/welcomescreenbackground.jpg)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-        }}
-      >
+      <div className="flex flex-col items-center justify-center min-h-screen px-4 py-16">
         <div className="w-full max-w-lg mx-auto">
           {/* Welcome Card */}
           <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8 text-center border border-gray-200">
