@@ -8,18 +8,20 @@ import Image from 'next/image'
 
 type AcademicGoal = 
   | 'maintain_gpa'
-  | 'improve_gpa'
+  | 'improve_grades'
   | 'graduate_on_time'
-  | 'get_into_grad_school'
   | 'land_internship'
+  | 'get_into_grad_school'
+  | 'stay_organized'
   | 'other'
 
 const ACADEMIC_GOALS: { value: AcademicGoal; label: string }[] = [
   { value: 'maintain_gpa', label: 'Maintain my current GPA' },
-  { value: 'improve_gpa', label: 'Improve my GPA' },
+  { value: 'improve_grades', label: 'Improve my grades' },
   { value: 'graduate_on_time', label: 'Graduate on time' },
-  { value: 'get_into_grad_school', label: 'Get into grad school' },
   { value: 'land_internship', label: 'Land an internship' },
+  { value: 'get_into_grad_school', label: 'Get into grad school' },
+  { value: 'stay_organized', label: 'Stay organized and consistent' },
   { value: 'other', label: 'Other' },
 ]
 
@@ -50,6 +52,7 @@ export default function OnboardingPage() {
   const [checkingAuth, setCheckingAuth] = useState(true)
   const [step, setStep] = useState(0) // 0 = welcome screen, 1-5 = questions
   const [showCompletionScreen, setShowCompletionScreen] = useState(false)
+  const [isTransitioning, setIsTransitioning] = useState(false)
   
   const [formData, setFormData] = useState({
     collegeUniversity: '',
@@ -63,7 +66,7 @@ export default function OnboardingPage() {
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [imagesLoaded, setImagesLoaded] = useState(false)
 
-  // Preload all images to avoid delay when switching
+  // Preload all images to avoid delay when switching - ensure they're fully cached
   useEffect(() => {
     let loadedCount = 0
     const totalImages = QUESTION_IMAGES.length
@@ -82,7 +85,14 @@ export default function OnboardingPage() {
           setImagesLoaded(true)
         }
       }
+      // Force cache by loading image
       img.src = src
+      // Also preload via link preload for better caching
+      const link = document.createElement('link')
+      link.rel = 'preload'
+      link.as = 'image'
+      link.href = src
+      document.head.appendChild(link)
     })
   }, [])
 
@@ -104,6 +114,14 @@ export default function OnboardingPage() {
         }
         50% {
           transform: perspective(500px) rotateX(-5deg) scale(1.05);
+        }
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
         }
       }
     `
@@ -204,8 +222,16 @@ export default function OnboardingPage() {
 
   const handleNext = () => {
     if (step === 0) {
-      // Welcome screen - just move to first question
-      setStep(1)
+      // Welcome screen - smooth transition to first question
+      setIsTransitioning(true)
+      // Start fading out welcome, then fade in question
+      setTimeout(() => {
+        setStep(1)
+        // Reset transition after question appears
+        setTimeout(() => {
+          setIsTransitioning(false)
+        }, 50)
+      }, 300) // 300ms fade transition
       return
     }
 
@@ -338,7 +364,10 @@ export default function OnboardingPage() {
 
   const renderWelcomeScreen = () => {
     return (
-      <div className="flex flex-col items-center justify-center h-screen" style={{ backgroundColor: '#c0d6e1', width: '100%', margin: 0, padding: 0 }}>
+      <div 
+        className={`flex flex-col items-center justify-center h-screen transition-opacity duration-300 ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}
+        style={{ backgroundColor: '#c0d6e1', width: '100%', margin: 0, padding: 0 }}
+      >
         <div className="w-full max-w-lg mx-auto px-4">
           {/* Welcome Card */}
           <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8 text-center border border-gray-200">
@@ -438,7 +467,7 @@ export default function OnboardingPage() {
     const imageBgColor = IMAGE_BG_COLORS[questionNumber - 1]
 
     return (
-      <div className="w-full max-w-2xl mx-auto pt-[113px]">
+      <div className={`w-full max-w-2xl mx-auto pt-[113px] transition-opacity duration-300 ease-in-out`} style={{ opacity: step === 1 && isTransitioning ? 0 : 1 }}>
         {/* Progress Bar */}
         {renderProgressBar()}
 
@@ -460,6 +489,7 @@ export default function OnboardingPage() {
                 className="object-contain"
                 priority
                 unoptimized
+                loading="eager"
               />
             </div>
           </div>
