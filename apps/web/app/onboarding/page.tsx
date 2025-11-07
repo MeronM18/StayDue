@@ -65,7 +65,8 @@ export default function OnboardingPage() {
 
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [imagesLoaded, setImagesLoaded] = useState(false)
-  const [collegeSuggestions, setCollegeSuggestions] = useState<Array<{ name: string; country: string }>>([])
+  const [collegeSuggestions, setCollegeSuggestions] = useState<Array<{ name: string; country: string; stateProvince: string }>>([])
+  const [selectedCollege, setSelectedCollege] = useState<string>('')
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [searchingColleges, setSearchingColleges] = useState(false)
 
@@ -256,6 +257,7 @@ export default function OnboardingPage() {
     if (step !== 1) {
       setShowSuggestions(false)
       setCollegeSuggestions([])
+      setSelectedCollege('')
     }
   }, [step])
 
@@ -635,12 +637,20 @@ export default function OnboardingPage() {
                 type="text"
                 value={formData.collegeUniversity}
                 onChange={(e) => {
-                  setFormData({ ...formData, collegeUniversity: e.target.value })
-                  // Don't show suggestions until API returns results
+                  const newValue = e.target.value
+                  setFormData({ ...formData, collegeUniversity: newValue })
+                  // If user is typing/deleting and value doesn't match selected college, clear selection
+                  if (newValue !== selectedCollege) {
+                    setSelectedCollege('')
+                    // Show suggestions if we have them and user is actively typing
+                    if (collegeSuggestions.length > 0 && newValue.length > 0) {
+                      setShowSuggestions(true)
+                    }
+                  }
                 }}
                 onFocus={() => {
-                  // Show suggestions if we have them
-                  if (collegeSuggestions.length > 0) {
+                  // Only show suggestions if input doesn't match selected college
+                  if (collegeSuggestions.length > 0 && formData.collegeUniversity !== selectedCollege) {
                     setShowSuggestions(true)
                   }
                 }}
@@ -657,7 +667,7 @@ export default function OnboardingPage() {
                   <div className="w-5 h-5 border-2 border-[#5aa9e6] border-t-transparent rounded-full animate-spin"></div>
                 </div>
               )}
-              {showSuggestions && collegeSuggestions.length > 0 && (
+              {showSuggestions && collegeSuggestions.length > 0 && formData.collegeUniversity !== selectedCollege && (
                 <div className="absolute z-50 w-full mt-2 bg-white border-2 border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
                   {collegeSuggestions.map((college, index) => (
                     <button
@@ -665,15 +675,16 @@ export default function OnboardingPage() {
                       type="button"
                       onClick={() => {
                         setFormData({ ...formData, collegeUniversity: college.name })
+                        setSelectedCollege(college.name)
                         setShowSuggestions(false)
                       }}
                       className="w-full text-left px-6 py-3 hover:bg-[#5aa9e6]/10 transition-colors cursor-pointer border-b border-gray-100 last:border-b-0"
                       style={{ fontFamily: 'var(--font-nunito-sans)' }}
                     >
                       <div className="font-medium text-[#2E2E2E]">{college.name}</div>
-                      {college.country && (
-                        <div className="text-sm text-gray-500">{college.country}</div>
-                      )}
+                      <div className="text-sm text-gray-500">
+                        {[college.stateProvince, college.country].filter(Boolean).join(', ') || college.country}
+                      </div>
                     </button>
                   ))}
                 </div>

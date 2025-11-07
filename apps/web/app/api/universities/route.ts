@@ -110,6 +110,7 @@ export async function GET(request: NextRequest) {
       .map((uni: any) => ({
         name: uni.name.trim(),
         country: (uni.country || '').trim(),
+        stateProvince: (uni['state-province'] || '').trim(),
       }))
 
     console.log(`[Universities API] Returning ${suggestions.length} formatted suggestions for "${trimmedQuery}"`)
