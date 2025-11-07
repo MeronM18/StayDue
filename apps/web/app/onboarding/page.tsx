@@ -218,7 +218,7 @@ export default function OnboardingPage() {
           setShowCompletionScreen(true)
           setTimeout(() => {
             handleSubmit()
-          }, 3400) // Show completion screen for 3.4 seconds
+          }, 3000) // Show completion screen for 3 seconds
         }, 500) // Brief delay to show 100% progress
       }
     }
@@ -668,7 +668,7 @@ export default function OnboardingPage() {
   return (
     <div className="min-h-screen bg-[#FAFAF5]">
       {renderNavbar()}
-      <div className="px-4 py-8 md:py-16">
+      <div className={step === 0 ? '' : 'px-4 py-8 md:py-16'}>
         {step === 0 ? renderWelcomeScreen() : renderQuestion()}
       </div>
     </div>
