@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/client'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { DotLottieReact } from '@lottiefiles/dotlottie-react'
+import Image from 'next/image'
 
 type AcademicGoal = 
   | 'maintain_gpa'
@@ -23,6 +24,26 @@ const ACADEMIC_GOALS: { value: AcademicGoal; label: string }[] = [
 ]
 
 const TOTAL_STEPS = 6
+
+// Image mapping for each question
+const QUESTION_IMAGES = [
+  '/school.png',        // Question 1: College/University
+  '/graduation.png',    // Question 2: Major/Minors
+  '/study.png',         // Question 3: Study hours
+  '/schedule.png',      // Question 4: Academic goal
+  '/social-media.png',  // Question 5: Where heard about us
+  '/friends.png',       // Question 6: Invite code
+]
+
+// Background colors for image circles
+const IMAGE_BG_COLORS = [
+  '#E3F2FD', // Light blue for school
+  '#F3E5F5', // Light purple for graduation
+  '#E8F5E9', // Light green for study
+  '#FFF3E0', // Light orange for schedule
+  '#FCE4EC', // Light pink for social media
+  '#E0F2F1', // Light teal for friends
+]
 
 export default function OnboardingPage() {
   const router = useRouter()
@@ -98,6 +119,17 @@ export default function OnboardingPage() {
     checkAuthAndOnboarding()
   }, [router, supabase])
 
+  const handleSignOut = async () => {
+    try {
+      await supabase.auth.signOut()
+      router.push('/')
+      router.refresh()
+    } catch (error) {
+      console.error('Error signing out:', error)
+      router.push('/')
+    }
+  }
+
   const validateStep = (currentStep: number): boolean => {
     const newErrors: Record<string, string> = {}
 
@@ -157,7 +189,10 @@ export default function OnboardingPage() {
   }
 
   const handleBack = () => {
-    if (step > 1) {
+    if (step === 1) {
+      // On first question, go back to welcome screen
+      setStep(0)
+    } else if (step > 1) {
       setStep(step - 1)
     }
   }
@@ -217,15 +252,61 @@ export default function OnboardingPage() {
     }
   }
 
+  const renderNavbar = () => {
+    return (
+      <nav 
+        className="fixed top-0 z-[100] border-b border-[#E5E5E5] w-full" 
+        style={{ 
+          backgroundColor: '#F5F5F5', 
+          position: 'fixed', 
+          top: 0,
+          left: 0,
+          right: 0,
+          isolation: 'isolate',
+          boxShadow: '0 1px 0 0 #E5E5E5',
+          minHeight: '83px',
+        }}
+      >
+        <div className="max-w-7xl mx-auto px-6 lg:px-8" style={{ backgroundColor: '#F5F5F5' }}>
+          <div className="flex justify-between items-center" style={{ height: '83px' }}>
+            {/* Logo Section - Left */}
+            <button
+              onClick={handleSignOut}
+              className="flex items-center space-x-2 group cursor-pointer"
+            >
+              <Image 
+                src="/assets/stayduelogo.png" 
+                alt="StayDue Logo" 
+                width={54}
+                height={48}
+                className="h-12 w-auto"
+                priority
+              />
+              <span className="text-2xl font-bold text-[#000000]">StayDue</span>
+            </button>
+
+            {/* Sign Out Button - Right */}
+            <button
+              onClick={handleSignOut}
+              className="bg-[#2D2D32] text-white hover:bg-[#000000] hover:border-2 hover:border-white transition-all text-[15px] font-bold px-6 py-3 rounded-lg cursor-pointer border-2 border-transparent"
+            >
+              Sign Out
+            </button>
+          </div>
+        </div>
+      </nav>
+    )
+  }
+
   const renderWelcomeScreen = () => {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen px-4 py-16">
+      <div className="flex flex-col items-center justify-center min-h-screen px-4 py-16 pt-32">
         <div className="w-full max-w-lg mx-auto">
           {/* Welcome Card */}
           <div className="bg-white rounded-2xl shadow-lg p-8 md:p-10 text-center border border-gray-200">
-            {/* Lottie Animation */}
+            {/* Lottie Animation - Larger */}
             <div className="mb-6 flex justify-center">
-              <div className="w-32 h-32 flex items-center justify-center">
+              <div className="w-48 h-48 flex items-center justify-center">
                 <DotLottieReact
                   src="https://lottie.host/677e51fb-6ed7-4526-a891-c92fd7f479d8/qQUtWcswIA.lottie"
                   loop
@@ -247,7 +328,7 @@ export default function OnboardingPage() {
             {/* Start Button */}
             <button
               onClick={handleNext}
-              className="w-full bg-[#5aa9e6] hover:bg-[#4a99d6] text-white font-bold py-4 px-8 rounded-lg text-lg transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+              className="w-full bg-[#5aa9e6] hover:bg-[#4a99d6] text-white font-bold py-4 px-8 rounded-lg text-lg transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 cursor-pointer"
               style={{ fontFamily: 'var(--font-manrope)' }}
             >
               Get Started
@@ -260,15 +341,26 @@ export default function OnboardingPage() {
 
   const renderProgressBar = () => {
     const currentQuestion = step
-    const progress = (currentQuestion / TOTAL_STEPS) * 100
+    const progress = Math.round((currentQuestion / TOTAL_STEPS) * 100)
 
     return (
-      <div className="w-full mb-6">
-        <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+      <div className="w-full mb-8 flex items-center justify-between gap-4">
+        {/* Pill-shaped progress bar with question count */}
+        <div className="flex-1">
           <div 
-            className="h-full bg-[#FFEB3B] transition-all duration-300 ease-out rounded-full"
-            style={{ width: `${progress}%` }}
-          />
+            className="h-10 rounded-full px-6 flex items-center justify-center text-sm font-semibold text-white transition-all duration-300"
+            style={{ 
+              backgroundColor: '#5aa9e6',
+              fontFamily: 'var(--font-manrope)'
+            }}
+          >
+            QUESTION {currentQuestion} / {TOTAL_STEPS}
+          </div>
+        </div>
+        
+        {/* Percentage on the right */}
+        <div className="text-lg font-bold text-[#2E2E2E]" style={{ fontFamily: 'var(--font-manrope)' }}>
+          {progress}% Completed
         </div>
       </div>
     )
@@ -276,43 +368,52 @@ export default function OnboardingPage() {
 
   const renderQuestion = () => {
     const questionNumber = step
+    const questionImage = QUESTION_IMAGES[questionNumber - 1]
+    const imageBgColor = IMAGE_BG_COLORS[questionNumber - 1]
 
     return (
-      <div className="w-full max-w-3xl mx-auto">
+      <div className="w-full max-w-2xl mx-auto pt-32">
         {/* Progress Bar */}
         {renderProgressBar()}
 
-        {/* Question Header */}
-        <div className="text-center mb-8">
-          <div className="inline-block px-4 py-2 rounded-full bg-[#FFEB3B]/20 mb-4">
-            <span className="text-sm font-semibold text-[#2E2E2E]" style={{ fontFamily: 'var(--font-manrope)' }}>
-              QUESTION {questionNumber} / {TOTAL_STEPS}
-            </span>
+        {/* Question Content - Centered and more square */}
+        <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12 border border-gray-200">
+          {/* Image with circular background */}
+          <div className="flex justify-center mb-8">
+            <div 
+              className="w-32 h-32 rounded-full flex items-center justify-center p-6"
+              style={{ backgroundColor: imageBgColor }}
+            >
+              <Image
+                src={questionImage}
+                alt={`Question ${questionNumber} illustration`}
+                width={80}
+                height={80}
+                className="object-contain"
+              />
+            </div>
           </div>
-        </div>
 
-        {/* Question Content */}
-        <div className="bg-white rounded-2xl shadow-lg p-8 md:p-10 border border-gray-200">
           {renderStepContent()}
 
           {/* Navigation Buttons */}
-          <div className="mt-10 flex justify-between items-center">
+          <div className="mt-10 flex justify-between items-center gap-4">
             <button
               onClick={handleBack}
-              disabled={step === 1 || loading}
-              className="flex items-center gap-2 px-6 py-3 rounded-lg border-2 border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium"
+              disabled={loading}
+              className="flex items-center gap-2 px-6 py-3 rounded-lg border-2 border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium cursor-pointer"
               style={{ fontFamily: 'var(--font-manrope)' }}
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
-              Previous
+              Back
             </button>
 
             <button
               onClick={handleNext}
               disabled={loading}
-              className="flex items-center gap-2 px-8 py-3 rounded-lg bg-[#5aa9e6] hover:bg-[#4a99d6] text-white font-bold transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center gap-2 px-8 py-3 rounded-lg bg-[#5aa9e6] hover:bg-[#4a99d6] text-white font-bold transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
               style={{ fontFamily: 'var(--font-manrope)' }}
             >
               {loading ? (
@@ -321,7 +422,7 @@ export default function OnboardingPage() {
                 'Complete'
               ) : (
                 <>
-                  Next Question
+                  Next
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
@@ -346,7 +447,7 @@ export default function OnboardingPage() {
               type="text"
               value={formData.collegeUniversity}
               onChange={(e) => setFormData({ ...formData, collegeUniversity: e.target.value })}
-              placeholder="e.g., University of California, Berkeley"
+              placeholder="Search for your school please"
               className="w-full rounded-lg border-2 border-gray-300 px-6 py-4 text-lg text-[#2E2E2E] focus:border-[#5aa9e6] focus:outline-none transition-colors"
               style={{ fontFamily: 'var(--font-nunito-sans)' }}
             />
@@ -419,7 +520,7 @@ export default function OnboardingPage() {
                     value={goal.value}
                     checked={formData.mainAcademicGoal === goal.value}
                     onChange={(e) => setFormData({ ...formData, mainAcademicGoal: e.target.value as AcademicGoal })}
-                    className="h-5 w-5 text-[#5aa9e6] focus:ring-[#5aa9e6] mr-4"
+                    className="h-5 w-5 text-[#5aa9e6] focus:ring-[#5aa9e6] mr-4 cursor-pointer"
                   />
                   <span className="text-lg text-[#2E2E2E]" style={{ fontFamily: 'var(--font-nunito-sans)' }}>
                     {goal.label}
@@ -506,8 +607,11 @@ export default function OnboardingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FAFAF5] px-4 py-8 md:py-16">
-      {step === 0 ? renderWelcomeScreen() : renderQuestion()}
+    <div className="min-h-screen bg-[#FAFAF5]">
+      {renderNavbar()}
+      <div className="px-4 py-8 md:py-16">
+        {step === 0 ? renderWelcomeScreen() : renderQuestion()}
+      </div>
     </div>
   )
 }
