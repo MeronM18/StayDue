@@ -412,11 +412,14 @@ export default function OnboardingPage() {
             </h1>
           </div>
           
-          {/* Loading Animation */}
+          {/* Loading Animation - Lottie */}
           <div className="flex justify-center mb-6">
-            <div className="relative">
-              <div className="w-16 h-16 border-4 border-[#5aa9e6] border-t-transparent rounded-full animate-spin"></div>
-              <div className="absolute inset-0 w-16 h-16 border-4 border-[#FFEB3B] border-r-transparent rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}></div>
+            <div className="w-32 h-32 flex items-center justify-center">
+              <DotLottieReact
+                src="https://lottie.host/041e37c8-795b-4ef5-b9c8-c87f071800d9/QWR1KQRuY6.lottie"
+                loop
+                autoplay
+              />
             </div>
           </div>
           
