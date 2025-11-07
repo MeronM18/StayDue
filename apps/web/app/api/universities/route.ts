@@ -27,52 +27,65 @@ export async function GET(request: NextRequest) {
     }
 
     const trimmedQuery = query.trim()
+    // API endpoint - try both http and https
     const apiUrl = `https://universities.hipolabs.com/search?name=${encodeURIComponent(trimmedQuery)}`
     
     console.log(`[Universities API] Fetching: ${apiUrl}`)
 
-    // Fetch with timeout
+    // Fetch with timeout - use http instead of https as per API docs
     let response: Response
     try {
       response = await fetchWithTimeout(
         apiUrl,
         {
+          method: 'GET',
           headers: {
             'Accept': 'application/json',
+            'Content-Type': 'application/json',
           },
           cache: 'no-store',
         },
-        8000 // 8 second timeout
+        10000 // 10 second timeout
       )
     } catch (fetchError: any) {
-      console.error(`[Universities API] Fetch error for "${trimmedQuery}":`, fetchError.message)
+      console.error(`[Universities API] Fetch error for "${trimmedQuery}":`, fetchError.message, fetchError.stack)
       return NextResponse.json([])
     }
 
+    console.log(`[Universities API] Response status: ${response.status} for "${trimmedQuery}"`)
+
     if (!response.ok) {
-      console.error(`[Universities API] HTTP ${response.status} for query: ${trimmedQuery}`)
+      const errorText = await response.text().catch(() => 'Unable to read error')
+      console.error(`[Universities API] HTTP ${response.status} for "${trimmedQuery}":`, errorText)
       return NextResponse.json([])
     }
 
     let data: any
     try {
-      data = await response.json()
-    } catch (parseError) {
-      console.error(`[Universities API] JSON parse error for "${trimmedQuery}":`, parseError)
+      const responseText = await response.text()
+      console.log(`[Universities API] Raw response length: ${responseText.length} chars`)
+      data = JSON.parse(responseText)
+    } catch (parseError: any) {
+      console.error(`[Universities API] JSON parse error for "${trimmedQuery}":`, parseError.message)
       return NextResponse.json([])
     }
 
     // Ensure data is an array
     if (!Array.isArray(data)) {
-      console.error(`[Universities API] Non-array response for "${trimmedQuery}":`, typeof data, data)
+      console.error(`[Universities API] Non-array response for "${trimmedQuery}":`, typeof data, JSON.stringify(data).substring(0, 200))
       return NextResponse.json([])
     }
 
-    console.log(`[Universities API] Found ${data.length} results for "${trimmedQuery}"`)
+    console.log(`[Universities API] Found ${data.length} raw results for "${trimmedQuery}"`)
 
-    // Filter and format the results
+    // Filter and format the results - be less strict with filtering
     const suggestions = data
-      .filter((uni: any) => uni && uni.name && typeof uni.name === 'string')
+      .filter((uni: any) => {
+        // More lenient filtering
+        if (!uni) return false
+        if (!uni.name) return false
+        return typeof uni.name === 'string' && uni.name.trim().length > 0
+      })
       .slice(0, 5)
       .map((uni: any) => ({
         name: uni.name.trim(),
