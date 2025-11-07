@@ -27,28 +27,48 @@ export async function GET(request: NextRequest) {
     }
 
     const trimmedQuery = query.trim()
-    // API endpoint - try both http and https
-    const apiUrl = `https://universities.hipolabs.com/search?name=${encodeURIComponent(trimmedQuery)}`
+    // Try HTTPS first, fallback to HTTP if needed
+    const apiUrls = [
+      `https://universities.hipolabs.com/search?name=${encodeURIComponent(trimmedQuery)}`,
+      `http://universities.hipolabs.com/search?name=${encodeURIComponent(trimmedQuery)}`,
+    ]
     
-    console.log(`[Universities API] Fetching: ${apiUrl}`)
+    let response: Response | null = null
+    let lastError: any = null
 
-    // Fetch with timeout - use http instead of https as per API docs
-    let response: Response
-    try {
-      response = await fetchWithTimeout(
-        apiUrl,
-        {
-          method: 'GET',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
+    // Try both URLs
+    for (const apiUrl of apiUrls) {
+      console.log(`[Universities API] Trying: ${apiUrl}`)
+      try {
+        response = await fetchWithTimeout(
+          apiUrl,
+          {
+            method: 'GET',
+            headers: {
+              'Accept': 'application/json',
+            },
+            cache: 'no-store',
           },
-          cache: 'no-store',
-        },
-        10000 // 10 second timeout
-      )
-    } catch (fetchError: any) {
-      console.error(`[Universities API] Fetch error for "${trimmedQuery}":`, fetchError.message, fetchError.stack)
+          10000 // 10 second timeout
+        )
+        
+        if (response.ok) {
+          console.log(`[Universities API] Success with: ${apiUrl}`)
+          break
+        } else {
+          console.log(`[Universities API] ${apiUrl} returned ${response.status}, trying next...`)
+          response = null
+        }
+      } catch (fetchError: any) {
+        console.log(`[Universities API] Error with ${apiUrl}:`, fetchError.message)
+        lastError = fetchError
+        response = null
+        continue
+      }
+    }
+
+    if (!response) {
+      console.error(`[Universities API] All URLs failed for "${trimmedQuery}". Last error:`, lastError?.message)
       return NextResponse.json([])
     }
 
