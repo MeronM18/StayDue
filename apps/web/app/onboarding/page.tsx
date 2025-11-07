@@ -61,11 +61,27 @@ export default function OnboardingPage() {
   })
 
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [imagesLoaded, setImagesLoaded] = useState(false)
 
   // Preload all images to avoid delay when switching
   useEffect(() => {
+    let loadedCount = 0
+    const totalImages = QUESTION_IMAGES.length
+
     QUESTION_IMAGES.forEach((src) => {
       const img = new window.Image()
+      img.onload = () => {
+        loadedCount++
+        if (loadedCount === totalImages) {
+          setImagesLoaded(true)
+        }
+      }
+      img.onerror = () => {
+        loadedCount++
+        if (loadedCount === totalImages) {
+          setImagesLoaded(true)
+        }
+      }
       img.src = src
     })
   }, [])
@@ -446,16 +462,19 @@ export default function OnboardingPage() {
           {/* Image with circular background - preloaded */}
           <div className="flex justify-center mb-8">
             <div 
-              className="w-32 h-32 rounded-full flex items-center justify-center p-6 transition-colors duration-200"
+              key={`question-${questionNumber}`}
+              className="w-32 h-32 rounded-full flex items-center justify-center p-6"
               style={{ backgroundColor: imageBgColor }}
             >
               <Image
+                key={`img-${questionNumber}`}
                 src={questionImage}
                 alt={`Question ${questionNumber} illustration`}
                 width={80}
                 height={80}
                 className="object-contain"
                 priority
+                unoptimized
               />
             </div>
           </div>
