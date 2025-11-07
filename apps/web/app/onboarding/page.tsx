@@ -65,6 +65,9 @@ export default function OnboardingPage() {
 
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [imagesLoaded, setImagesLoaded] = useState(false)
+  const [collegeSuggestions, setCollegeSuggestions] = useState<Array<{ name: string; country: string }>>([])
+  const [showSuggestions, setShowSuggestions] = useState(false)
+  const [searchingColleges, setSearchingColleges] = useState(false)
 
   // Preload all images to avoid delay when switching - ensure they're fully cached
   useEffect(() => {
@@ -177,6 +180,51 @@ export default function OnboardingPage() {
       router.push('/')
     }
   }
+
+  // Debounced search for colleges
+  useEffect(() => {
+    const searchColleges = async (query: string) => {
+      if (query.trim().length < 2) {
+        setCollegeSuggestions([])
+        setShowSuggestions(false)
+        return
+      }
+
+      setSearchingColleges(true)
+      try {
+        const response = await fetch(`https://universities.hipolabs.com/search?name=${encodeURIComponent(query)}`)
+        const data = await response.json()
+        // Limit to top 10 results and format
+        const suggestions = data.slice(0, 10).map((uni: any) => ({
+          name: uni.name,
+          country: uni.country || ''
+        }))
+        setCollegeSuggestions(suggestions)
+        setShowSuggestions(true)
+      } catch (error) {
+        console.error('Error fetching colleges:', error)
+        setCollegeSuggestions([])
+      } finally {
+        setSearchingColleges(false)
+      }
+    }
+
+    const timeoutId = setTimeout(() => {
+      if (step === 1 && formData.collegeUniversity) {
+        searchColleges(formData.collegeUniversity)
+      }
+    }, 300) // 300ms debounce
+
+    return () => clearTimeout(timeoutId)
+  }, [formData.collegeUniversity, step])
+
+  // Hide suggestions when not on question 1
+  useEffect(() => {
+    if (step !== 1) {
+      setShowSuggestions(false)
+      setCollegeSuggestions([])
+    }
+  }, [step])
 
   const validateStep = (currentStep: number): boolean => {
     const newErrors: Record<string, string> = {}
@@ -543,14 +591,54 @@ export default function OnboardingPage() {
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-8" style={{ color: '#2E2E2E', fontFamily: 'var(--font-manrope)' }}>
               What college or university do you attend?
             </h2>
-            <input
-              type="text"
-              value={formData.collegeUniversity}
-              onChange={(e) => setFormData({ ...formData, collegeUniversity: e.target.value })}
-              placeholder="Search for your school"
-              className="w-full rounded-lg border-2 border-gray-300 px-6 py-4 text-lg text-[#2E2E2E] focus:border-[#5aa9e6] focus:outline-none transition-colors"
-              style={{ fontFamily: 'var(--font-nunito-sans)' }}
-            />
+            <div className="relative">
+              <input
+                type="text"
+                value={formData.collegeUniversity}
+                onChange={(e) => {
+                  setFormData({ ...formData, collegeUniversity: e.target.value })
+                  setShowSuggestions(true)
+                }}
+                onFocus={() => {
+                  if (collegeSuggestions.length > 0) {
+                    setShowSuggestions(true)
+                  }
+                }}
+                onBlur={() => {
+                  // Delay to allow click on suggestion
+                  setTimeout(() => setShowSuggestions(false), 200)
+                }}
+                placeholder="Search for your school"
+                className="w-full rounded-lg border-2 border-gray-300 px-6 py-4 text-lg text-[#2E2E2E] focus:border-[#5aa9e6] focus:outline-none transition-colors"
+                style={{ fontFamily: 'var(--font-nunito-sans)' }}
+              />
+              {searchingColleges && (
+                <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
+                  <div className="w-5 h-5 border-2 border-[#5aa9e6] border-t-transparent rounded-full animate-spin"></div>
+                </div>
+              )}
+              {showSuggestions && collegeSuggestions.length > 0 && (
+                <div className="absolute z-50 w-full mt-2 bg-white border-2 border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                  {collegeSuggestions.map((college, index) => (
+                    <button
+                      key={index}
+                      type="button"
+                      onClick={() => {
+                        setFormData({ ...formData, collegeUniversity: college.name })
+                        setShowSuggestions(false)
+                      }}
+                      className="w-full text-left px-6 py-3 hover:bg-[#5aa9e6]/10 transition-colors cursor-pointer border-b border-gray-100 last:border-b-0"
+                      style={{ fontFamily: 'var(--font-nunito-sans)' }}
+                    >
+                      <div className="font-medium text-[#2E2E2E]">{college.name}</div>
+                      {college.country && (
+                        <div className="text-sm text-gray-500">{college.country}</div>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
             {errors.collegeUniversity && (
               <p className="text-sm text-red-600 mt-2">{errors.collegeUniversity}</p>
             )}
