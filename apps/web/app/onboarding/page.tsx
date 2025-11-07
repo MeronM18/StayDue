@@ -23,7 +23,7 @@ const ACADEMIC_GOALS: { value: AcademicGoal; label: string }[] = [
   { value: 'other', label: 'Other' },
 ]
 
-const TOTAL_STEPS = 6
+const TOTAL_STEPS = 5
 
 // Image mapping for each question
 const QUESTION_IMAGES = [
@@ -32,7 +32,6 @@ const QUESTION_IMAGES = [
   '/study.png',         // Question 3: Study hours
   '/schedule.png',      // Question 4: Academic goal
   '/social-media.png',  // Question 5: Where heard about us
-  '/friends.png',       // Question 6: Invite code
 ]
 
 // Background colors for image circles
@@ -42,7 +41,6 @@ const IMAGE_BG_COLORS = [
   '#E8F5E9', // Light green for study
   '#FFF3E0', // Light orange for schedule
   '#FCE4EC', // Light pink for social media
-  '#E0F2F1', // Light teal for friends
 ]
 
 export default function OnboardingPage() {
@@ -50,7 +48,7 @@ export default function OnboardingPage() {
   const supabase = createClient()
   const [loading, setLoading] = useState(false)
   const [checkingAuth, setCheckingAuth] = useState(true)
-  const [step, setStep] = useState(0) // 0 = welcome screen, 1-6 = questions
+  const [step, setStep] = useState(0) // 0 = welcome screen, 1-5 = questions
   
   const [formData, setFormData] = useState({
     collegeUniversity: '',
@@ -59,7 +57,6 @@ export default function OnboardingPage() {
     mainAcademicGoal: '' as AcademicGoal | '',
     otherGoal: '',
     whereHeardAboutUs: '',
-    inviteCode: '',
   })
 
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -221,8 +218,6 @@ export default function OnboardingPage() {
           study_hours_per_week: parseInt(formData.studyHoursPerWeek),
           main_academic_goal: goalValue,
           where_heard_about_us: formData.whereHeardAboutUs.trim(),
-          invite_code: formData.inviteCode.trim() || null,
-          used_invite_code: !!formData.inviteCode.trim(),
           onboarding_completed: true,
           updated_at: new Date().toISOString(),
         })
@@ -341,26 +336,27 @@ export default function OnboardingPage() {
 
   const renderProgressBar = () => {
     const currentQuestion = step
-    const progress = Math.round((currentQuestion / TOTAL_STEPS) * 100)
+    // Calculate progress based on questions answered (0% on Q1, 20% on Q2, etc.)
+    const progress = Math.round(((currentQuestion - 1) / TOTAL_STEPS) * 100)
 
     return (
-      <div className="w-full mb-8 flex items-center justify-between gap-4">
-        {/* Pill-shaped progress bar with question count */}
-        <div className="flex-1">
+      <div className="w-full mb-8">
+        {/* Full width progress bar */}
+        <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden mb-3">
           <div 
-            className="h-10 rounded-full px-6 flex items-center justify-center text-sm font-semibold text-white transition-all duration-300"
-            style={{ 
-              backgroundColor: '#5aa9e6',
-              fontFamily: 'var(--font-manrope)'
-            }}
-          >
-            QUESTION {currentQuestion} / {TOTAL_STEPS}
-          </div>
+            className="h-full bg-[#5aa9e6] transition-all duration-300 ease-out rounded-full"
+            style={{ width: `${progress}%` }}
+          />
         </div>
         
-        {/* Percentage on the right */}
-        <div className="text-lg font-bold text-[#2E2E2E]" style={{ fontFamily: 'var(--font-manrope)' }}>
-          {progress}% Completed
+        {/* Question count and percentage below progress bar */}
+        <div className="flex justify-between items-center">
+          <div className="text-sm font-semibold text-[#2E2E2E]" style={{ fontFamily: 'var(--font-manrope)' }}>
+            QUESTION {currentQuestion} / {TOTAL_STEPS}
+          </div>
+          <div className="text-sm font-bold text-[#2E2E2E]" style={{ fontFamily: 'var(--font-manrope)' }}>
+            {progress}% Completed
+          </div>
         </div>
       </div>
     )
@@ -447,7 +443,7 @@ export default function OnboardingPage() {
               type="text"
               value={formData.collegeUniversity}
               onChange={(e) => setFormData({ ...formData, collegeUniversity: e.target.value })}
-              placeholder="Search for your school please"
+              placeholder="search for your school"
               className="w-full rounded-lg border-2 border-gray-300 px-6 py-4 text-lg text-[#2E2E2E] focus:border-[#5aa9e6] focus:outline-none transition-colors"
               style={{ fontFamily: 'var(--font-nunito-sans)' }}
             />
@@ -566,26 +562,6 @@ export default function OnboardingPage() {
             {errors.whereHeardAboutUs && (
               <p className="text-sm text-red-600 mt-2">{errors.whereHeardAboutUs}</p>
             )}
-          </div>
-        )
-
-      case 6:
-        return (
-          <div className="space-y-6">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-8" style={{ color: '#2E2E2E', fontFamily: 'var(--font-manrope)' }}>
-              Do you have an invite code? (Optional)
-            </h2>
-            <input
-              type="text"
-              value={formData.inviteCode}
-              onChange={(e) => setFormData({ ...formData, inviteCode: e.target.value })}
-              placeholder="Enter invite code if you have one"
-              className="w-full rounded-lg border-2 border-gray-300 px-6 py-4 text-lg text-[#2E2E2E] focus:border-[#5aa9e6] focus:outline-none transition-colors"
-              style={{ fontFamily: 'var(--font-nunito-sans)' }}
-            />
-            <p className="text-sm text-gray-500 text-center mt-2" style={{ fontFamily: 'var(--font-nunito-sans)' }}>
-              Leave blank if you don't have one
-            </p>
           </div>
         )
 
