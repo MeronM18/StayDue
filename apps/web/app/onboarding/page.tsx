@@ -338,10 +338,18 @@ export default function OnboardingPage() {
 
   const renderWelcomeScreen = () => {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen px-4 py-16">
+      <div 
+        className="flex flex-col items-center justify-center min-h-screen px-4 py-16"
+        style={{
+          backgroundImage: 'url(/welcomescreenbackground.jpg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }}
+      >
         <div className="w-full max-w-lg mx-auto">
           {/* Welcome Card */}
-          <div className="bg-white rounded-2xl shadow-lg p-8 md:p-10 text-center border border-gray-200">
+          <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8 text-center border border-gray-200">
             {/* Lottie Animation - Larger */}
             <div className="mb-6 flex justify-center">
               <div className="w-56 h-56 flex items-center justify-center">
@@ -360,7 +368,7 @@ export default function OnboardingPage() {
 
             {/* Description */}
             <p className="text-base md:text-lg mb-8 leading-relaxed" style={{ color: '#2E2E2E', fontFamily: 'var(--font-nunito-sans)', opacity: 0.8 }}>
-              We're excited to help you stay organized and never miss a deadline! But first, so that we can build a perfect plan designed just for you, we have a few quick questions to ask you...
+              We're excited to help you stay organized! Let's personalize your experience with a few quick questions.
             </p>
 
             {/* Start Button */}
