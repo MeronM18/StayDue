@@ -453,7 +453,7 @@ export default function OnboardingPage() {
     const imageBgColor = IMAGE_BG_COLORS[questionNumber - 1]
 
     return (
-      <div className="w-full max-w-2xl mx-auto pt-32">
+      <div className="w-full max-w-2xl mx-auto pt-[113px]">
         {/* Progress Bar */}
         {renderProgressBar()}
 
