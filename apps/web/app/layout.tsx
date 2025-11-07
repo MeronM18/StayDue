@@ -1,21 +1,22 @@
 import type { Metadata } from "next";
-import { Manrope, Nunito_Sans } from "next/font/google";
+// Temporarily commented out fonts to fix compilation timeout
+// import { Manrope, Nunito_Sans } from "next/font/google";
 import React from "react";
 import "./globals.css";
 
-const manrope = Manrope({
-  variable: "--font-manrope",
-  subsets: ["latin"],
-  display: "swap",
-  weight: ["400", "500", "600", "700", "800"],
-});
+// const manrope = Manrope({
+//   variable: "--font-manrope",
+//   subsets: ["latin"],
+//   display: "swap",
+//   weight: ["400", "500", "600", "700", "800"],
+// });
 
-const nunitoSans = Nunito_Sans({
-  variable: "--font-nunito-sans",
-  subsets: ["latin"],
-  display: "swap",
-  weight: ["400", "500", "600", "700"],
-});
+// const nunitoSans = Nunito_Sans({
+//   variable: "--font-nunito-sans",
+//   subsets: ["latin"],
+//   display: "swap",
+//   weight: ["400", "500", "600", "700"],
+// });
 
 export const metadata: Metadata = {
   title: "StayDue - Never Miss a Due Date Again | Student Task Management",
@@ -47,9 +48,7 @@ function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body
-        className={`${manrope.variable} ${nunitoSans.variable} antialiased`}
-      >
+      <body className="antialiased">
         {children}
       </body>
     </html>
