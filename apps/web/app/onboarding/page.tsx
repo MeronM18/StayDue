@@ -338,8 +338,8 @@ export default function OnboardingPage() {
 
   const renderWelcomeScreen = () => {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen px-4 py-16" style={{ backgroundColor: '#c0d6e1' }}>
-        <div className="w-full max-w-lg mx-auto">
+      <div className="flex flex-col items-center justify-center min-h-screen py-16" style={{ backgroundColor: '#c0d6e1', width: '100%' }}>
+        <div className="w-full max-w-lg mx-auto px-4">
           {/* Welcome Card */}
           <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8 text-center border border-gray-200">
             {/* Lottie Animation - Larger */}
@@ -412,25 +412,9 @@ export default function OnboardingPage() {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-[#FAFAF5] px-4">
         <div className="text-center">
-          {/* Bubbly 3D Animated Text */}
-          <div className="mb-8">
-            <h1 
-              className="text-5xl md:text-6xl font-bold"
-              style={{
-                fontFamily: 'var(--font-manrope)',
-                color: '#5aa9e6',
-                textShadow: '0 4px 8px rgba(90, 169, 230, 0.3)',
-                animation: 'bubble 2s ease-in-out infinite',
-                transform: 'perspective(500px) rotateX(5deg)',
-              }}
-            >
-              You're All Set! 🎉
-            </h1>
-          </div>
-          
           {/* Loading Animation - Lottie */}
-          <div className="flex justify-center mb-6">
-            <div className="w-32 h-32 flex items-center justify-center">
+          <div className="flex justify-center mb-8">
+            <div className="w-48 h-48 md:w-64 md:h-64 flex items-center justify-center">
               <DotLottieReact
                 src="https://lottie.host/041e37c8-795b-4ef5-b9c8-c87f071800d9/QWR1KQRuY6.lottie"
                 loop
@@ -439,7 +423,7 @@ export default function OnboardingPage() {
             </div>
           </div>
           
-          <p className="text-xl text-[#2E2E2E] opacity-80" style={{ fontFamily: 'var(--font-nunito-sans)' }}>
+          <p className="text-3xl md:text-4xl text-[#2E2E2E] opacity-80 font-semibold" style={{ fontFamily: 'var(--font-nunito-sans)' }}>
             Setting up your dashboard...
           </p>
         </div>
