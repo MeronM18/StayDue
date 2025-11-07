@@ -338,7 +338,7 @@ export default function OnboardingPage() {
 
   const renderWelcomeScreen = () => {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen py-16" style={{ backgroundColor: '#c0d6e1', width: '100%' }}>
+      <div className="flex flex-col items-center justify-center h-screen" style={{ backgroundColor: '#c0d6e1', width: '100%', margin: 0, padding: 0 }}>
         <div className="w-full max-w-lg mx-auto px-4">
           {/* Welcome Card */}
           <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8 text-center border border-gray-200">
@@ -666,7 +666,7 @@ export default function OnboardingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FAFAF5]">
+    <div className={step === 0 ? 'min-h-screen' : 'min-h-screen bg-[#FAFAF5]'} style={step === 0 ? { backgroundColor: '#c0d6e1' } : {}}>
       {renderNavbar()}
       <div className={step === 0 ? '' : 'px-4 py-8 md:py-16'}>
         {step === 0 ? renderWelcomeScreen() : renderQuestion()}
