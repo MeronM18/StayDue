@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@lottiefiles/dotlottie-react": "^0.17.6",
     "@staydue/lib": "workspace:^",
     "@staydue/ui": "workspace:^",
     "@supabase/ssr": "^0.7.0",

@@ -3,7 +3,7 @@
 import { createClient } from '@/lib/supabase/client'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import Image from 'next/image'
+import { DotLottieReact } from '@lottiefiles/dotlottie-react'
 
 type AcademicGoal = 
   | 'maintain_gpa'
@@ -220,40 +220,17 @@ export default function OnboardingPage() {
   const renderWelcomeScreen = () => {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen px-4 py-16">
-        <div className="w-full max-w-lg">
-          {/* Logo */}
-          <div className="flex justify-center items-center gap-2 mb-8">
-            <Image 
-              src="/assets/stayduelogo.png" 
-              alt="StayDue Logo" 
-              width={56}
-              height={49}
-              className="h-auto w-auto"
-              priority
-            />
-            <h1 className="text-4xl font-bold" style={{ color: '#2E2E2E', fontFamily: 'var(--font-manrope)' }}>
-              StayDue
-            </h1>
-          </div>
-
+        <div className="w-full max-w-lg mx-auto">
           {/* Welcome Card */}
           <div className="bg-white rounded-2xl shadow-lg p-8 md:p-10 text-center border border-gray-200">
-            {/* Icon */}
+            {/* Lottie Animation */}
             <div className="mb-6 flex justify-center">
-              <div className="w-20 h-20 rounded-full bg-[#5aa9e6]/10 flex items-center justify-center">
-                <svg 
-                  className="w-10 h-10 text-[#5aa9e6]" 
-                  fill="none" 
-                  stroke="currentColor" 
-                  viewBox="0 0 24 24"
-                >
-                  <path 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round" 
-                    strokeWidth={2} 
-                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" 
-                  />
-                </svg>
+              <div className="w-32 h-32 flex items-center justify-center">
+                <DotLottieReact
+                  src="https://lottie.host/677e51fb-6ed7-4526-a891-c92fd7f479d8/qQUtWcswIA.lottie"
+                  loop
+                  autoplay
+                />
               </div>
             </div>
 
