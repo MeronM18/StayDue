@@ -218,7 +218,7 @@ export default function OnboardingPage() {
           setShowCompletionScreen(true)
           setTimeout(() => {
             handleSubmit()
-          }, 2500) // Show completion screen for 2.5 seconds
+          }, 3400) // Show completion screen for 3.4 seconds
         }, 500) // Brief delay to show 100% progress
       }
     }
@@ -419,6 +419,7 @@ export default function OnboardingPage() {
                 src="https://lottie.host/041e37c8-795b-4ef5-b9c8-c87f071800d9/QWR1KQRuY6.lottie"
                 loop
                 autoplay
+                speed={2.5}
               />
             </div>
           </div>
