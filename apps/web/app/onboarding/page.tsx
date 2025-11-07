@@ -193,17 +193,33 @@ export default function OnboardingPage() {
       setSearchingColleges(true)
       try {
         const response = await fetch(`https://universities.hipolabs.com/search?name=${encodeURIComponent(query)}`)
+        if (!response.ok) {
+          throw new Error(`API error: ${response.status}`)
+        }
         const data = await response.json()
-        // Limit to top 10 results and format
-        const suggestions = data.slice(0, 10).map((uni: any) => ({
-          name: uni.name,
-          country: uni.country || ''
-        }))
+        
+        // Ensure data is an array and has valid structure
+        if (!Array.isArray(data)) {
+          console.error('API returned non-array data:', data)
+          setCollegeSuggestions([])
+          return
+        }
+        
+        // Limit to top 10 results and format, filtering out invalid entries
+        const suggestions = data
+          .filter((uni: any) => uni && uni.name && typeof uni.name === 'string')
+          .slice(0, 10)
+          .map((uni: any) => ({
+            name: uni.name.trim(),
+            country: (uni.country || '').trim()
+          }))
+        
         setCollegeSuggestions(suggestions)
-        setShowSuggestions(true)
+        setShowSuggestions(suggestions.length > 0)
       } catch (error) {
         console.error('Error fetching colleges:', error)
         setCollegeSuggestions([])
+        setShowSuggestions(false)
       } finally {
         setSearchingColleges(false)
       }
@@ -323,10 +339,16 @@ export default function OnboardingPage() {
         ? formData.otherGoal 
         : formData.mainAcademicGoal
 
+      // Prepare college/university data - can come from API selection or manual entry
+      // API returns: { name: "University Name", country: "Country" }
+      // When selected, we set formData.collegeUniversity = college.name (already trimmed)
+      // When typed manually, user enters text which we trim here
+      const collegeUniversityValue = formData.collegeUniversity.trim()
+
       const { data, error } = await supabase
         .from('profiles')
         .update({
-          college_university: formData.collegeUniversity.trim(),
+          college_university: collegeUniversityValue,
           major_minors: formData.majorMinors.trim(),
           study_hours_per_week: parseInt(formData.studyHoursPerWeek),
           main_academic_goal: goalValue,
