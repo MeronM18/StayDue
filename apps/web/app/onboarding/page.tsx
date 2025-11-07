@@ -201,30 +201,22 @@ export default function OnboardingPage() {
       console.log('Searching for colleges with query:', trimmedQuery)
       setSearchingColleges(true)
       try {
-        const apiUrl = `https://universities.hipolabs.com/search?name=${encodeURIComponent(trimmedQuery)}`
+        // Use Next.js API route to avoid CORS issues
+        const apiUrl = `/api/universities?name=${encodeURIComponent(trimmedQuery)}`
         console.log('Fetching from API:', apiUrl)
         const response = await fetch(apiUrl)
         if (!response.ok) {
           throw new Error(`API error: ${response.status}`)
         }
-        const data = await response.json()
+        const suggestions = await response.json()
         
         // Ensure data is an array and has valid structure
-        if (!Array.isArray(data)) {
-          console.error('API returned non-array data:', data)
+        if (!Array.isArray(suggestions)) {
+          console.error('API returned non-array data:', suggestions)
           setCollegeSuggestions([])
           setShowSuggestions(false)
           return
         }
-        
-        // Limit to top 5 results and format, filtering out invalid entries
-        const suggestions = data
-          .filter((uni: any) => uni && uni.name && typeof uni.name === 'string')
-          .slice(0, 5)
-          .map((uni: any) => ({
-            name: uni.name.trim(),
-            country: (uni.country || '').trim()
-          }))
         
         console.log('College suggestions found:', suggestions.length, suggestions)
         setCollegeSuggestions(suggestions)
