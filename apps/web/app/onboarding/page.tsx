@@ -183,16 +183,27 @@ export default function OnboardingPage() {
 
   // Debounced search for colleges
   useEffect(() => {
+    // Only search when on step 1 (college question)
+    if (step !== 1) {
+      return
+    }
+
     const searchColleges = async (query: string) => {
-      if (query.trim().length < 2) {
+      const trimmedQuery = query.trim()
+      
+      // Require at least 1 character to search
+      if (trimmedQuery.length < 1) {
         setCollegeSuggestions([])
         setShowSuggestions(false)
         return
       }
 
+      console.log('Searching for colleges with query:', trimmedQuery)
       setSearchingColleges(true)
       try {
-        const response = await fetch(`https://universities.hipolabs.com/search?name=${encodeURIComponent(query)}`)
+        const apiUrl = `https://universities.hipolabs.com/search?name=${encodeURIComponent(trimmedQuery)}`
+        console.log('Fetching from API:', apiUrl)
+        const response = await fetch(apiUrl)
         if (!response.ok) {
           throw new Error(`API error: ${response.status}`)
         }
@@ -202,18 +213,20 @@ export default function OnboardingPage() {
         if (!Array.isArray(data)) {
           console.error('API returned non-array data:', data)
           setCollegeSuggestions([])
+          setShowSuggestions(false)
           return
         }
         
-        // Limit to top 10 results and format, filtering out invalid entries
+        // Limit to top 5 results and format, filtering out invalid entries
         const suggestions = data
           .filter((uni: any) => uni && uni.name && typeof uni.name === 'string')
-          .slice(0, 10)
+          .slice(0, 5)
           .map((uni: any) => ({
             name: uni.name.trim(),
             country: (uni.country || '').trim()
           }))
         
+        console.log('College suggestions found:', suggestions.length, suggestions)
         setCollegeSuggestions(suggestions)
         setShowSuggestions(suggestions.length > 0)
       } catch (error) {
@@ -225,11 +238,16 @@ export default function OnboardingPage() {
       }
     }
 
+    // Debounce the search - trigger after user stops typing for 200ms
     const timeoutId = setTimeout(() => {
-      if (step === 1 && formData.collegeUniversity) {
-        searchColleges(formData.collegeUniversity)
+      const query = formData.collegeUniversity?.trim() || ''
+      if (query.length >= 1) {
+        searchColleges(query)
+      } else {
+        setCollegeSuggestions([])
+        setShowSuggestions(false)
       }
-    }, 300) // 300ms debounce
+    }, 200) // 200ms debounce for faster response
 
     return () => clearTimeout(timeoutId)
   }, [formData.collegeUniversity, step])
@@ -619,9 +637,10 @@ export default function OnboardingPage() {
                 value={formData.collegeUniversity}
                 onChange={(e) => {
                   setFormData({ ...formData, collegeUniversity: e.target.value })
-                  setShowSuggestions(true)
+                  // Don't show suggestions until API returns results
                 }}
                 onFocus={() => {
+                  // Show suggestions if we have them
                   if (collegeSuggestions.length > 0) {
                     setShowSuggestions(true)
                   }
