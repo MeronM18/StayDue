@@ -1,30 +1,53 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+// Configure runtime - use nodejs for better fetch compatibility
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
+
+// Add timeout helper
+function fetchWithTimeout(url: string, options: RequestInit, timeout = 10000): Promise<Response> {
+  return Promise.race([
+    fetch(url, options),
+    new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error('Request timeout')), timeout)
+    ),
+  ])
+}
+
 export async function GET(request: NextRequest) {
-  const searchParams = request.nextUrl.searchParams
-  const query = searchParams.get('name')
-
-  if (!query || query.trim().length < 1) {
-    return NextResponse.json(
-      { error: 'Query parameter "name" is required' },
-      { status: 400 }
-    )
-  }
-
   try {
-    const response = await fetch(
-      `https://universities.hipolabs.com/search?name=${encodeURIComponent(query.trim())}`,
+    const searchParams = request.nextUrl.searchParams
+    const query = searchParams.get('name')
+
+    if (!query || query.trim().length < 1) {
+      return NextResponse.json(
+        { error: 'Query parameter "name" is required' },
+        { status: 400 }
+      )
+    }
+
+    const trimmedQuery = query.trim()
+    const apiUrl = `https://universities.hipolabs.com/search?name=${encodeURIComponent(trimmedQuery)}`
+
+    // Fetch with timeout
+    const response = await fetchWithTimeout(
+      apiUrl,
       {
         headers: {
           'Accept': 'application/json',
+          'User-Agent': 'StayDue/1.0',
         },
-      }
+        // Add cache control
+        cache: 'no-store',
+      },
+      8000 // 8 second timeout
     )
 
     if (!response.ok) {
+      console.error(`University API returned ${response.status} for query: ${trimmedQuery}`)
       return NextResponse.json(
-        { error: `API error: ${response.status}` },
-        { status: response.status }
+        { error: `API error: ${response.status}`, suggestions: [] },
+        { status: 200 } // Return 200 with empty suggestions instead of error
       )
     }
 
@@ -32,10 +55,8 @@ export async function GET(request: NextRequest) {
 
     // Ensure data is an array
     if (!Array.isArray(data)) {
-      return NextResponse.json(
-        { error: 'Invalid API response format' },
-        { status: 500 }
-      )
+      console.error('University API returned non-array data:', typeof data)
+      return NextResponse.json([]) // Return empty array instead of error
     }
 
     // Filter and format the results
@@ -47,13 +68,17 @@ export async function GET(request: NextRequest) {
         country: (uni.country || '').trim(),
       }))
 
-    return NextResponse.json(suggestions)
-  } catch (error) {
+    return NextResponse.json(suggestions, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400',
+      },
+    })
+  } catch (error: any) {
     console.error('Error fetching universities:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch universities' },
-      { status: 500 }
-    )
+    // Return empty array instead of error to prevent UI breaking
+    return NextResponse.json([], {
+      status: 200,
+    })
   }
 }
 

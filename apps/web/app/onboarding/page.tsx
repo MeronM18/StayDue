@@ -205,9 +205,15 @@ export default function OnboardingPage() {
         const apiUrl = `/api/universities?name=${encodeURIComponent(trimmedQuery)}`
         console.log('Fetching from API:', apiUrl)
         const response = await fetch(apiUrl)
+        
         if (!response.ok) {
-          throw new Error(`API error: ${response.status}`)
+          // If API returns error, just show empty suggestions
+          console.warn(`API returned ${response.status}, showing empty suggestions`)
+          setCollegeSuggestions([])
+          setShowSuggestions(false)
+          return
         }
+        
         const suggestions = await response.json()
         
         // Ensure data is an array and has valid structure
@@ -223,6 +229,7 @@ export default function OnboardingPage() {
         setShowSuggestions(suggestions.length > 0)
       } catch (error) {
         console.error('Error fetching colleges:', error)
+        // Don't break the UI - just show no suggestions
         setCollegeSuggestions([])
         setShowSuggestions(false)
       } finally {
