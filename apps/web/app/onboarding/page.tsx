@@ -25,21 +25,21 @@ const ACADEMIC_GOALS: { value: AcademicGoal; label: string }[] = [
 
 const TOTAL_STEPS = 5
 
-// Image mapping for each question
+// Image mapping for each question - reordered
 const QUESTION_IMAGES = [
   '/school.png',        // Question 1: College/University
-  '/graduation.png',    // Question 2: Major/Minors
-  '/study.png',         // Question 3: Study hours
-  '/schedule.png',      // Question 4: Academic goal
+  '/study.png',         // Question 2: Major/Minors
+  '/schedule.png',      // Question 3: Study hours
+  '/graduation.png',    // Question 4: Academic goal
   '/social-media.png',  // Question 5: Where heard about us
 ]
 
 // Background colors for image circles
 const IMAGE_BG_COLORS = [
   '#E3F2FD', // Light blue for school
-  '#F3E5F5', // Light purple for graduation
   '#E8F5E9', // Light green for study
   '#FFF3E0', // Light orange for schedule
+  '#F3E5F5', // Light purple for graduation
   '#FCE4EC', // Light pink for social media
 ]
 
@@ -49,6 +49,7 @@ export default function OnboardingPage() {
   const [loading, setLoading] = useState(false)
   const [checkingAuth, setCheckingAuth] = useState(true)
   const [step, setStep] = useState(0) // 0 = welcome screen, 1-5 = questions
+  const [showCompletionScreen, setShowCompletionScreen] = useState(false)
   
   const [formData, setFormData] = useState({
     collegeUniversity: '',
@@ -61,7 +62,15 @@ export default function OnboardingPage() {
 
   const [errors, setErrors] = useState<Record<string, string>>({})
 
-  // Remove notebook theme on onboarding page
+  // Preload all images to avoid delay when switching
+  useEffect(() => {
+    QUESTION_IMAGES.forEach((src) => {
+      const img = new window.Image()
+      img.src = src
+    })
+  }, [])
+
+  // Remove notebook theme on onboarding page and add animations
   useEffect(() => {
     const style = document.createElement('style')
     style.setAttribute('data-onboarding-styles', 'true')
@@ -72,6 +81,14 @@ export default function OnboardingPage() {
       body {
         background-color: #FAFAF5 !important;
         background-image: none !important;
+      }
+      @keyframes bubble {
+        0%, 100% {
+          transform: perspective(500px) rotateX(5deg) scale(1);
+        }
+        50% {
+          transform: perspective(500px) rotateX(-5deg) scale(1.05);
+        }
       }
     `
     document.head.appendChild(style)
@@ -180,7 +197,13 @@ export default function OnboardingPage() {
       if (step < TOTAL_STEPS) {
         setStep(step + 1)
       } else {
-        handleSubmit()
+        // Show completion screen after a brief delay to show 100% progress
+        setTimeout(() => {
+          setShowCompletionScreen(true)
+          setTimeout(() => {
+            handleSubmit()
+          }, 2500) // Show completion screen for 2.5 seconds
+        }, 500) // Brief delay to show 100% progress
       }
     }
   }
@@ -227,6 +250,8 @@ export default function OnboardingPage() {
       if (error) {
         console.error('Error saving onboarding:', error)
         alert(`Error saving your information: ${error.message}. Please try again.`)
+        setShowCompletionScreen(false)
+        setLoading(false)
         return
       }
 
@@ -242,6 +267,8 @@ export default function OnboardingPage() {
     } catch (error) {
       console.error('Unexpected error:', error)
       alert('An unexpected error occurred. Please try again.')
+      setShowCompletionScreen(false)
+      setLoading(false)
     } finally {
       setLoading(false)
     }
@@ -295,13 +322,13 @@ export default function OnboardingPage() {
 
   const renderWelcomeScreen = () => {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen px-4 py-16 pt-32">
+      <div className="flex flex-col items-center justify-center min-h-screen px-4 py-16">
         <div className="w-full max-w-lg mx-auto">
           {/* Welcome Card */}
           <div className="bg-white rounded-2xl shadow-lg p-8 md:p-10 text-center border border-gray-200">
             {/* Lottie Animation - Larger */}
             <div className="mb-6 flex justify-center">
-              <div className="w-48 h-48 flex items-center justify-center">
+              <div className="w-56 h-56 flex items-center justify-center">
                 <DotLottieReact
                   src="https://lottie.host/677e51fb-6ed7-4526-a891-c92fd7f479d8/qQUtWcswIA.lottie"
                   loop
@@ -336,13 +363,16 @@ export default function OnboardingPage() {
 
   const renderProgressBar = () => {
     const currentQuestion = step
-    // Calculate progress based on questions answered (0% on Q1, 20% on Q2, etc.)
-    const progress = Math.round(((currentQuestion - 1) / TOTAL_STEPS) * 100)
+    // Calculate progress - show 100% when on last question (all questions answered)
+    let progress = Math.round(((currentQuestion - 1) / TOTAL_STEPS) * 100)
+    if (step === TOTAL_STEPS) {
+      progress = 100
+    }
 
     return (
       <div className="w-full mb-8">
-        {/* Full width progress bar */}
-        <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden mb-3">
+        {/* Full width progress bar - taller */}
+        <div className="w-full h-4 bg-gray-200 rounded-full overflow-hidden mb-3">
           <div 
             className="h-full bg-[#5aa9e6] transition-all duration-300 ease-out rounded-full"
             style={{ width: `${progress}%` }}
@@ -352,11 +382,47 @@ export default function OnboardingPage() {
         {/* Question count and percentage below progress bar */}
         <div className="flex justify-between items-center">
           <div className="text-sm font-semibold text-[#2E2E2E]" style={{ fontFamily: 'var(--font-manrope)' }}>
-            QUESTION {currentQuestion} / {TOTAL_STEPS}
+            QUESTION {showCompletionScreen ? TOTAL_STEPS : currentQuestion} / {TOTAL_STEPS}
           </div>
           <div className="text-sm font-bold text-[#2E2E2E]" style={{ fontFamily: 'var(--font-manrope)' }}>
             {progress}% Completed
           </div>
+        </div>
+      </div>
+    )
+  }
+
+  const renderCompletionScreen = () => {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-[#FAFAF5] px-4">
+        <div className="text-center">
+          {/* Bubbly 3D Animated Text */}
+          <div className="mb-8">
+            <h1 
+              className="text-5xl md:text-6xl font-bold"
+              style={{
+                fontFamily: 'var(--font-manrope)',
+                color: '#5aa9e6',
+                textShadow: '0 4px 8px rgba(90, 169, 230, 0.3)',
+                animation: 'bubble 2s ease-in-out infinite',
+                transform: 'perspective(500px) rotateX(5deg)',
+              }}
+            >
+              You're All Set! 🎉
+            </h1>
+          </div>
+          
+          {/* Loading Animation */}
+          <div className="flex justify-center mb-6">
+            <div className="relative">
+              <div className="w-16 h-16 border-4 border-[#5aa9e6] border-t-transparent rounded-full animate-spin"></div>
+              <div className="absolute inset-0 w-16 h-16 border-4 border-[#FFEB3B] border-r-transparent rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}></div>
+            </div>
+          </div>
+          
+          <p className="text-xl text-[#2E2E2E] opacity-80" style={{ fontFamily: 'var(--font-nunito-sans)' }}>
+            Setting up your dashboard...
+          </p>
         </div>
       </div>
     )
@@ -374,10 +440,10 @@ export default function OnboardingPage() {
 
         {/* Question Content - Centered and more square */}
         <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12 border border-gray-200">
-          {/* Image with circular background */}
+          {/* Image with circular background - preloaded */}
           <div className="flex justify-center mb-8">
             <div 
-              className="w-32 h-32 rounded-full flex items-center justify-center p-6"
+              className="w-32 h-32 rounded-full flex items-center justify-center p-6 transition-colors duration-200"
               style={{ backgroundColor: imageBgColor }}
             >
               <Image
@@ -386,6 +452,7 @@ export default function OnboardingPage() {
                 width={80}
                 height={80}
                 className="object-contain"
+                priority
               />
             </div>
           </div>
@@ -443,7 +510,7 @@ export default function OnboardingPage() {
               type="text"
               value={formData.collegeUniversity}
               onChange={(e) => setFormData({ ...formData, collegeUniversity: e.target.value })}
-              placeholder="search for your school"
+              placeholder="Search for your school"
               className="w-full rounded-lg border-2 border-gray-300 px-6 py-4 text-lg text-[#2E2E2E] focus:border-[#5aa9e6] focus:outline-none transition-colors"
               style={{ fontFamily: 'var(--font-nunito-sans)' }}
             />
@@ -463,7 +530,7 @@ export default function OnboardingPage() {
               type="text"
               value={formData.majorMinors}
               onChange={(e) => setFormData({ ...formData, majorMinors: e.target.value })}
-              placeholder="e.g., Computer Science, Minor in Business"
+              placeholder="E.g., Computer Science, Minor in Business"
               className="w-full rounded-lg border-2 border-gray-300 px-6 py-4 text-lg text-[#2E2E2E] focus:border-[#5aa9e6] focus:outline-none transition-colors"
               style={{ fontFamily: 'var(--font-nunito-sans)' }}
             />
@@ -483,7 +550,7 @@ export default function OnboardingPage() {
               type="number"
               value={formData.studyHoursPerWeek}
               onChange={(e) => setFormData({ ...formData, studyHoursPerWeek: e.target.value })}
-              placeholder="e.g., 20"
+              placeholder="E.g., 20"
               min="0"
               className="w-full rounded-lg border-2 border-gray-300 px-6 py-4 text-lg text-[#2E2E2E] focus:border-[#5aa9e6] focus:outline-none transition-colors"
               style={{ fontFamily: 'var(--font-nunito-sans)' }}
@@ -555,7 +622,7 @@ export default function OnboardingPage() {
               type="text"
               value={formData.whereHeardAboutUs}
               onChange={(e) => setFormData({ ...formData, whereHeardAboutUs: e.target.value })}
-              placeholder="e.g., Friend, Social media, Google search"
+              placeholder="E.g., Friend, Social media, Google search"
               className="w-full rounded-lg border-2 border-gray-300 px-6 py-4 text-lg text-[#2E2E2E] focus:border-[#5aa9e6] focus:outline-none transition-colors"
               style={{ fontFamily: 'var(--font-nunito-sans)' }}
             />
@@ -578,6 +645,15 @@ export default function OnboardingPage() {
           <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-[#5aa9e6] border-r-transparent"></div>
           <p className="mt-4 text-gray-600">Loading...</p>
         </div>
+      </div>
+    )
+  }
+
+  // Show completion screen
+  if (showCompletionScreen) {
+    return (
+      <div className="min-h-screen bg-[#FAFAF5]">
+        {renderCompletionScreen()}
       </div>
     )
   }
