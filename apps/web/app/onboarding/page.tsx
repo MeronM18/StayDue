@@ -72,11 +72,13 @@ export default function OnboardingPage() {
   const [searchingColleges, setSearchingColleges] = useState(false)
   
   // Majors/Minors autocomplete state
-  const [majorSuggestions, setMajorSuggestions] = useState<Array<{ name: string }>>([])
-  const [selectedMajor, setSelectedMajor] = useState<string>('')
+  const [majorInputs, setMajorInputs] = useState<Array<{ id: string; value: string; selected: string }>>([
+    { id: 'major-0', value: '', selected: '' }
+  ])
+  const [majorSuggestionsMap, setMajorSuggestionsMap] = useState<Record<string, Array<{ name: string }>>>({})
   const [validMajors, setValidMajors] = useState<Set<string>>(new Set())
-  const [showMajorSuggestions, setShowMajorSuggestions] = useState(false)
-  const [searchingMajors, setSearchingMajors] = useState(false)
+  const [showMajorSuggestionsMap, setShowMajorSuggestionsMap] = useState<Record<string, boolean>>({})
+  const [searchingMajorsMap, setSearchingMajorsMap] = useState<Record<string, boolean>>({})
 
   // Preload all images to avoid delay when switching - ensure they're fully cached
   useEffect(() => {
@@ -273,82 +275,79 @@ export default function OnboardingPage() {
     return () => clearTimeout(timeoutId)
   }, [formData.collegeUniversity, step, selectedCollege])
 
-  // Debounced search for majors/minors
+  // Debounced search for majors/minors - handles multiple inputs
   useEffect(() => {
-    // Only search when on step 2 (major/minor question)
     if (step !== 2) {
       return
     }
 
-    const searchMajors = async (query: string) => {
+    const searchMajors = async (query: string, inputId: string) => {
       const trimmedQuery = query.trim()
       
-      // Require at least 1 character to search
       if (trimmedQuery.length < 1) {
-        setMajorSuggestions([])
-        setShowMajorSuggestions(false)
+        setMajorSuggestionsMap(prev => ({ ...prev, [inputId]: [] }))
+        setShowMajorSuggestionsMap(prev => ({ ...prev, [inputId]: false }))
         return
       }
 
-      console.log('Searching for majors with query:', trimmedQuery)
-      setSearchingMajors(true)
+      console.log(`Searching for majors with query: ${trimmedQuery} for input: ${inputId}`)
+      setSearchingMajorsMap(prev => ({ ...prev, [inputId]: true }))
       try {
-        // Use Next.js API route
         const apiUrl = `/api/majors?name=${encodeURIComponent(trimmedQuery)}`
-        console.log('Fetching from API:', apiUrl)
         const response = await fetch(apiUrl)
         
         if (!response.ok) {
-          console.warn(`API returned ${response.status}, showing empty suggestions`)
-          setMajorSuggestions([])
-          setShowMajorSuggestions(false)
+          setMajorSuggestionsMap(prev => ({ ...prev, [inputId]: [] }))
+          setShowMajorSuggestionsMap(prev => ({ ...prev, [inputId]: false }))
           return
         }
         
         const suggestions = await response.json()
         
-        // Ensure data is an array and has valid structure
         if (!Array.isArray(suggestions)) {
-          console.error('API returned non-array data:', suggestions)
-          setMajorSuggestions([])
-          setShowMajorSuggestions(false)
+          setMajorSuggestionsMap(prev => ({ ...prev, [inputId]: [] }))
+          setShowMajorSuggestionsMap(prev => ({ ...prev, [inputId]: false }))
           return
         }
         
-        console.log('Major suggestions found:', suggestions.length, suggestions)
-        setMajorSuggestions(suggestions)
-        // Update valid majors set with all fetched suggestions
+        console.log(`Major suggestions found for ${inputId}:`, suggestions.length)
+        setMajorSuggestionsMap(prev => ({ ...prev, [inputId]: suggestions }))
         const majorNames = new Set(suggestions.map((m: any) => m.name.trim().toLowerCase()))
         setValidMajors(prev => new Set([...prev, ...majorNames]))
-        // Always show suggestions if we have results
-        setShowMajorSuggestions(suggestions.length > 0)
+        setShowMajorSuggestionsMap(prev => ({ ...prev, [inputId]: suggestions.length > 0 }))
       } catch (error) {
         console.error('Error fetching majors:', error)
-        setMajorSuggestions([])
-        setShowMajorSuggestions(false)
+        setMajorSuggestionsMap(prev => ({ ...prev, [inputId]: [] }))
+        setShowMajorSuggestionsMap(prev => ({ ...prev, [inputId]: false }))
       } finally {
-        setSearchingMajors(false)
+        setSearchingMajorsMap(prev => ({ ...prev, [inputId]: false }))
       }
     }
 
-    // Debounce the search - trigger after user stops typing for 200ms
-    const timeoutId = setTimeout(() => {
-      const query = formData.majorMinors?.trim() || ''
-      if (query.length >= 1) {
-        // Always fetch from API when user is typing (unless it matches selected major exactly)
-        const selectedValue = selectedMajor?.trim() || ''
-        if (!selectedValue || query.toLowerCase() !== selectedValue.toLowerCase()) {
-          searchMajors(query)
+    // Create debounced searches for each input
+    const timeouts: NodeJS.Timeout[] = []
+    
+    majorInputs.forEach(input => {
+      const timeoutId = setTimeout(() => {
+        const query = input.value.trim()
+        if (query.length >= 1) {
+          const selectedValue = input.selected.trim()
+          if (!selectedValue || query.toLowerCase() !== selectedValue.toLowerCase()) {
+            searchMajors(query, input.id)
+          }
+        } else {
+          setMajorSuggestionsMap(prev => ({ ...prev, [input.id]: [] }))
+          setShowMajorSuggestionsMap(prev => ({ ...prev, [input.id]: false }))
+          setSearchingMajorsMap(prev => ({ ...prev, [input.id]: false }))
         }
-      } else {
-        setMajorSuggestions([])
-        setShowMajorSuggestions(false)
-        setSearchingMajors(false)
-      }
-    }, 200) // 200ms debounce
+      }, 200)
+      timeouts.push(timeoutId)
+    })
 
-    return () => clearTimeout(timeoutId)
-  }, [formData.majorMinors, step, selectedMajor])
+    return () => {
+      timeouts.forEach(timeout => clearTimeout(timeout))
+    }
+  }, [majorInputs, step])
 
   // Hide suggestions when not on the relevant question
   useEffect(() => {
@@ -368,16 +367,23 @@ export default function OnboardingPage() {
     }
     
     if (step !== 2) {
-      setShowMajorSuggestions(false)
-      setMajorSuggestions([])
-      setSearchingMajors(false)
+      // Clear all major input states when not on step 2
+      setShowMajorSuggestionsMap({})
+      setMajorSuggestionsMap({})
+      setSearchingMajorsMap({})
       // Don't clear validMajors - we need them for validation
     } else {
-      // When returning to step 2, if there's a value in the input, check if it's valid
-      if (formData.majorMinors && formData.majorMinors.trim().length > 0 && !searchingMajors) {
-        const majorValue = formData.majorMinors.trim()
-        if (validMajors.has(majorValue.toLowerCase()) && selectedMajor === majorValue) {
-          return
+      // When returning to step 2, sync formData with majorInputs if needed
+      if (formData.majorMinors && formData.majorMinors.trim().length > 0) {
+        const existingValues = formData.majorMinors.split(',').map(v => v.trim()).filter(v => v)
+        if (existingValues.length > 0 && majorInputs.length === 1 && !majorInputs[0].value) {
+          // Initialize inputs from formData if coming back to this step
+          const newInputs = existingValues.map((value, idx) => ({
+            id: `major-${idx}`,
+            value: value,
+            selected: validMajors.has(value.toLowerCase()) ? value : ''
+          }))
+          setMajorInputs(newInputs.length > 0 ? newInputs : [{ id: 'major-0', value: '', selected: '' }])
         }
       }
     }
@@ -400,15 +406,21 @@ export default function OnboardingPage() {
     }
 
     if (currentStep === 2) {
-      const majorValue = formData.majorMinors.trim()
-      if (!majorValue) {
-        newErrors.majorMinors = 'Please enter your major/minors'
-      } else if (!selectedMajor || selectedMajor.trim().toLowerCase() !== majorValue.toLowerCase()) {
-        // Check if the entered value matches a valid major from the suggestions
-        const isValidMajor = validMajors.has(majorValue.toLowerCase())
-        if (!isValidMajor) {
-          newErrors.majorMinors = 'Please select a major/minor from the dropdown list'
+      // Check all major inputs
+      const allInputsValid = majorInputs.every(input => {
+        const value = input.value.trim()
+        if (!value) return false
+        // Check if value matches selected or is in validMajors
+        if (input.selected && input.selected.toLowerCase() === value.toLowerCase()) {
+          return true
         }
+        return validMajors.has(value.toLowerCase())
+      })
+      
+      if (majorInputs.length === 0 || majorInputs.every(input => !input.value.trim())) {
+        newErrors.majorMinors = 'Please enter your major/minors'
+      } else if (!allInputsValid) {
+        newErrors.majorMinors = 'Please select a major/minor from the dropdown list for all fields'
       }
     }
 
@@ -500,11 +512,17 @@ export default function OnboardingPage() {
       // When typed manually, user enters text which we trim here
       const collegeUniversityValue = formData.collegeUniversity.trim()
 
+      // Combine all major inputs into comma-separated list
+      const majorMinorsValue = majorInputs
+        .map(input => input.value.trim())
+        .filter(value => value.length > 0)
+        .join(', ')
+
       const { data, error } = await supabase
         .from('profiles')
         .update({
           college_university: collegeUniversityValue,
-          major_minors: formData.majorMinors.trim(),
+          major_minors: majorMinorsValue,
           study_hours_per_week: parseInt(formData.studyHoursPerWeek),
           main_academic_goal: goalValue,
           where_heard_about_us: formData.whereHeardAboutUs.trim(),
@@ -840,60 +858,83 @@ export default function OnboardingPage() {
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-8" style={{ color: '#2E2E2E', fontFamily: 'var(--font-manrope)' }}>
               What major and/or minors are you studying?
             </h2>
-            <div className="relative">
-              <input
-                type="text"
-                value={formData.majorMinors}
-                onChange={(e) => {
-                  const newValue = e.target.value
-                  setFormData({ ...formData, majorMinors: newValue })
-                  // Clear selection when user starts typing/editing
-                  if (newValue !== selectedMajor) {
-                    setSelectedMajor('')
-                  }
-                }}
-                onFocus={() => {
-                  // Show suggestions if we have them
-                  if (majorSuggestions.length > 0) {
-                    setShowMajorSuggestions(true)
-                  }
-                }}
-                onBlur={() => {
-                  // Delay to allow click on suggestion
-                  setTimeout(() => setShowMajorSuggestions(false), 200)
-                }}
-                placeholder="E.g., Computer Science, Minor in Business"
-                className="w-full rounded-lg border-2 border-gray-300 px-6 py-4 text-lg text-[#2E2E2E] focus:border-[#5aa9e6] focus:outline-none transition-colors"
-                style={{ fontFamily: 'var(--font-nunito-sans)' }}
-              />
-              {searchingMajors && (
-                <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
-                  <div className="w-5 h-5 border-2 border-[#5aa9e6] border-t-transparent rounded-full animate-spin"></div>
+            <div className="space-y-4">
+              {majorInputs.map((input, inputIndex) => (
+                <div key={input.id} className="relative">
+            <input
+              type="text"
+                    value={input.value}
+                    onChange={(e) => {
+                      const newValue = e.target.value
+                      setMajorInputs(prev => prev.map((inp, idx) => 
+                        idx === inputIndex 
+                          ? { ...inp, value: newValue, selected: newValue !== inp.selected ? '' : inp.selected }
+                          : inp
+                      ))
+                    }}
+                    onFocus={() => {
+                      if (majorSuggestionsMap[input.id] && majorSuggestionsMap[input.id].length > 0) {
+                        setShowMajorSuggestionsMap(prev => ({ ...prev, [input.id]: true }))
+                      }
+                    }}
+                    onBlur={() => {
+                      setTimeout(() => {
+                        setShowMajorSuggestionsMap(prev => ({ ...prev, [input.id]: false }))
+                      }, 200)
+                    }}
+                    placeholder="E.g., Computer Science, Minor in Business"
+                    className="w-full rounded-lg border-2 border-gray-300 px-6 py-4 text-lg text-[#2E2E2E] focus:border-[#5aa9e6] focus:outline-none transition-colors"
+                    style={{ fontFamily: 'var(--font-nunito-sans)' }}
+                  />
+                  {searchingMajorsMap[input.id] && (
+                    <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
+                      <div className="w-5 h-5 border-2 border-[#5aa9e6] border-t-transparent rounded-full animate-spin"></div>
+                    </div>
+                  )}
+                  {showMajorSuggestionsMap[input.id] && majorSuggestionsMap[input.id] && majorSuggestionsMap[input.id].length > 0 && (
+                    <div className="absolute z-50 w-full mt-2 bg-white border-2 border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                      {majorSuggestionsMap[input.id].map((major, index) => (
+                        <button
+                          key={index}
+                          type="button"
+                          onClick={() => {
+                            setMajorInputs(prev => prev.map((inp, idx) => 
+                              idx === inputIndex 
+                                ? { ...inp, value: major.name, selected: major.name }
+                                : inp
+                            ))
+                            setShowMajorSuggestionsMap(prev => ({ ...prev, [input.id]: false }))
+                            setErrors(prev => {
+                              const newErrors = { ...prev }
+                              delete newErrors.majorMinors
+                              return newErrors
+                            })
+                          }}
+                          className="w-full text-left px-6 py-3 hover:bg-[#5aa9e6]/10 transition-colors cursor-pointer border-b border-gray-100 last:border-b-0"
+                          style={{ fontFamily: 'var(--font-nunito-sans)' }}
+                        >
+                          <div className="font-medium text-[#2E2E2E]">{major.name}</div>
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
-              )}
-              {showMajorSuggestions && majorSuggestions.length > 0 && (
-                <div className="absolute z-50 w-full mt-2 bg-white border-2 border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
-                  {majorSuggestions.map((major, index) => (
-                    <button
-                      key={index}
-                      type="button"
-                      onClick={() => {
-                        setFormData({ ...formData, majorMinors: major.name })
-                        setSelectedMajor(major.name)
-                        setShowMajorSuggestions(false)
-                        // Clear any errors when a valid selection is made
-                        setErrors(prev => {
-                          const newErrors = { ...prev }
-                          delete newErrors.majorMinors
-                          return newErrors
-                        })
-                      }}
-                      className="w-full text-left px-6 py-3 hover:bg-[#5aa9e6]/10 transition-colors cursor-pointer border-b border-gray-100 last:border-b-0"
-                      style={{ fontFamily: 'var(--font-nunito-sans)' }}
-                    >
-                      <div className="font-medium text-[#2E2E2E]">{major.name}</div>
-                    </button>
-                  ))}
+              ))}
+              
+              {/* Add another button - only show if last input has a selected value */}
+              {majorInputs.length > 0 && majorInputs[majorInputs.length - 1].selected && (
+                <div className="pt-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const newId = `major-${majorInputs.length}`
+                      setMajorInputs(prev => [...prev, { id: newId, value: '', selected: '' }])
+                    }}
+                    className="text-[#5aa9e6] hover:text-[#4a8dd6] font-medium text-sm flex items-center gap-1 transition-colors"
+                    style={{ fontFamily: 'var(--font-nunito-sans)' }}
+                  >
+                    Add another +
+                  </button>
                 </div>
               )}
             </div>
