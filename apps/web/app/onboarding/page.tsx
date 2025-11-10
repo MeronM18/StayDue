@@ -243,27 +243,18 @@ export default function OnboardingPage() {
     }
 
     // Debounce the search - trigger after user stops typing for 200ms
-    // Don't search if the value matches the selected college (user already selected from dropdown)
     const timeoutId = setTimeout(() => {
       const query = formData.collegeUniversity?.trim() || ''
-      const selectedValue = selectedCollege?.trim() || ''
-      
-      // Only search if:
-      // 1. Query has content
-      // 2. Query doesn't match selected college (user is actively typing/editing)
-      if (query.length >= 1 && query.toLowerCase() !== selectedValue.toLowerCase()) {
+      if (query.length >= 1) {
         searchColleges(query)
-      } else if (query.length === 0) {
+      } else {
         setCollegeSuggestions([])
-        setShowSuggestions(false)
-      } else if (query.toLowerCase() === selectedValue.toLowerCase()) {
-        // Value matches selected college - don't search, hide suggestions
         setShowSuggestions(false)
       }
     }, 200) // 200ms debounce for faster response
 
     return () => clearTimeout(timeoutId)
-  }, [formData.collegeUniversity, step, selectedCollege])
+  }, [formData.collegeUniversity, step])
 
   // Hide suggestions when not on question 1, and set selected college when returning to step 1
   useEffect(() => {
@@ -359,7 +350,7 @@ export default function OnboardingPage() {
         setTimeout(() => {
           setShowCompletionScreen(true)
           setTimeout(() => {
-            handleSubmit()
+        handleSubmit()
           }, 3000) // Show completion screen for 3 seconds
         }, 500) // Brief delay to show 100% progress
       }
@@ -666,30 +657,19 @@ export default function OnboardingPage() {
               What college or university do you attend?
             </h2>
             <div className="relative">
-              <input
-                type="text"
-                value={formData.collegeUniversity}
+            <input
+              type="text"
+              value={formData.collegeUniversity}
                 onChange={(e) => {
-                  const newValue = e.target.value
-                  setFormData({ ...formData, collegeUniversity: newValue })
-                  // Clear selection when user starts typing/editing (value doesn't match selected)
-                  const newValueLower = newValue.trim().toLowerCase()
-                  const selectedValueLower = selectedCollege.trim().toLowerCase()
-                  if (newValueLower !== selectedValueLower) {
+                  setFormData({ ...formData, collegeUniversity: e.target.value })
+                  // Clear selection when user starts typing
+                  if (e.target.value !== selectedCollege) {
                     setSelectedCollege('')
-                    // Hide suggestions immediately when user starts editing a selected value
-                    if (selectedCollege && newValueLower.length > 0) {
-                      setShowSuggestions(false)
-                    }
                   }
                 }}
                 onFocus={() => {
-                  // Only show suggestions if:
-                  // 1. We have suggestions available
-                  // 2. The input value doesn't match the selected college (user is editing)
-                  const currentValue = formData.collegeUniversity.trim().toLowerCase()
-                  const selectedValue = selectedCollege.trim().toLowerCase()
-                  if (collegeSuggestions.length > 0 && currentValue !== selectedValue) {
+                  // Show suggestions if we have them
+                  if (collegeSuggestions.length > 0) {
                     setShowSuggestions(true)
                   }
                 }}
@@ -716,7 +696,6 @@ export default function OnboardingPage() {
                         setFormData({ ...formData, collegeUniversity: college.name })
                         setSelectedCollege(college.name)
                         setShowSuggestions(false)
-                        setCollegeSuggestions([]) // Clear suggestions to prevent them from showing again
                         // Clear any errors when a valid selection is made
                         setErrors(prev => {
                           const newErrors = { ...prev }
