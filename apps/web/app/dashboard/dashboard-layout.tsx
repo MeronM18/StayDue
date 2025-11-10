@@ -209,16 +209,21 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
         {/* Header - Logo & Toggle */}
         <div className={`${sidebarCollapsed ? 'px-3' : 'px-6'} py-5 border-b border-[#BBDEFB] flex items-center ${sidebarCollapsed ? 'justify-center' : 'justify-between'}`}>
           {!sidebarCollapsed && (
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-[#5aa9e6] rounded-lg flex items-center justify-center text-white font-bold text-lg">
-                S
-              </div>
-              <span className="font-bold text-lg text-gray-900">StayDue</span>
+            <div className="flex items-center gap-2">
+              <Image 
+                src="/assets/stayduelogo.png" 
+                alt="StayDue Logo" 
+                width={54}
+                height={48}
+                className="h-12 w-auto"
+                priority
+              />
+              <span className="text-2xl font-bold text-[#000000]">StayDue</span>
             </div>
           )}
           <button
             onClick={toggleSidebar}
-            className={`p-1.5 hover:bg-white/50 rounded-lg transition-colors flex items-center justify-center ${sidebarCollapsed ? 'w-full' : ''}`}
+            className={`p-1.5 hover:bg-white/50 rounded-lg transition-colors flex items-center justify-center cursor-pointer ${sidebarCollapsed ? 'w-full' : ''}`}
             title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
             <div className="w-5 h-5 flex items-center justify-center flex-shrink-0">
@@ -237,7 +242,7 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
         <div className={`px-3 py-3 border-b border-[#BBDEFB] ${sidebarCollapsed ? 'flex justify-center' : ''}`}>
           {sidebarCollapsed ? (
             <button
-              className="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-white/50 transition-colors"
+              className="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-white/50 transition-colors cursor-pointer"
               title="Search"
             >
               <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -271,37 +276,39 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
               <button
                 key={item.id}
                 onClick={() => setActiveMenu(item.id)}
-                className={`w-full flex items-center ${sidebarCollapsed ? 'justify-center' : 'gap-3'} ${sidebarCollapsed ? 'px-2 py-3' : 'px-3 py-3'} ${sidebarCollapsed && activeMenu === item.id ? 'rounded-full' : 'rounded-lg'} transition-all duration-200 ease-in-out relative group mb-1 ${
+                className={`w-full flex items-center ${sidebarCollapsed ? 'justify-center' : 'gap-3'} ${sidebarCollapsed ? 'px-2 py-3.5' : 'px-3 py-3.5'} transition-all duration-300 ease-in-out relative group mb-1 cursor-pointer ${
                   activeMenu === item.id
                     ? 'bg-[#5aa9e6] text-white shadow-sm'
                     : 'text-gray-700 hover:bg-white/50'
                 }`}
+                style={{
+                  borderRadius: sidebarCollapsed && activeMenu === item.id 
+                    ? '9999px' 
+                    : sidebarCollapsed 
+                    ? '0.5rem' 
+                    : '0.5rem',
+                  transition: 'all 300ms ease-in-out'
+                }}
               >
-                <div className={`${sidebarCollapsed ? 'w-6 h-6' : 'w-6 h-6'} flex items-center justify-center flex-shrink-0`}>
+                <div className={`${sidebarCollapsed ? 'w-7 h-7' : 'w-7 h-7'} flex items-center justify-center flex-shrink-0`}>
                   <FontAwesomeIcon
                     icon={item.icon}
-                    className={`w-5 h-5 transition-all duration-200 ${
+                    className={`${sidebarCollapsed ? 'w-6 h-6' : 'w-6 h-6'} transition-all duration-300 ${
                       activeMenu === item.id ? 'text-white' : 'text-gray-700'
                     }`}
                     style={{ fontWeight: 300 }}
                   />
                 </div>
                 {!sidebarCollapsed && (
-                  <span className={`flex-1 text-left text-base font-medium transition-colors duration-200 ${
+                  <span className={`flex-1 text-left text-lg font-medium transition-colors duration-300 ${
                     activeMenu === item.id ? 'text-white' : 'text-gray-700'
                   }`}>
                     {item.label}
                   </span>
                 )}
-                {/* Tooltip - shows on hover for both collapsed and expanded states */}
-                <div className={`absolute left-full ml-3 px-3 py-1.5 bg-[#5aa9e6] text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-200 whitespace-nowrap z-50 shadow-lg ${
-                  !sidebarCollapsed ? 'hidden' : ''
-                }`}>
-                  {item.label}
-                </div>
-                {/* Hover label for expanded state */}
-                {!sidebarCollapsed && (
-                  <div className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-200 whitespace-nowrap z-50">
+                {/* Tooltip - shows on hover when collapsed */}
+                {sidebarCollapsed && (
+                  <div className="absolute left-full ml-3 px-3 py-2 bg-[#5aa9e6] text-white text-sm font-medium rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-300 ease-in-out whitespace-nowrap z-50 shadow-lg transform group-hover:translate-x-0 translate-x-[-4px]">
                     {item.label}
                   </div>
                 )}
@@ -312,8 +319,8 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
 
         {/* Footer - User Profile */}
         <div className={`border-t border-[#BBDEFB] ${sidebarCollapsed ? 'p-2' : 'p-4'}`}>
-          <div className={`bg-white/50 rounded-lg ${sidebarCollapsed ? 'p-2' : 'p-3'} flex items-center ${sidebarCollapsed ? 'justify-center' : 'gap-3'}`}>
-            <div className="w-10 h-10 bg-[#5aa9e6] rounded-full flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">
+          <div className={`${sidebarCollapsed ? 'p-2' : 'p-3'} flex items-center ${sidebarCollapsed ? 'justify-center' : 'gap-3'}`}>
+            <div className="w-10 h-10 bg-[#5aa9e6] rounded-full flex items-center justify-center text-white font-semibold text-sm flex-shrink-0 cursor-pointer">
               {userName.charAt(0).toUpperCase()}
             </div>
             {!sidebarCollapsed && (
@@ -322,7 +329,7 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
                   <div className="text-sm font-semibold text-gray-900 truncate">{userName}</div>
                   <div className="text-xs text-gray-500 truncate">{userEmail}</div>
                 </div>
-                <button className="p-1 hover:bg-white/50 rounded transition-colors flex-shrink-0">
+                <button className="p-1 hover:bg-white/50 rounded transition-colors flex-shrink-0 cursor-pointer">
                   <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
                   </svg>
