@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Image from 'next/image'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCalendar, faBook, faBrain, faUsers, faGear } from '@fortawesome/free-solid-svg-icons'
 
 export interface DashboardLayoutProps {
   user: any
@@ -55,27 +57,27 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
     {
       id: 'home',
       label: 'Home',
-      iconImage: '/calendar.png',
+      icon: faCalendar,
     },
     {
       id: 'courses',
       label: 'Courses',
-      iconImage: '/book.png',
+      icon: faBook,
     },
     {
       id: 'studyTools',
       label: 'Study Tools',
-      iconImage: '/brainstorm.png',
+      icon: faBrain,
     },
     {
       id: 'collaboration',
       label: 'Collaboration',
-      iconImage: '/group.png',
+      icon: faUsers,
     },
     {
       id: 'account',
       label: 'Account',
-      iconImage: '/settings.png',
+      icon: faGear,
     },
   ]
 
@@ -221,7 +223,7 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
           >
             <div className="w-5 h-5 flex items-center justify-center flex-shrink-0">
               <Image
-                src="/grid.png"
+                src="/dock_to_right_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.png"
                 alt="Toggle sidebar"
                 width={20}
                 height={20}
@@ -276,14 +278,12 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
                 }`}
               >
                 <div className={`${sidebarCollapsed ? 'w-6 h-6' : 'w-6 h-6'} flex items-center justify-center flex-shrink-0`}>
-                  <Image
-                    src={item.iconImage}
-                    alt={item.label}
-                    width={24}
-                    height={24}
-                    className={`object-contain transition-all duration-200 ${
-                      activeMenu === item.id ? 'brightness-0 invert' : ''
+                  <FontAwesomeIcon
+                    icon={item.icon}
+                    className={`w-5 h-5 transition-all duration-200 ${
+                      activeMenu === item.id ? 'text-white' : 'text-gray-700'
                     }`}
+                    style={{ fontWeight: 300 }}
                   />
                 </div>
                 {!sidebarCollapsed && (
