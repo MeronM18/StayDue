@@ -231,7 +231,12 @@ export default function OnboardingPage() {
         // Update valid colleges set with all fetched suggestions
         const collegeNames = new Set(suggestions.map((c: any) => c.name.trim().toLowerCase()))
         setValidColleges(prev => new Set([...prev, ...collegeNames]))
-        setShowSuggestions(suggestions.length > 0)
+        // Always show suggestions if we have results and user hasn't selected one yet
+        if (suggestions.length > 0) {
+          setShowSuggestions(true)
+        } else {
+          setShowSuggestions(false)
+        }
       } catch (error) {
         console.error('Error fetching colleges:', error)
         // Don't break the UI - just show no suggestions
@@ -243,18 +248,27 @@ export default function OnboardingPage() {
     }
 
     // Debounce the search - trigger after user stops typing for 200ms
+    // This ensures API is called as user types, but not on every keystroke
     const timeoutId = setTimeout(() => {
       const query = formData.collegeUniversity?.trim() || ''
       if (query.length >= 1) {
-        searchColleges(query)
+        // Always fetch from API when user is typing (unless it matches selected college exactly)
+        const selectedValue = selectedCollege?.trim() || ''
+        // If user is typing something different from what they selected, search
+        // This allows re-searching even if they selected something before
+        if (!selectedValue || query.toLowerCase() !== selectedValue.toLowerCase()) {
+          searchColleges(query)
+        }
       } else {
+        // Clear everything if input is empty
         setCollegeSuggestions([])
         setShowSuggestions(false)
+        setSearchingColleges(false)
       }
     }, 200) // 200ms debounce for faster response
 
     return () => clearTimeout(timeoutId)
-  }, [formData.collegeUniversity, step])
+  }, [formData.collegeUniversity, step, selectedCollege])
 
   // Hide suggestions when not on question 1, and set selected college when returning to step 1
   useEffect(() => {
@@ -661,10 +675,13 @@ export default function OnboardingPage() {
               type="text"
               value={formData.collegeUniversity}
                 onChange={(e) => {
-                  setFormData({ ...formData, collegeUniversity: e.target.value })
-                  // Clear selection when user starts typing
-                  if (e.target.value !== selectedCollege) {
+                  const newValue = e.target.value
+                  setFormData({ ...formData, collegeUniversity: newValue })
+                  // Clear selection when user starts typing/editing
+                  if (newValue !== selectedCollege) {
                     setSelectedCollege('')
+                    // If user is actively typing and we have suggestions, keep them visible
+                    // The debounced search will update suggestions as they type
                   }
                 }}
                 onFocus={() => {
