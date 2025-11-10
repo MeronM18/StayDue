@@ -216,16 +216,20 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
           )}
           <button
             onClick={toggleSidebar}
-            className={`p-1.5 hover:bg-white/50 rounded-lg transition-colors ${sidebarCollapsed ? 'w-full flex justify-center' : ''}`}
+            className={`p-1.5 hover:bg-white/50 rounded-lg transition-colors flex items-center justify-center ${sidebarCollapsed ? 'w-full' : ''}`}
             title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
-            <Image
-              src="/grid.png"
-              alt="Toggle sidebar"
-              width={20}
-              height={20}
-              className="object-contain"
-            />
+            <div className="w-5 h-5 flex items-center justify-center">
+              <Image
+                src="/grid.png"
+                alt="Toggle sidebar"
+                width={20}
+                height={20}
+                className="object-contain w-full h-full"
+                unoptimized
+                priority
+              />
+            </div>
           </button>
         </div>
 
