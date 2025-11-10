@@ -124,8 +124,7 @@ export default function Home() {
         </h1>
             <div className="mt-4 relative">
               <p className="text-xl text-[#2E2E2E] opacity-90" style={{ lineHeight: '1.8' }}>
-                <Highlight color="mint">StayDue automatically extracts assignments, syncs with your calendar, and sends reminders so you can focus on learning.</Highlight>
-              </p>
+              <Highlight color="mint">StayDue organizes your entire semester in seconds—pulling dates from your syllabi, updating your calendar, and reminding you before every deadline.</Highlight>              </p>
             </div>
           </div>
 

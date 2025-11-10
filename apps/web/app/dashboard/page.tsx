@@ -1,63 +1,70 @@
-import { requireOnboarding } from '@/lib/auth-helpers'
-import { Button } from '@staydue/ui'
-import SignOutButton from './sign-out-button'
+'use client'
 
-export default async function DashboardPage() {
-  const { user, profile } = await requireOnboarding()
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
+import DashboardLayout from './dashboard-layout'
 
-  return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
-      <div className="w-full max-w-4xl space-y-8 rounded-lg bg-white p-8 shadow-lg dark:bg-gray-800">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-              Dashboard
-            </h1>
-            <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-              Welcome back, {user.email}!
-            </p>
-          </div>
-          <SignOutButton />
-        </div>
+export default function DashboardPage() {
+  const [user, setUser] = useState<any>(null)
+  const [profile, setProfile] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
+  const [isAnimating, setIsAnimating] = useState(true)
+  const router = useRouter()
 
-        <div className="space-y-4">
-          <div className="rounded-md border border-gray-200 p-4 dark:border-gray-700">
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-              User Information
-            </h2>
-            <div className="mt-2 space-y-1 text-sm text-gray-600 dark:text-gray-400">
-              <p>
-                <strong>Email:</strong> {user.email}
-              </p>
-              <p>
-                <strong>Name:</strong>{' '}
-                {user.user_metadata?.full_name ||
-                  user.user_metadata?.name ||
-                  'Not provided'}
-              </p>
-              <p>
-                <strong>User ID:</strong> {user.id}
-              </p>
-            </div>
-          </div>
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const supabase = createClient()
+        const { data: { user: authUser } } = await supabase.auth.getUser()
+        
+        if (!authUser) {
+          router.push('/')
+          return
+        }
 
-          <div className="rounded-md border border-gray-200 p-4 dark:border-gray-700">
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-              Google Calendar Integration
-            </h2>
-            <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-              {user.app_metadata?.provider === 'google'
-                ? '✅ Connected to Google Calendar'
-                : '⚠️ Google Calendar access not detected'}
-            </p>
-            <p className="mt-1 text-xs text-gray-500 dark:text-gray-500">
-              Note: Calendar access requires additional OAuth scopes. Check
-              Supabase dashboard configuration.
-            </p>
-          </div>
+        const { data: userProfile } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', authUser.id)
+          .single()
+
+        if (!userProfile?.onboarding_completed) {
+          router.push('/onboarding')
+          return
+        }
+
+        setUser(authUser)
+        setProfile(userProfile)
+        setLoading(false)
+
+        // Smooth welcome animation
+        setTimeout(() => {
+          setIsAnimating(false)
+        }, 500)
+      } catch (error) {
+        console.error('Error fetching user data:', error)
+        router.push('/')
+      }
+    }
+
+    fetchUserData()
+  }, [router])
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#F5F5F5]">
+        <div className="text-center">
+          <div className="mb-4 h-12 w-12 animate-spin rounded-full border-4 border-[#5aa9e6] border-t-transparent mx-auto"></div>
+          <p className="text-gray-600">Loading your dashboard...</p>
         </div>
       </div>
+    )
+  }
+
+  return (
+    <div className={`transition-opacity duration-500 ${isAnimating ? 'opacity-0' : 'opacity-100'}`}>
+      <DashboardLayout user={user} profile={profile} />
     </div>
   )
 }
-
