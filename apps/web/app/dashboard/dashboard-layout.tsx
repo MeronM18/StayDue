@@ -219,14 +219,15 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
             className={`p-1.5 hover:bg-white/50 rounded-lg transition-colors flex items-center justify-center ${sidebarCollapsed ? 'w-full' : ''}`}
             title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
-            <img
-              src="/grid.png"
-              alt="Toggle sidebar"
-              className="w-5 h-5 object-contain"
-              onError={(e) => {
-                console.error('Failed to load grid.png:', e);
-              }}
-            />
+            <div className="w-5 h-5 flex items-center justify-center flex-shrink-0">
+              <Image
+                src="/grid.png"
+                alt="Toggle sidebar"
+                width={20}
+                height={20}
+                className="object-contain"
+              />
+            </div>
           </button>
         </div>
 
