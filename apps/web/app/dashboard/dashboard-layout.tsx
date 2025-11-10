@@ -276,7 +276,7 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
               <button
                 key={item.id}
                 onClick={() => setActiveMenu(item.id)}
-                className={`w-full flex items-center ${sidebarCollapsed ? 'justify-center' : 'gap-3'} ${sidebarCollapsed ? 'px-2 py-3.5' : 'px-3 py-3.5'} transition-all duration-300 ease-in-out relative group mb-1 cursor-pointer ${
+                className={`w-full flex items-center ${sidebarCollapsed ? 'justify-center' : 'gap-3'} ${sidebarCollapsed ? 'px-2 py-3.5' : 'px-3 py-3.5'} relative group mb-1 cursor-pointer ${
                   activeMenu === item.id
                     ? 'bg-[#5aa9e6] text-white shadow-sm'
                     : 'text-gray-700 hover:bg-white/50'
@@ -284,23 +284,24 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
                 style={{
                   borderRadius: sidebarCollapsed && activeMenu === item.id 
                     ? '9999px' 
-                    : sidebarCollapsed 
-                    ? '0.5rem' 
                     : '0.5rem',
-                  transition: 'all 300ms ease-in-out'
+                  transitionProperty: 'border-radius, background-color, padding, gap',
+                  transitionDuration: '300ms',
+                  transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+                  willChange: 'border-radius'
                 }}
               >
-                <div className={`${sidebarCollapsed ? 'w-7 h-7' : 'w-7 h-7'} flex items-center justify-center flex-shrink-0`}>
+                <div className={`${sidebarCollapsed ? 'w-7 h-7' : 'w-7 h-7'} flex items-center justify-center flex-shrink-0 cursor-pointer`}>
                   <FontAwesomeIcon
                     icon={item.icon}
-                    className={`${sidebarCollapsed ? 'w-6 h-6' : 'w-6 h-6'} transition-all duration-300 ${
+                    className={`${sidebarCollapsed ? 'w-6 h-6' : 'w-6 h-6'} transition-all duration-300 cursor-pointer ${
                       activeMenu === item.id ? 'text-white' : 'text-gray-700'
                     }`}
                     style={{ fontWeight: 300 }}
                   />
                 </div>
                 {!sidebarCollapsed && (
-                  <span className={`flex-1 text-left text-lg font-medium transition-colors duration-300 ${
+                  <span className={`flex-1 text-left text-lg font-medium transition-colors duration-300 cursor-pointer ${
                     activeMenu === item.id ? 'text-white' : 'text-gray-700'
                   }`}>
                     {item.label}
