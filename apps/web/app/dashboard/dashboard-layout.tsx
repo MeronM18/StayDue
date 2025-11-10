@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
@@ -12,8 +12,24 @@ export interface DashboardLayoutProps {
 export default function DashboardLayout({ user, profile }: DashboardLayoutProps) {
   const [activeMenu, setActiveMenu] = useState('dashboard')
   const [foldersExpanded, setFoldersExpanded] = useState(true)
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const router = useRouter()
   const supabase = createClient()
+
+  // Load sidebar state from localStorage on mount
+  useEffect(() => {
+    const savedState = localStorage.getItem('sidebarCollapsed')
+    if (savedState !== null) {
+      setSidebarCollapsed(JSON.parse(savedState))
+    }
+  }, [])
+
+  // Save sidebar state to localStorage when it changes
+  const toggleSidebar = () => {
+    const newState = !sidebarCollapsed
+    setSidebarCollapsed(newState)
+    localStorage.setItem('sidebarCollapsed', JSON.stringify(newState))
+  }
 
   const handleSignOut = async () => {
     await supabase.auth.signOut()
@@ -131,97 +147,140 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
 
   return (
     <div className="flex h-screen bg-[#F5F5F5] overflow-hidden">
-      {/* Left Sidebar - Modern Design */}
-      <aside className="w-[280px] bg-white border-r border-gray-200 flex flex-col">
-        {/* Header - Logo */}
-        <div className="px-6 py-5 border-b border-gray-200">
-          <div className="flex items-center gap-3">
+      {/* Left Sidebar - Collapsible Design */}
+      <aside className={`bg-white border-r border-gray-200 flex flex-col transition-all duration-300 ease-in-out ${
+        sidebarCollapsed ? 'w-[72px]' : 'w-[280px]'
+      }`}>
+        {/* Header - Logo & Toggle */}
+        <div className={`${sidebarCollapsed ? 'px-3' : 'px-6'} py-5 border-b border-gray-200 flex items-center ${sidebarCollapsed ? 'justify-center' : 'justify-between'}`}>
+          {!sidebarCollapsed && (
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-[#5aa9e6] rounded-lg flex items-center justify-center text-white font-bold text-lg">
+                S
+              </div>
+              <span className="font-bold text-lg text-gray-900">StayDue</span>
+            </div>
+          )}
+          {sidebarCollapsed && (
             <div className="w-10 h-10 bg-[#5aa9e6] rounded-lg flex items-center justify-center text-white font-bold text-lg">
               S
             </div>
-            <span className="font-bold text-lg text-gray-900">StayDue</span>
-          </div>
+          )}
+          {!sidebarCollapsed && (
+            <button
+              onClick={toggleSidebar}
+              className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
+              title="Collapse sidebar"
+            >
+              <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+              </svg>
+            </button>
+          )}
         </div>
 
         {/* Navigation - Scrollable */}
         <nav className="flex-1 overflow-y-auto">
-          <div className="px-3 py-4">
+          <div className={`py-4 ${sidebarCollapsed ? 'px-2' : 'px-3'}`}>
             {/* Primary Navigation */}
             {menuItems.map((item) => (
               <button
                 key={item.id}
                 onClick={() => setActiveMenu(item.id)}
-                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors mb-1 ${
+                className={`w-full flex items-center ${sidebarCollapsed ? 'justify-center' : 'gap-3'} px-3 py-2.5 rounded-lg transition-colors mb-1 relative group ${
                   activeMenu === item.id
                     ? 'bg-gray-900 text-white'
                     : 'text-gray-700 hover:bg-gray-50'
                 }`}
+                title={sidebarCollapsed ? item.label : undefined}
               >
                 <Icon name={item.icon} className={`w-5 h-5 ${activeMenu === item.id ? 'text-white' : 'text-gray-500'}`} />
-                <span className={`flex-1 text-left font-medium ${activeMenu === item.id ? 'text-white' : 'text-gray-700'}`}>
-                  {item.label}
-                </span>
-                {item.badge && (
-                  <span className={`px-2 py-0.5 text-xs font-semibold rounded-full ${
-                    activeMenu === item.id 
-                      ? 'bg-white/20 text-white' 
-                      : 'bg-gray-100 text-gray-600'
-                  }`}>
-                    {item.badge}
-                  </span>
+                {!sidebarCollapsed && (
+                  <>
+                    <span className={`flex-1 text-left font-medium ${activeMenu === item.id ? 'text-white' : 'text-gray-700'}`}>
+                      {item.label}
+                    </span>
+                    {item.badge && (
+                      <span className={`px-2 py-0.5 text-xs font-semibold rounded-full ${
+                        activeMenu === item.id 
+                          ? 'bg-white/20 text-white' 
+                          : 'bg-gray-100 text-gray-600'
+                      }`}>
+                        {item.badge}
+                      </span>
+                    )}
+                  </>
+                )}
+                {/* Tooltip for collapsed state */}
+                {sidebarCollapsed && (
+                  <div className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
+                    {item.label}
+                    {item.badge && ` (${item.badge})`}
+                  </div>
                 )}
               </button>
             ))}
 
             {/* Divider */}
-            <div className="my-4 border-t border-gray-200"></div>
+            {!sidebarCollapsed && <div className="my-4 border-t border-gray-200"></div>}
 
             {/* Folders Section */}
-            <div>
-              <button
-                onClick={() => setFoldersExpanded(!foldersExpanded)}
-                className="w-full flex items-center justify-between px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider hover:text-gray-700 transition-colors"
-              >
-                <span>Folders</span>
-                <svg 
-                  className={`w-4 h-4 transition-transform ${foldersExpanded ? 'rotate-180' : ''}`}
-                  fill="none" 
-                  stroke="currentColor" 
-                  viewBox="0 0 24 24"
+            {!sidebarCollapsed && (
+              <div>
+                <button
+                  onClick={() => setFoldersExpanded(!foldersExpanded)}
+                  className="w-full flex items-center justify-between px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider hover:text-gray-700 transition-colors"
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              
-              {foldersExpanded && (
-                <div className="mt-2 space-y-1">
-                  {folders.map((folder) => (
-                    <button
-                      key={folder.id}
-                      className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
-                    >
-                      <span className="text-sm font-medium">{folder.label}</span>
-                      <span className="px-2 py-0.5 text-xs font-semibold bg-gray-100 text-gray-600 rounded-full">
-                        {folder.count}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
+                  <span>Folders</span>
+                  <svg 
+                    className={`w-4 h-4 transition-transform ${foldersExpanded ? 'rotate-180' : ''}`}
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                
+                {foldersExpanded && (
+                  <div className="mt-2 space-y-1">
+                    {folders.map((folder) => (
+                      <button
+                        key={folder.id}
+                        className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+                      >
+                        <span className="text-sm font-medium">{folder.label}</span>
+                        <span className="px-2 py-0.5 text-xs font-semibold bg-gray-100 text-gray-600 rounded-full">
+                          {folder.count}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Divider */}
-            <div className="my-4 border-t border-gray-200"></div>
+            {!sidebarCollapsed && <div className="my-4 border-t border-gray-200"></div>}
 
             {/* Utility Navigation */}
             <div className="space-y-1">
               {utilityItems.map((item) => (
                 <button
                   key={item.id}
-                  className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+                  className={`w-full flex items-center ${sidebarCollapsed ? 'justify-center' : 'gap-3'} px-3 py-2.5 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors relative group`}
+                  title={sidebarCollapsed ? item.label : undefined}
                 >
                   <Icon name={item.icon} className="w-5 h-5 text-gray-500" />
-                  <span className="flex-1 text-left font-medium text-sm">{item.label}</span>
+                  {!sidebarCollapsed && (
+                    <span className="flex-1 text-left font-medium text-sm">{item.label}</span>
+                  )}
+                  {/* Tooltip for collapsed state */}
+                  {sidebarCollapsed && (
+                    <div className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
+                      {item.label}
+                    </div>
+                  )}
                 </button>
               ))}
             </div>
@@ -229,36 +288,70 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
         </nav>
 
         {/* Footer - Support, Settings, User Profile */}
-        <div className="border-t border-gray-200 p-4 space-y-3">
+        <div className={`border-t border-gray-200 ${sidebarCollapsed ? 'p-2' : 'p-4'} space-y-3`}>
           {/* Support & Settings */}
-          <div className="flex items-center gap-2">
-            <button className="flex items-center gap-2 px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors flex-1">
-              <Icon name="support" className="w-4 h-4 text-gray-500" />
-              <span className="text-sm font-medium">Support</span>
-            </button>
-            <button className="flex items-center gap-2 px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors flex-1">
-              <Icon name="settings" className="w-4 h-4 text-gray-500" />
-              <span className="text-sm font-medium">Settings</span>
-            </button>
-          </div>
+          {!sidebarCollapsed ? (
+            <div className="flex items-center gap-2">
+              <button className="flex items-center gap-2 px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors flex-1">
+                <Icon name="support" className="w-4 h-4 text-gray-500" />
+                <span className="text-sm font-medium">Support</span>
+              </button>
+              <button className="flex items-center gap-2 px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors flex-1">
+                <Icon name="settings" className="w-4 h-4 text-gray-500" />
+                <span className="text-sm font-medium">Settings</span>
+              </button>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-2">
+              <button className="flex items-center justify-center p-2 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors relative group" title="Support">
+                <Icon name="support" className="w-4 h-4 text-gray-500" />
+                <div className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
+                  Support
+                </div>
+              </button>
+              <button className="flex items-center justify-center p-2 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors relative group" title="Settings">
+                <Icon name="settings" className="w-4 h-4 text-gray-500" />
+                <div className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
+                  Settings
+                </div>
+              </button>
+            </div>
+          )}
 
           {/* User Profile Card */}
-          <div className="bg-gray-50 rounded-lg p-3 flex items-center gap-3">
+          <div className={`bg-gray-50 rounded-lg ${sidebarCollapsed ? 'p-2' : 'p-3'} flex items-center ${sidebarCollapsed ? 'justify-center' : 'gap-3'}`}>
             <div className="w-10 h-10 bg-[#5aa9e6] rounded-full flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">
               {userName.charAt(0).toUpperCase()}
             </div>
-            <div className="flex-1 min-w-0">
-              <div className="text-sm font-semibold text-gray-900 truncate">{userName}</div>
-              <div className="text-xs text-gray-500 truncate">{userEmail}</div>
-            </div>
-            <button className="p-1 hover:bg-gray-200 rounded transition-colors flex-shrink-0">
-              <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-              </svg>
-            </button>
+            {!sidebarCollapsed && (
+              <>
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-semibold text-gray-900 truncate">{userName}</div>
+                  <div className="text-xs text-gray-500 truncate">{userEmail}</div>
+                </div>
+                <button className="p-1 hover:bg-gray-200 rounded transition-colors flex-shrink-0">
+                  <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                  </svg>
+                </button>
+              </>
+            )}
           </div>
         </div>
       </aside>
+
+      {/* Expand Button (when collapsed) */}
+      {sidebarCollapsed && (
+        <button
+          onClick={toggleSidebar}
+          className="absolute left-[72px] top-4 z-10 p-2 bg-white border border-gray-200 rounded-r-lg shadow-sm hover:bg-gray-50 transition-colors"
+          title="Expand sidebar"
+        >
+          <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+          </svg>
+        </button>
+      )}
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col overflow-hidden">
