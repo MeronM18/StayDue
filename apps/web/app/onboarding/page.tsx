@@ -70,6 +70,13 @@ export default function OnboardingPage() {
   const [validColleges, setValidColleges] = useState<Set<string>>(new Set())
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [searchingColleges, setSearchingColleges] = useState(false)
+  
+  // Majors/Minors autocomplete state
+  const [majorSuggestions, setMajorSuggestions] = useState<Array<{ name: string }>>([])
+  const [selectedMajor, setSelectedMajor] = useState<string>('')
+  const [validMajors, setValidMajors] = useState<Set<string>>(new Set())
+  const [showMajorSuggestions, setShowMajorSuggestions] = useState(false)
+  const [searchingMajors, setSearchingMajors] = useState(false)
 
   // Preload all images to avoid delay when switching - ensure they're fully cached
   useEffect(() => {
@@ -266,7 +273,84 @@ export default function OnboardingPage() {
     return () => clearTimeout(timeoutId)
   }, [formData.collegeUniversity, step, selectedCollege])
 
-  // Hide suggestions when not on question 1, and set selected college when returning to step 1
+  // Debounced search for majors/minors
+  useEffect(() => {
+    // Only search when on step 2 (major/minor question)
+    if (step !== 2) {
+      return
+    }
+
+    const searchMajors = async (query: string) => {
+      const trimmedQuery = query.trim()
+      
+      // Require at least 1 character to search
+      if (trimmedQuery.length < 1) {
+        setMajorSuggestions([])
+        setShowMajorSuggestions(false)
+        return
+      }
+
+      console.log('Searching for majors with query:', trimmedQuery)
+      setSearchingMajors(true)
+      try {
+        // Use Next.js API route
+        const apiUrl = `/api/majors?name=${encodeURIComponent(trimmedQuery)}`
+        console.log('Fetching from API:', apiUrl)
+        const response = await fetch(apiUrl)
+        
+        if (!response.ok) {
+          console.warn(`API returned ${response.status}, showing empty suggestions`)
+          setMajorSuggestions([])
+          setShowMajorSuggestions(false)
+          return
+        }
+        
+        const suggestions = await response.json()
+        
+        // Ensure data is an array and has valid structure
+        if (!Array.isArray(suggestions)) {
+          console.error('API returned non-array data:', suggestions)
+          setMajorSuggestions([])
+          setShowMajorSuggestions(false)
+          return
+        }
+        
+        console.log('Major suggestions found:', suggestions.length, suggestions)
+        setMajorSuggestions(suggestions)
+        // Update valid majors set with all fetched suggestions
+        const majorNames = new Set(suggestions.map((m: any) => m.name.trim().toLowerCase()))
+        setValidMajors(prev => new Set([...prev, ...majorNames]))
+        // Always show suggestions if we have results
+        setShowMajorSuggestions(suggestions.length > 0)
+      } catch (error) {
+        console.error('Error fetching majors:', error)
+        setMajorSuggestions([])
+        setShowMajorSuggestions(false)
+      } finally {
+        setSearchingMajors(false)
+      }
+    }
+
+    // Debounce the search - trigger after user stops typing for 200ms
+    const timeoutId = setTimeout(() => {
+      const query = formData.majorMinors?.trim() || ''
+      if (query.length >= 1) {
+        // Always fetch from API when user is typing (unless it matches selected major exactly)
+        const selectedValue = selectedMajor?.trim() || ''
+        if (!selectedValue || query.toLowerCase() !== selectedValue.toLowerCase()) {
+          searchMajors(query)
+        }
+      } else {
+        setMajorSuggestions([])
+        setShowMajorSuggestions(false)
+        setSearchingMajors(false)
+      }
+    }, 200) // 200ms debounce
+
+    return () => clearTimeout(timeoutId)
+  }, [formData.majorMinors, step, selectedMajor])
+
+  // Hide suggestions when not on the relevant question
   useEffect(() => {
     if (step !== 1) {
       setShowSuggestions(false)
@@ -275,13 +359,24 @@ export default function OnboardingPage() {
       // Don't clear validColleges - we need them for validation
     } else {
       // When returning to step 1, if there's a value in the input, check if it's valid
-      // Only do this on initial mount or when step changes, not when user is actively typing
       if (formData.collegeUniversity && formData.collegeUniversity.trim().length > 0 && !searchingColleges) {
         const collegeValue = formData.collegeUniversity.trim()
-        // If the value is in valid colleges and matches selected college, keep it selected
-        // But don't hide suggestions if user is actively searching
         if (validColleges.has(collegeValue.toLowerCase()) && selectedCollege === collegeValue) {
-          // User has a valid selected college - don't interfere
+          return
+        }
+      }
+    }
+    
+    if (step !== 2) {
+      setShowMajorSuggestions(false)
+      setMajorSuggestions([])
+      setSearchingMajors(false)
+      // Don't clear validMajors - we need them for validation
+    } else {
+      // When returning to step 2, if there's a value in the input, check if it's valid
+      if (formData.majorMinors && formData.majorMinors.trim().length > 0 && !searchingMajors) {
+        const majorValue = formData.majorMinors.trim()
+        if (validMajors.has(majorValue.toLowerCase()) && selectedMajor === majorValue) {
           return
         }
       }
@@ -305,8 +400,15 @@ export default function OnboardingPage() {
     }
 
     if (currentStep === 2) {
-      if (!formData.majorMinors.trim()) {
+      const majorValue = formData.majorMinors.trim()
+      if (!majorValue) {
         newErrors.majorMinors = 'Please enter your major/minors'
+      } else if (!selectedMajor || selectedMajor.trim().toLowerCase() !== majorValue.toLowerCase()) {
+        // Check if the entered value matches a valid major from the suggestions
+        const isValidMajor = validMajors.has(majorValue.toLowerCase())
+        if (!isValidMajor) {
+          newErrors.majorMinors = 'Please select a major/minor from the dropdown list'
+        }
       }
     }
 
@@ -738,14 +840,63 @@ export default function OnboardingPage() {
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-8" style={{ color: '#2E2E2E', fontFamily: 'var(--font-manrope)' }}>
               What major and/or minors are you studying?
             </h2>
-            <input
-              type="text"
-              value={formData.majorMinors}
-              onChange={(e) => setFormData({ ...formData, majorMinors: e.target.value })}
-              placeholder="E.g., Computer Science, Minor in Business"
-              className="w-full rounded-lg border-2 border-gray-300 px-6 py-4 text-lg text-[#2E2E2E] focus:border-[#5aa9e6] focus:outline-none transition-colors"
-              style={{ fontFamily: 'var(--font-nunito-sans)' }}
-            />
+            <div className="relative">
+              <input
+                type="text"
+                value={formData.majorMinors}
+                onChange={(e) => {
+                  const newValue = e.target.value
+                  setFormData({ ...formData, majorMinors: newValue })
+                  // Clear selection when user starts typing/editing
+                  if (newValue !== selectedMajor) {
+                    setSelectedMajor('')
+                  }
+                }}
+                onFocus={() => {
+                  // Show suggestions if we have them
+                  if (majorSuggestions.length > 0) {
+                    setShowMajorSuggestions(true)
+                  }
+                }}
+                onBlur={() => {
+                  // Delay to allow click on suggestion
+                  setTimeout(() => setShowMajorSuggestions(false), 200)
+                }}
+                placeholder="E.g., Computer Science, Minor in Business"
+                className="w-full rounded-lg border-2 border-gray-300 px-6 py-4 text-lg text-[#2E2E2E] focus:border-[#5aa9e6] focus:outline-none transition-colors"
+                style={{ fontFamily: 'var(--font-nunito-sans)' }}
+              />
+              {searchingMajors && (
+                <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
+                  <div className="w-5 h-5 border-2 border-[#5aa9e6] border-t-transparent rounded-full animate-spin"></div>
+                </div>
+              )}
+              {showMajorSuggestions && majorSuggestions.length > 0 && (
+                <div className="absolute z-50 w-full mt-2 bg-white border-2 border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                  {majorSuggestions.map((major, index) => (
+                    <button
+                      key={index}
+                      type="button"
+                      onClick={() => {
+                        setFormData({ ...formData, majorMinors: major.name })
+                        setSelectedMajor(major.name)
+                        setShowMajorSuggestions(false)
+                        // Clear any errors when a valid selection is made
+                        setErrors(prev => {
+                          const newErrors = { ...prev }
+                          delete newErrors.majorMinors
+                          return newErrors
+                        })
+                      }}
+                      className="w-full text-left px-6 py-3 hover:bg-[#5aa9e6]/10 transition-colors cursor-pointer border-b border-gray-100 last:border-b-0"
+                      style={{ fontFamily: 'var(--font-nunito-sans)' }}
+                    >
+                      <div className="font-medium text-[#2E2E2E]">{major.name}</div>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
             {errors.majorMinors && (
               <p className="text-sm text-red-600 mt-2">{errors.majorMinors}</p>
             )}
