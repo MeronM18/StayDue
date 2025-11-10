@@ -70,7 +70,7 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
     {
       id: 'collaboration',
       label: 'Collaboration',
-      iconImage: '/group-chat.png',
+      iconImage: '/group.png',
     },
     {
       id: 'account',
