@@ -223,7 +223,7 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
           >
             <div className="w-5 h-5 flex items-center justify-center flex-shrink-0">
               <Image
-                src="/dock_to_right_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.png"
+                src="/dock_to_right_24dp_000000_FILL0_wght400_GRAD0_opsz24.png"
                 alt="Toggle sidebar"
                 width={20}
                 height={20}
