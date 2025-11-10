@@ -219,9 +219,13 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
             className={`p-1.5 hover:bg-white/50 rounded-lg transition-colors ${sidebarCollapsed ? 'w-full flex justify-center' : ''}`}
             title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
-            <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={sidebarCollapsed ? "M13 5l7 7-7 7M5 5l7 7-7 7" : "M11 19l-7-7 7-7m8 14l-7-7 7-7"} />
-            </svg>
+            <Image
+              src="/grid.png"
+              alt="Toggle sidebar"
+              width={20}
+              height={20}
+              className="object-contain"
+            />
           </button>
         </div>
 
@@ -263,34 +267,39 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
               <button
                 key={item.id}
                 onClick={() => setActiveMenu(item.id)}
-                className={`w-full flex items-center ${sidebarCollapsed ? 'justify-center' : 'gap-3'} ${sidebarCollapsed ? 'px-2 py-2.5' : 'px-3 py-2.5'} ${sidebarCollapsed && activeMenu === item.id ? 'rounded-full' : 'rounded-lg'} transition-all duration-200 ease-in-out relative group mb-1 ${
+                className={`w-full flex items-center ${sidebarCollapsed ? 'justify-center' : 'gap-3'} ${sidebarCollapsed ? 'px-2 py-3' : 'px-3 py-3'} ${sidebarCollapsed && activeMenu === item.id ? 'rounded-full' : 'rounded-lg'} transition-all duration-200 ease-in-out relative group mb-1 ${
                   activeMenu === item.id
                     ? 'bg-[#5aa9e6] text-white shadow-sm'
                     : 'text-gray-700 hover:bg-white/50'
                 }`}
-                title={sidebarCollapsed ? item.label : undefined}
               >
-                <div className={`${sidebarCollapsed ? 'w-5 h-5' : 'w-5 h-5'} flex items-center justify-center flex-shrink-0`}>
+                <div className={`${sidebarCollapsed ? 'w-6 h-6' : 'w-6 h-6'} flex items-center justify-center flex-shrink-0`}>
                   <Image
                     src={item.iconImage}
                     alt={item.label}
-                    width={20}
-                    height={20}
+                    width={24}
+                    height={24}
                     className={`object-contain transition-all duration-200 ${
                       activeMenu === item.id ? 'brightness-0 invert' : ''
                     }`}
                   />
                 </div>
                 {!sidebarCollapsed && (
-                  <span className={`flex-1 text-left text-sm font-medium transition-colors duration-200 ${
+                  <span className={`flex-1 text-left text-base font-medium transition-colors duration-200 ${
                     activeMenu === item.id ? 'text-white' : 'text-gray-700'
                   }`}>
                     {item.label}
                   </span>
                 )}
-                {/* Tooltip for collapsed state */}
-                {sidebarCollapsed && (
-                  <div className="absolute left-full ml-3 px-3 py-1.5 bg-[#5aa9e6] text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-200 whitespace-nowrap z-50 shadow-lg">
+                {/* Tooltip - shows on hover for both collapsed and expanded states */}
+                <div className={`absolute left-full ml-3 px-3 py-1.5 bg-[#5aa9e6] text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-200 whitespace-nowrap z-50 shadow-lg ${
+                  !sidebarCollapsed ? 'hidden' : ''
+                }`}>
+                  {item.label}
+                </div>
+                {/* Hover label for expanded state */}
+                {!sidebarCollapsed && (
+                  <div className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-200 whitespace-nowrap z-50">
                     {item.label}
                   </div>
                 )}
