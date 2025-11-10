@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import Image from 'next/image'
 
 export interface DashboardLayoutProps {
   user: any
@@ -11,8 +12,14 @@ export interface DashboardLayoutProps {
 
 export default function DashboardLayout({ user, profile }: DashboardLayoutProps) {
   const [activeMenu, setActiveMenu] = useState('dashboard')
-  const [foldersExpanded, setFoldersExpanded] = useState(true)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
+    home: true,
+    courses: false,
+    studyTools: false,
+    collaboration: false,
+    account: false,
+  })
   const router = useRouter()
   const supabase = createClient()
 
@@ -51,26 +58,62 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
     { label: 'Pending Projects', value: '2', subtitle: 'On Discuss' },
   ]
 
-  const menuItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: 'home' },
-    { id: 'tasks', label: 'Tasks', icon: 'tasks', badge: '12' },
-    { id: 'calendar', label: 'Calendar', icon: 'calendar' },
-    { id: 'analytics', label: 'Analytics', icon: 'analytics' },
+  const menuSections = [
+    {
+      id: 'home',
+      label: 'Home',
+      iconImage: '/calendar.png',
+      items: [
+        { id: 'dashboard', label: 'Dashboard', icon: 'home' },
+        { id: 'calendar', label: 'Calendar', icon: 'calendar' },
+      ],
+    },
+    {
+      id: 'courses',
+      label: 'Courses',
+      iconImage: '/book.png',
+      items: [
+        { id: 'all-courses', label: 'All Courses', icon: 'courses' },
+        { id: 'upload-syllabi', label: 'Upload Syllabi', icon: 'upload' },
+        { id: 'projects-planner', label: 'Projects / Planner', icon: 'projects' },
+        { id: 'flashcards', label: 'Flashcards', icon: 'flashcards' },
+      ],
+    },
+    {
+      id: 'studyTools',
+      label: 'Study Tools',
+      iconImage: '/brainstorm.png',
+      items: [
+        { id: 'ai-study-buddy', label: 'AI Study Buddy', icon: 'ai' },
+        { id: 'reminders', label: 'Reminders', icon: 'reminders' },
+      ],
+    },
+    {
+      id: 'collaboration',
+      label: 'Collaboration',
+      iconImage: '/group-chat.png',
+      items: [
+        { id: 'team', label: 'Team', icon: 'team' },
+      ],
+    },
+    {
+      id: 'account',
+      label: 'Account',
+      iconImage: '/settings.png',
+      items: [
+        { id: 'settings', label: 'Settings', icon: 'settings' },
+        { id: 'billing', label: 'Billing / Subscription', icon: 'billing' },
+      ],
+    },
   ]
 
-  const folders = [
-    { id: 'all', label: 'View all', count: 48 },
-    { id: 'recent', label: 'Recent', count: 6 },
-    { id: 'favorites', label: 'Favorites', count: 4 },
-    { id: 'shared', label: 'Shared', count: 22 },
-    { id: 'archived', label: 'Archived', count: 14 },
-  ]
+  const toggleSection = (sectionId: string) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [sectionId]: !prev[sectionId],
+    }))
+  }
 
-  const utilityItems = [
-    { id: 'files', label: 'All files', icon: 'files' },
-    { id: 'team', label: 'Team members', icon: 'team' },
-    { id: 'appearance', label: 'Appearance', icon: 'appearance' },
-  ]
 
   const teamMembers = [
     { name: 'Alexandra Deff', task: 'Working on Github Project Repository', status: 'Completed', statusColor: 'bg-green-500' },
@@ -108,6 +151,51 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
       analytics: (
         <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+        </svg>
+      ),
+      courses: (
+        <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+        </svg>
+      ),
+      upload: (
+        <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+        </svg>
+      ),
+      projects: (
+        <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+        </svg>
+      ),
+      flashcards: (
+        <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+        </svg>
+      ),
+      study: (
+        <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+        </svg>
+      ),
+      ai: (
+        <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+        </svg>
+      ),
+      reminders: (
+        <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+        </svg>
+      ),
+      account: (
+        <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+        </svg>
+      ),
+      billing: (
+        <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
         </svg>
       ),
       files: (
@@ -182,108 +270,79 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
         {/* Navigation - Scrollable */}
         <nav className="flex-1 overflow-y-auto">
           <div className={`py-4 ${sidebarCollapsed ? 'px-2' : 'px-3'}`}>
-            {/* Primary Navigation */}
-            {menuItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => setActiveMenu(item.id)}
-                className={`w-full flex items-center ${sidebarCollapsed ? 'justify-center' : 'gap-3'} px-3 py-2.5 rounded-lg transition-colors mb-1 relative group ${
-                  activeMenu === item.id
-                    ? 'bg-gray-900 text-white'
-                    : 'text-gray-700 hover:bg-gray-50'
-                }`}
-                title={sidebarCollapsed ? item.label : undefined}
-              >
-                <Icon name={item.icon} className={`w-5 h-5 ${activeMenu === item.id ? 'text-white' : 'text-gray-500'}`} />
-                {!sidebarCollapsed && (
-                  <>
-                    <span className={`flex-1 text-left font-medium ${activeMenu === item.id ? 'text-white' : 'text-gray-700'}`}>
-                      {item.label}
-                    </span>
-                    {item.badge && (
-                      <span className={`px-2 py-0.5 text-xs font-semibold rounded-full ${
-                        activeMenu === item.id 
-                          ? 'bg-white/20 text-white' 
-                          : 'bg-gray-100 text-gray-600'
-                      }`}>
-                        {item.badge}
-                      </span>
-                    )}
-                  </>
-                )}
-                {/* Tooltip for collapsed state */}
-                {sidebarCollapsed && (
-                  <div className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
-                    {item.label}
-                    {item.badge && ` (${item.badge})`}
-                  </div>
-                )}
-              </button>
-            ))}
-
-            {/* Divider */}
-            {!sidebarCollapsed && <div className="my-4 border-t border-gray-200"></div>}
-
-            {/* Folders Section */}
-            {!sidebarCollapsed && (
-              <div>
-                <button
-                  onClick={() => setFoldersExpanded(!foldersExpanded)}
-                  className="w-full flex items-center justify-between px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider hover:text-gray-700 transition-colors"
-                >
-                  <span>Folders</span>
-                  <svg 
-                    className={`w-4 h-4 transition-transform ${foldersExpanded ? 'rotate-180' : ''}`}
-                    fill="none" 
-                    stroke="currentColor" 
-                    viewBox="0 0 24 24"
+            {/* Menu Sections with Collapsible Children */}
+            {menuSections.map((section) => {
+              const isExpanded = expandedSections[section.id]
+              const hasActiveChild = section.items.some(item => activeMenu === item.id)
+              
+              return (
+                <div key={section.id} className="mb-1">
+                  {/* Section Header */}
+                  <button
+                    onClick={() => !sidebarCollapsed && toggleSection(section.id)}
+                    className={`w-full flex items-center ${sidebarCollapsed ? 'justify-center' : 'gap-3'} px-3 py-2.5 rounded-lg transition-colors relative group ${
+                      hasActiveChild
+                        ? 'bg-gray-900 text-white'
+                        : 'text-gray-700 hover:bg-gray-50'
+                    }`}
+                    title={sidebarCollapsed ? section.label : undefined}
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
-                
-                {foldersExpanded && (
-                  <div className="mt-2 space-y-1">
-                    {folders.map((folder) => (
-                      <button
-                        key={folder.id}
-                        className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
-                      >
-                        <span className="text-sm font-medium">{folder.label}</span>
-                        <span className="px-2 py-0.5 text-xs font-semibold bg-gray-100 text-gray-600 rounded-full">
-                          {folder.count}
+                    <div className="w-5 h-5 flex items-center justify-center flex-shrink-0">
+                      <Image
+                        src={section.iconImage}
+                        alt={section.label}
+                        width={20}
+                        height={20}
+                        className={`object-contain ${hasActiveChild ? 'brightness-0 invert' : ''}`}
+                      />
+                    </div>
+                    {!sidebarCollapsed && (
+                      <>
+                        <span className={`flex-1 text-left font-medium ${hasActiveChild ? 'text-white' : 'text-gray-700'}`}>
+                          {section.label}
                         </span>
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
+                        <svg 
+                          className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''} ${hasActiveChild ? 'text-white' : 'text-gray-500'}`}
+                          fill="none" 
+                          stroke="currentColor" 
+                          viewBox="0 0 24 24"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </>
+                    )}
+                    {/* Tooltip for collapsed state */}
+                    {sidebarCollapsed && (
+                      <div className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
+                        {section.label}
+                      </div>
+                    )}
+                  </button>
 
-            {/* Divider */}
-            {!sidebarCollapsed && <div className="my-4 border-t border-gray-200"></div>}
-
-            {/* Utility Navigation */}
-            <div className="space-y-1">
-              {utilityItems.map((item) => (
-                <button
-                  key={item.id}
-                  className={`w-full flex items-center ${sidebarCollapsed ? 'justify-center' : 'gap-3'} px-3 py-2.5 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors relative group`}
-                  title={sidebarCollapsed ? item.label : undefined}
-                >
-                  <Icon name={item.icon} className="w-5 h-5 text-gray-500" />
-                  {!sidebarCollapsed && (
-                    <span className="flex-1 text-left font-medium text-sm">{item.label}</span>
-                  )}
-                  {/* Tooltip for collapsed state */}
-                  {sidebarCollapsed && (
-                    <div className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
-                      {item.label}
+                  {/* Section Children */}
+                  {!sidebarCollapsed && isExpanded && (
+                    <div className="mt-1 ml-4 space-y-1 border-l-2 border-gray-200 pl-4">
+                      {section.items.map((item) => (
+                        <button
+                          key={item.id}
+                          onClick={() => setActiveMenu(item.id)}
+                          className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors relative group ${
+                            activeMenu === item.id
+                              ? 'bg-gray-900 text-white'
+                              : 'text-gray-700 hover:bg-gray-50'
+                          }`}
+                        >
+                          <Icon name={item.icon} className={`w-4 h-4 ${activeMenu === item.id ? 'text-white' : 'text-gray-500'}`} />
+                          <span className={`flex-1 text-left text-sm font-medium ${activeMenu === item.id ? 'text-white' : 'text-gray-700'}`}>
+                            {item.label}
+                          </span>
+                        </button>
+                      ))}
                     </div>
                   )}
-                </button>
-              ))}
-            </div>
+                </div>
+              )
+            })}
           </div>
         </nav>
 
