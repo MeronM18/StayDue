@@ -883,7 +883,7 @@ export default function OnboardingPage() {
                         setShowMajorSuggestionsMap(prev => ({ ...prev, [input.id]: false }))
                       }, 200)
                     }}
-                    placeholder="E.g., Computer Science, Minor in Business"
+                    placeholder="Search for your major/minor"
                     className="w-full rounded-lg border-2 border-gray-300 px-6 py-4 text-lg text-[#2E2E2E] focus:border-[#5aa9e6] focus:outline-none transition-colors"
                     style={{ fontFamily: 'var(--font-nunito-sans)' }}
                   />
