@@ -239,21 +239,18 @@ export default function OnboardingPage() {
     }
 
     // Debounce the search - trigger after user stops typing for 200ms
-    // Only search if the value doesn't match the selected college (user is actively typing)
     const timeoutId = setTimeout(() => {
       const query = formData.collegeUniversity?.trim() || ''
-      // Only search if query doesn't match selected college (user is editing)
-      if (query.length >= 1 && query !== selectedCollege) {
+      if (query.length >= 1) {
         searchColleges(query)
       } else {
         setCollegeSuggestions([])
         setShowSuggestions(false)
-        setSearchingColleges(false)
       }
     }, 200) // 200ms debounce for faster response
 
     return () => clearTimeout(timeoutId)
-  }, [formData.collegeUniversity, step, selectedCollege])
+  }, [formData.collegeUniversity, step])
 
   // Hide suggestions when not on question 1, and set selected college when returning to step 1
   useEffect(() => {
@@ -649,20 +646,15 @@ export default function OnboardingPage() {
                 type="text"
                 value={formData.collegeUniversity}
                 onChange={(e) => {
-                  const newValue = e.target.value
-                  setFormData({ ...formData, collegeUniversity: newValue })
-                  // If user is typing/deleting and value doesn't match selected college, clear selection
-                  if (newValue !== selectedCollege) {
+                  setFormData({ ...formData, collegeUniversity: e.target.value })
+                  // Clear selection when user starts typing
+                  if (e.target.value !== selectedCollege) {
                     setSelectedCollege('')
-                    // Show suggestions if we have them and user is actively typing
-                    if (collegeSuggestions.length > 0 && newValue.length > 0) {
-                      setShowSuggestions(true)
-                    }
                   }
                 }}
                 onFocus={() => {
-                  // Only show suggestions if input doesn't match selected college
-                  if (collegeSuggestions.length > 0 && formData.collegeUniversity !== selectedCollege) {
+                  // Show suggestions if we have them
+                  if (collegeSuggestions.length > 0) {
                     setShowSuggestions(true)
                   }
                 }}
@@ -674,12 +666,12 @@ export default function OnboardingPage() {
                 className="w-full rounded-lg border-2 border-gray-300 px-6 py-4 text-lg text-[#2E2E2E] focus:border-[#5aa9e6] focus:outline-none transition-colors"
                 style={{ fontFamily: 'var(--font-nunito-sans)' }}
               />
-              {searchingColleges && formData.collegeUniversity !== selectedCollege && (
+              {searchingColleges && (
                 <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
                   <div className="w-5 h-5 border-2 border-[#5aa9e6] border-t-transparent rounded-full animate-spin"></div>
                 </div>
               )}
-              {showSuggestions && collegeSuggestions.length > 0 && formData.collegeUniversity !== selectedCollege && (
+              {showSuggestions && collegeSuggestions.length > 0 && (
                 <div className="absolute z-50 w-full mt-2 bg-white border-2 border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
                   {collegeSuggestions.map((college, index) => (
                     <button
