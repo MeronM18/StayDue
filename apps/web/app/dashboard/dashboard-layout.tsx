@@ -11,15 +11,8 @@ export interface DashboardLayoutProps {
 }
 
 export default function DashboardLayout({ user, profile }: DashboardLayoutProps) {
-  const [activeMenu, setActiveMenu] = useState('dashboard')
+  const [activeMenu, setActiveMenu] = useState('home')
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
-  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
-    home: true,
-    courses: false,
-    studyTools: false,
-    collaboration: false,
-    account: false,
-  })
   const router = useRouter()
   const supabase = createClient()
 
@@ -58,61 +51,33 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
     { label: 'Pending Projects', value: '2', subtitle: 'On Discuss' },
   ]
 
-  const menuSections = [
+  const menuItems = [
     {
       id: 'home',
       label: 'Home',
       iconImage: '/calendar.png',
-      items: [
-        { id: 'dashboard', label: 'Dashboard', icon: 'home' },
-        { id: 'calendar', label: 'Calendar', icon: 'calendar' },
-      ],
     },
     {
       id: 'courses',
       label: 'Courses',
       iconImage: '/book.png',
-      items: [
-        { id: 'all-courses', label: 'All Courses', icon: 'courses' },
-        { id: 'upload-syllabi', label: 'Upload Syllabi', icon: 'upload' },
-        { id: 'projects-planner', label: 'Projects / Planner', icon: 'projects' },
-        { id: 'flashcards', label: 'Flashcards', icon: 'flashcards' },
-      ],
     },
     {
       id: 'studyTools',
       label: 'Study Tools',
       iconImage: '/brainstorm.png',
-      items: [
-        { id: 'ai-study-buddy', label: 'AI Study Buddy', icon: 'ai' },
-        { id: 'reminders', label: 'Reminders', icon: 'reminders' },
-      ],
     },
     {
       id: 'collaboration',
       label: 'Collaboration',
       iconImage: '/group-chat.png',
-      items: [
-        { id: 'team', label: 'Team', icon: 'team' },
-      ],
     },
     {
       id: 'account',
       label: 'Account',
       iconImage: '/settings.png',
-      items: [
-        { id: 'settings', label: 'Settings', icon: 'settings' },
-        { id: 'billing', label: 'Billing / Subscription', icon: 'billing' },
-      ],
     },
   ]
-
-  const toggleSection = (sectionId: string) => {
-    setExpandedSections(prev => ({
-      ...prev,
-      [sectionId]: !prev[sectionId],
-    }))
-  }
 
 
   const teamMembers = [
@@ -236,11 +201,11 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
   return (
     <div className="flex h-screen bg-[#F5F5F5] overflow-hidden">
       {/* Left Sidebar - Collapsible Design */}
-      <aside className={`bg-white border-r border-gray-200 flex flex-col transition-all duration-300 ease-in-out ${
+      <aside className={`bg-[#E3F2FD] border-r border-[#BBDEFB] flex flex-col transition-all duration-300 ease-in-out ${
         sidebarCollapsed ? 'w-[72px]' : 'w-[280px]'
       }`}>
         {/* Header - Logo & Toggle */}
-        <div className={`${sidebarCollapsed ? 'px-3' : 'px-6'} py-5 border-b border-gray-200 flex items-center ${sidebarCollapsed ? 'justify-center' : 'justify-between'}`}>
+        <div className={`${sidebarCollapsed ? 'px-3' : 'px-6'} py-5 border-b border-[#BBDEFB] flex items-center ${sidebarCollapsed ? 'justify-center' : 'justify-between'}`}>
           {!sidebarCollapsed && (
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-[#5aa9e6] rounded-lg flex items-center justify-center text-white font-bold text-lg">
@@ -270,84 +235,49 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
         {/* Navigation - Scrollable */}
         <nav className="flex-1 overflow-y-auto">
           <div className={`py-4 ${sidebarCollapsed ? 'px-2' : 'px-3'}`}>
-            {/* Menu Sections with Collapsible Children */}
-            {menuSections.map((section) => {
-              const isExpanded = expandedSections[section.id]
-              const hasActiveChild = section.items.some(item => activeMenu === item.id)
-              
-              return (
-                <div key={section.id} className="mb-1">
-                  {/* Section Header */}
-                  <button
-                    onClick={() => !sidebarCollapsed && toggleSection(section.id)}
-                    className={`w-full flex items-center ${sidebarCollapsed ? 'justify-center' : 'gap-3'} px-3 py-2.5 rounded-lg transition-colors relative group ${
-                      hasActiveChild
-                        ? 'bg-gray-900 text-white'
-                        : 'text-gray-700 hover:bg-gray-50'
+            {/* Menu Items - Simple 5 Options */}
+            {menuItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => setActiveMenu(item.id)}
+                className={`w-full flex items-center ${sidebarCollapsed ? 'justify-center' : 'gap-3'} px-3 py-3 rounded-lg transition-all duration-200 ease-in-out relative group ${
+                  activeMenu === item.id
+                    ? 'bg-[#5aa9e6] text-white shadow-md'
+                    : 'text-gray-700 hover:bg-[#E3F2FD] hover:text-[#5aa9e6]'
+                }`}
+                title={sidebarCollapsed ? item.label : undefined}
+              >
+                <div className="w-5 h-5 flex items-center justify-center flex-shrink-0">
+                  <Image
+                    src={item.iconImage}
+                    alt={item.label}
+                    width={20}
+                    height={20}
+                    className={`object-contain transition-all duration-200 ${
+                      activeMenu === item.id ? 'brightness-0 invert' : ''
                     }`}
-                    title={sidebarCollapsed ? section.label : undefined}
-                  >
-                    <div className="w-5 h-5 flex items-center justify-center flex-shrink-0">
-                      <Image
-                        src={section.iconImage}
-                        alt={section.label}
-                        width={20}
-                        height={20}
-                        className={`object-contain ${hasActiveChild ? 'brightness-0 invert' : ''}`}
-                      />
-                    </div>
-                    {!sidebarCollapsed && (
-                      <>
-                        <span className={`flex-1 text-left font-medium ${hasActiveChild ? 'text-white' : 'text-gray-700'}`}>
-                          {section.label}
-                        </span>
-                        <svg 
-                          className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''} ${hasActiveChild ? 'text-white' : 'text-gray-500'}`}
-                          fill="none" 
-                          stroke="currentColor" 
-                          viewBox="0 0 24 24"
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                        </svg>
-                      </>
-                    )}
-                    {/* Tooltip for collapsed state */}
-                    {sidebarCollapsed && (
-                      <div className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
-                        {section.label}
-                      </div>
-                    )}
-                  </button>
-
-                  {/* Section Children */}
-                  {!sidebarCollapsed && isExpanded && (
-                    <div className="mt-1 ml-4 space-y-1 border-l-2 border-gray-200 pl-4">
-                      {section.items.map((item) => (
-                        <button
-                          key={item.id}
-                          onClick={() => setActiveMenu(item.id)}
-                          className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors relative group ${
-                            activeMenu === item.id
-                              ? 'bg-gray-900 text-white'
-                              : 'text-gray-700 hover:bg-gray-50'
-                          }`}
-                        >
-                          <Icon name={item.icon} className={`w-4 h-4 ${activeMenu === item.id ? 'text-white' : 'text-gray-500'}`} />
-                          <span className={`flex-1 text-left text-sm font-medium ${activeMenu === item.id ? 'text-white' : 'text-gray-700'}`}>
-                            {item.label}
-                          </span>
-                        </button>
-                      ))}
-                    </div>
-                  )}
+                  />
                 </div>
-              )
-            })}
+                {!sidebarCollapsed && (
+                  <span className={`flex-1 text-left font-medium transition-colors duration-200 ${
+                    activeMenu === item.id ? 'text-white' : 'text-gray-700'
+                  }`}>
+                    {item.label}
+                  </span>
+                )}
+                {/* Tooltip for collapsed state */}
+                {sidebarCollapsed && (
+                  <div className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-200 whitespace-nowrap z-50">
+                    {item.label}
+                  </div>
+                )}
+              </button>
+            ))}
           </div>
         </nav>
 
         {/* Footer - Support, Settings, User Profile */}
-        <div className={`border-t border-gray-200 ${sidebarCollapsed ? 'p-2' : 'p-4'} space-y-3`}>
+        <div className={`border-t border-[#BBDEFB] ${sidebarCollapsed ? 'p-2' : 'p-4'} space-y-3`}>
           {/* Support & Settings */}
           {!sidebarCollapsed ? (
             <div className="flex items-center gap-2">
