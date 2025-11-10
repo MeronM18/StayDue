@@ -651,9 +651,9 @@ export default function OnboardingPage() {
 
   const renderProgressBar = () => {
     const currentQuestion = step
-    // Calculate progress - show 100% when on last question (all questions answered)
+    // Calculate progress - show 100% only on completion screen
     let progress = Math.round(((currentQuestion - 1) / TOTAL_STEPS) * 100)
-    if (step === TOTAL_STEPS) {
+    if (showCompletionScreen) {
       progress = 100
     }
 
