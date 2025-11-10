@@ -860,7 +860,8 @@ export default function OnboardingPage() {
             </h2>
             <div className="space-y-4">
               {majorInputs.map((input, inputIndex) => (
-                <div key={input.id} className="relative">
+                <div key={input.id} className="relative flex items-center gap-2">
+                  <div className="flex-1 relative">
             <input
               type="text"
                     value={input.value}
@@ -917,6 +918,47 @@ export default function OnboardingPage() {
                         </button>
                       ))}
                     </div>
+                  )}
+                  </div>
+                  {/* Remove button - only show if there's more than one input */}
+                  {majorInputs.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        // Remove the input from the array
+                        setMajorInputs(prev => prev.filter((_, idx) => idx !== inputIndex))
+                        // Clean up related state maps
+                        setMajorSuggestionsMap(prev => {
+                          const newMap = { ...prev }
+                          delete newMap[input.id]
+                          return newMap
+                        })
+                        setShowMajorSuggestionsMap(prev => {
+                          const newMap = { ...prev }
+                          delete newMap[input.id]
+                          return newMap
+                        })
+                        setSearchingMajorsMap(prev => {
+                          const newMap = { ...prev }
+                          delete newMap[input.id]
+                          return newMap
+                        })
+                        // Remove from validMajors if needed
+                        if (input.selected) {
+                          setValidMajors(prev => {
+                            const newSet = new Set(prev)
+                            newSet.delete(input.selected.toLowerCase())
+                            return newSet
+                          })
+                        }
+                      }}
+                      className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-lg border-2 border-red-300 text-red-500 hover:bg-red-50 hover:border-red-400 transition-colors"
+                      title="Remove this major/minor"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
                   )}
                 </div>
               ))}
