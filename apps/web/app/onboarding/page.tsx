@@ -67,6 +67,7 @@ export default function OnboardingPage() {
   const [imagesLoaded, setImagesLoaded] = useState(false)
   const [collegeSuggestions, setCollegeSuggestions] = useState<Array<{ name: string; country: string; stateProvince: string }>>([])
   const [selectedCollege, setSelectedCollege] = useState<string>('')
+  const [validColleges, setValidColleges] = useState<Set<string>>(new Set())
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [searchingColleges, setSearchingColleges] = useState(false)
 
@@ -227,6 +228,9 @@ export default function OnboardingPage() {
         
         console.log('College suggestions found:', suggestions.length, suggestions)
         setCollegeSuggestions(suggestions)
+        // Update valid colleges set with all fetched suggestions
+        const collegeNames = new Set(suggestions.map((c: any) => c.name.trim().toLowerCase()))
+        setValidColleges(prev => new Set([...prev, ...collegeNames]))
         setShowSuggestions(suggestions.length > 0)
       } catch (error) {
         console.error('Error fetching colleges:', error)
@@ -258,24 +262,35 @@ export default function OnboardingPage() {
       setShowSuggestions(false)
       setCollegeSuggestions([])
       setSearchingColleges(false)
+      // Don't clear validColleges - we need them for validation
     } else {
-      // When returning to step 1, if there's a value in the input, treat it as selected
-      // This prevents suggestions from showing when navigating back
+      // When returning to step 1, if there's a value in the input, check if it's valid
       if (formData.collegeUniversity && formData.collegeUniversity.trim().length > 0) {
-        setSelectedCollege(formData.collegeUniversity.trim())
+        const collegeValue = formData.collegeUniversity.trim()
+        // If the value is in valid colleges, treat it as selected
+        if (validColleges.has(collegeValue.toLowerCase())) {
+          setSelectedCollege(collegeValue)
+        }
         setShowSuggestions(false)
         setCollegeSuggestions([])
         setSearchingColleges(false)
       }
     }
-  }, [step, formData.collegeUniversity])
+  }, [step, formData.collegeUniversity, validColleges])
 
   const validateStep = (currentStep: number): boolean => {
     const newErrors: Record<string, string> = {}
 
     if (currentStep === 1) {
-      if (!formData.collegeUniversity.trim()) {
+      const collegeValue = formData.collegeUniversity.trim()
+      if (!collegeValue) {
         newErrors.collegeUniversity = 'Please enter your college or university'
+      } else if (!selectedCollege || selectedCollege.trim().toLowerCase() !== collegeValue.toLowerCase()) {
+        // Check if the entered value matches a valid college from the suggestions
+        const isValidCollege = validColleges.has(collegeValue.toLowerCase())
+        if (!isValidCollege) {
+          newErrors.collegeUniversity = 'Please select a university from the dropdown list'
+        }
       }
     }
 
@@ -681,6 +696,12 @@ export default function OnboardingPage() {
                         setFormData({ ...formData, collegeUniversity: college.name })
                         setSelectedCollege(college.name)
                         setShowSuggestions(false)
+                        // Clear any errors when a valid selection is made
+                        setErrors(prev => {
+                          const newErrors = { ...prev }
+                          delete newErrors.collegeUniversity
+                          return newErrors
+                        })
                       }}
                       className="w-full text-left px-6 py-3 hover:bg-[#5aa9e6]/10 transition-colors cursor-pointer border-b border-gray-100 last:border-b-0"
                       style={{ fontFamily: 'var(--font-nunito-sans)' }}
