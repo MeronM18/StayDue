@@ -231,12 +231,8 @@ export default function OnboardingPage() {
         // Update valid colleges set with all fetched suggestions
         const collegeNames = new Set(suggestions.map((c: any) => c.name.trim().toLowerCase()))
         setValidColleges(prev => new Set([...prev, ...collegeNames]))
-        // Always show suggestions if we have results and user hasn't selected one yet
-        if (suggestions.length > 0) {
-          setShowSuggestions(true)
-        } else {
-          setShowSuggestions(false)
-        }
+        // Always show suggestions if we have results
+        setShowSuggestions(suggestions.length > 0)
       } catch (error) {
         console.error('Error fetching colleges:', error)
         // Don't break the UI - just show no suggestions
@@ -279,18 +275,18 @@ export default function OnboardingPage() {
       // Don't clear validColleges - we need them for validation
     } else {
       // When returning to step 1, if there's a value in the input, check if it's valid
-      if (formData.collegeUniversity && formData.collegeUniversity.trim().length > 0) {
+      // Only do this on initial mount or when step changes, not when user is actively typing
+      if (formData.collegeUniversity && formData.collegeUniversity.trim().length > 0 && !searchingColleges) {
         const collegeValue = formData.collegeUniversity.trim()
-        // If the value is in valid colleges, treat it as selected
-        if (validColleges.has(collegeValue.toLowerCase())) {
-          setSelectedCollege(collegeValue)
+        // If the value is in valid colleges and matches selected college, keep it selected
+        // But don't hide suggestions if user is actively searching
+        if (validColleges.has(collegeValue.toLowerCase()) && selectedCollege === collegeValue) {
+          // User has a valid selected college - don't interfere
+          return
         }
-        setShowSuggestions(false)
-        setCollegeSuggestions([])
-        setSearchingColleges(false)
       }
     }
-  }, [step, formData.collegeUniversity, validColleges])
+  }, [step]) // Only run when step changes, not on every input change
 
   const validateStep = (currentStep: number): boolean => {
     const newErrors: Record<string, string> = {}
@@ -680,8 +676,6 @@ export default function OnboardingPage() {
                   // Clear selection when user starts typing/editing
                   if (newValue !== selectedCollege) {
                     setSelectedCollege('')
-                    // If user is actively typing and we have suggestions, keep them visible
-                    // The debounced search will update suggestions as they type
                   }
                 }}
                 onFocus={() => {
