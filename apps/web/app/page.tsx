@@ -102,7 +102,7 @@ export default function Home() {
 
   return (
     <div 
-      className="min-h-screen relative transition-opacity duration-500 ease-in-out" 
+      className="landing-page min-h-screen relative transition-opacity duration-500 ease-in-out" 
       style={{ opacity: isVisible ? 1 : 0 }}
     >
       <div className="relative z-10">
