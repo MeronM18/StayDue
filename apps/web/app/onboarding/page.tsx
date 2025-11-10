@@ -239,27 +239,39 @@ export default function OnboardingPage() {
     }
 
     // Debounce the search - trigger after user stops typing for 200ms
+    // Only search if the value doesn't match the selected college (user is actively typing)
     const timeoutId = setTimeout(() => {
       const query = formData.collegeUniversity?.trim() || ''
-      if (query.length >= 1) {
+      // Only search if query doesn't match selected college (user is editing)
+      if (query.length >= 1 && query !== selectedCollege) {
         searchColleges(query)
       } else {
         setCollegeSuggestions([])
         setShowSuggestions(false)
+        setSearchingColleges(false)
       }
     }, 200) // 200ms debounce for faster response
 
     return () => clearTimeout(timeoutId)
-  }, [formData.collegeUniversity, step])
+  }, [formData.collegeUniversity, step, selectedCollege])
 
-  // Hide suggestions when not on question 1
+  // Hide suggestions when not on question 1, and set selected college when returning to step 1
   useEffect(() => {
     if (step !== 1) {
       setShowSuggestions(false)
       setCollegeSuggestions([])
-      setSelectedCollege('')
+      setSearchingColleges(false)
+    } else {
+      // When returning to step 1, if there's a value in the input, treat it as selected
+      // This prevents suggestions from showing when navigating back
+      if (formData.collegeUniversity && formData.collegeUniversity.trim().length > 0) {
+        setSelectedCollege(formData.collegeUniversity.trim())
+        setShowSuggestions(false)
+        setCollegeSuggestions([])
+        setSearchingColleges(false)
+      }
     }
-  }, [step])
+  }, [step, formData.collegeUniversity])
 
   const validateStep = (currentStep: number): boolean => {
     const newErrors: Record<string, string> = {}
@@ -662,7 +674,7 @@ export default function OnboardingPage() {
                 className="w-full rounded-lg border-2 border-gray-300 px-6 py-4 text-lg text-[#2E2E2E] focus:border-[#5aa9e6] focus:outline-none transition-colors"
                 style={{ fontFamily: 'var(--font-nunito-sans)' }}
               />
-              {searchingColleges && (
+              {searchingColleges && formData.collegeUniversity !== selectedCollege && (
                 <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
                   <div className="w-5 h-5 border-2 border-[#5aa9e6] border-t-transparent rounded-full animate-spin"></div>
                 </div>
