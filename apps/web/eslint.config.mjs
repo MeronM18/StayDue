@@ -1,5 +1,5 @@
 import { defineConfig } from "eslint/config";
-import nextConfig from "eslint-config-next/core-web-vitals";
+import nextConfig from "eslint-config-next/core-web-vitals.js";
 
 // Handle different export types from eslint-config-next
 let configToUse;
