@@ -370,14 +370,14 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
 
                     {/* Get Started Section - Redesigned */}
                     {!hasCourses && (
-                      <div className="grid md:grid-cols-2 gap-6 mb-8">
+                      <div className="grid md:grid-cols-2 gap-6 mb-8 items-stretch">
                         {/* Left: CTA Card with Paper Theme */}
-                        <div className="relative">
+                        <div className="relative flex">
                           {/* Paper-like background with subtle texture */}
                           <div className="absolute inset-0 bg-gradient-to-br from-amber-50/40 via-white to-blue-50/40 rounded-2xl" style={{
                             backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0,0,0,0.02) 10px, rgba(0,0,0,0.02) 11px)',
                           }}></div>
-                          <div className="relative bg-white/90 backdrop-blur-sm rounded-2xl border-2 border-[#5aa9e6]/30 p-8 shadow-xl">
+                          <div className="relative bg-white/90 backdrop-blur-sm rounded-2xl border-2 border-[#5aa9e6]/30 p-8 shadow-xl w-full">
                             {/* Decorative corner fold */}
                             <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-[#5aa9e6]/10 to-transparent rounded-bl-full"></div>
                             
@@ -424,23 +424,23 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
                         </div>
 
                         {/* Right: Video Preview */}
-                        <div className="relative">
+                        <div className="relative flex">
                           {/* Paper-like background with subtle texture */}
                           <div className="absolute inset-0 bg-gradient-to-br from-amber-50/40 via-white to-blue-50/40 rounded-2xl" style={{
                             backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0,0,0,0.02) 10px, rgba(0,0,0,0.02) 11px)',
                           }}></div>
-                          <div className="relative bg-white/90 backdrop-blur-sm rounded-2xl border-2 border-[#5aa9e6]/30 p-8 shadow-xl overflow-hidden">
+                          <div className="relative bg-white/90 backdrop-blur-sm rounded-2xl border-2 border-[#5aa9e6]/30 p-8 shadow-xl overflow-hidden w-full flex flex-col">
                             {/* Decorative corner fold */}
                             <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-[#5aa9e6]/10 to-transparent rounded-bl-full"></div>
                             
-                            <div className="relative z-10 h-full flex items-center justify-center">
-                              <div className="w-full h-full rounded-lg overflow-hidden bg-gray-100">
+                            <div className="relative z-10 flex-1 flex items-center justify-center">
+                              <div className="w-full rounded-lg overflow-hidden bg-gray-100">
                                 <video
                                   autoPlay
                                   loop
                                   muted
                                   playsInline
-                                  className="w-full h-full object-contain"
+                                  className="w-full h-auto object-contain"
                                 >
                                   <source src="/e3WI6qIX8H56Uxs11f.mp4" type="video/mp4" />
                                 </video>
