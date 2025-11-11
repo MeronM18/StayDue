@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Image from 'next/image'
@@ -17,6 +17,7 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const router = useRouter()
   const supabase = createClient()
+  const searchInputRef = useRef<HTMLInputElement>(null)
 
   // Load sidebar state from localStorage on mount
   useEffect(() => {
@@ -31,6 +32,17 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
     const newState = !sidebarCollapsed
     setSidebarCollapsed(newState)
     localStorage.setItem('sidebarCollapsed', JSON.stringify(newState))
+  }
+
+  // Handle search icon click when sidebar is collapsed
+  const handleSearchClick = () => {
+    if (sidebarCollapsed) {
+      setSidebarCollapsed(false)
+      // Focus search input after sidebar expands
+      setTimeout(() => {
+        searchInputRef.current?.focus()
+      }, 300) // Wait for sidebar animation to complete
+    }
   }
 
   const handleSignOut = async () => {
@@ -131,6 +143,7 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
         <div className={`px-4 py-3 border-b border-gray-200 ${sidebarCollapsed ? 'flex justify-center' : ''}`}>
           {sidebarCollapsed ? (
             <button
+              onClick={handleSearchClick}
               className="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-gray-100 transition-colors cursor-pointer relative group"
             >
               <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -149,6 +162,7 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
                 </svg>
               </div>
               <input
+                ref={searchInputRef}
                 type="text"
                 placeholder="Search your courses"
                 className="w-full pl-9 pr-4 py-2.5 bg-gray-100 border-none rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300 text-sm text-gray-900 placeholder-gray-500"
@@ -292,7 +306,70 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Main Content */}
         <main className="flex-1 overflow-y-auto bg-[#F5F5F5]">
-          {/* Blank page - ready for content */}
+          {activeMenu === 'home' && (
+            <div className="max-w-7xl mx-auto px-6 py-8">
+              {/* Page Header */}
+              <div className="mb-8">
+                <h1 className="text-4xl font-bold text-gray-900 mb-2" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                  Dashboard Overview
+                </h1>
+                <p className="text-lg text-gray-600" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                  Welcome back! Here's an overview of your academic progress and upcoming tasks.
+                </p>
+              </div>
+
+              {/* File Upload Section - Main Content */}
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-12">
+                <div className="max-w-2xl mx-auto text-center">
+                  {/* Upload Icon */}
+                  <div className="mb-6 flex justify-center">
+                    <div className="w-24 h-24 bg-[#5aa9e6]/10 rounded-full flex items-center justify-center">
+                      <svg className="w-12 h-12 text-[#5aa9e6]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                      </svg>
+                    </div>
+                  </div>
+
+                  {/* Title */}
+                  <h2 className="text-2xl font-semibold text-gray-900 mb-3" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                    Get Started by Uploading Your Syllabus
+                  </h2>
+                  
+                  {/* Description */}
+                  <p className="text-gray-600 mb-8 leading-relaxed" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                    Upload your course syllabus to automatically extract important dates, assignments, and deadlines. 
+                    You can upload PDF files or paste a website link to your course page.
+                  </p>
+
+                  {/* Upload Area */}
+                  <div className="border-2 border-dashed border-gray-300 rounded-xl p-12 hover:border-[#5aa9e6] transition-colors cursor-pointer bg-gray-50 hover:bg-[#5aa9e6]/5 mb-6">
+                    <div className="flex flex-col items-center">
+                      <svg className="w-10 h-10 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                      </svg>
+                      <p className="text-gray-700 font-medium mb-2" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                        Drag and drop your syllabus here
+                      </p>
+                      <p className="text-sm text-gray-500 mb-4" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                        or click to browse
+                      </p>
+                      <p className="text-xs text-gray-400" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                        Supports PDF files up to 10MB
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Alternative Option */}
+                  <div className="flex items-center justify-center gap-2 text-sm text-gray-600">
+                    <span style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>or</span>
+                    <button className="text-[#5aa9e6] font-medium hover:text-[#4a8dd6] transition-colors" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                      Paste a website link
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </main>
       </div>
     </div>
