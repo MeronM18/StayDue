@@ -102,3 +102,45 @@ h1, h2, h3, h4, h5, h6 {
 button, .font-heading {
   font-family: var(--font-manrope), system-ui, -apple-system, sans-serif;
 }
+
+/* File Upload Animations */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px);
+  }
+  33% {
+    transform: translateY(-20px) translateX(10px);
+  }
+  66% {
+    transform: translateY(10px) translateX(-15px);
+  }
+}
+
+@keyframes gentleBounce {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.float-animation {
+  animation: float 6s ease-in-out infinite;
+}
+
+.float-animation-delay-1 {
+  animation: float 8s ease-in-out infinite 1s;
+}
+
+.float-animation-delay-2 {
+  animation: float 7s ease-in-out infinite 2s;
+}
+
+.float-animation-delay-3 {
+  animation: float 5s ease-in-out infinite 0.5s;
+}
+
+.gentle-bounce {
+  animation: gentleBounce 3s ease-in-out infinite;
+}

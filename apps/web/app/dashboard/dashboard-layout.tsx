@@ -318,55 +318,96 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
                 </p>
               </div>
 
-              {/* File Upload Section - Main Content */}
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-12">
-                <div className="max-w-2xl mx-auto text-center">
-                  {/* Upload Icon */}
-                  <div className="mb-6 flex justify-center">
-                    <div className="w-24 h-24 bg-[#5aa9e6]/10 rounded-full flex items-center justify-center">
-                      <svg className="w-12 h-12 text-[#5aa9e6]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                      </svg>
+              {/* File Upload Section - Main Content with Animated Background */}
+              <div className="relative bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden">
+                {/* Animated Background Bubbles */}
+                <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                  {/* Floating bubbles with animation */}
+                  <div className="absolute w-64 h-64 bg-[#5aa9e6]/10 rounded-full blur-3xl -top-32 -left-32 float-animation"></div>
+                  <div className="absolute w-96 h-96 bg-[#7bb8f0]/8 rounded-full blur-3xl top-1/4 -right-40 float-animation-delay-1"></div>
+                  <div className="absolute w-80 h-80 bg-[#a8d5ff]/10 rounded-full blur-3xl bottom-0 left-1/3 float-animation-delay-2"></div>
+                  <div className="absolute w-48 h-48 bg-[#c8e6ff]/12 rounded-full blur-2xl top-1/2 right-1/4 float-animation-delay-3"></div>
+                </div>
+
+                {/* Content */}
+                <div className="relative z-10 max-w-3xl mx-auto p-12">
+                  <div className="text-center">
+                    {/* Upload Icon with Bounce Animation */}
+                    <div className="mb-8 flex justify-center">
+                      <div className="relative">
+                        <div className="w-32 h-32 bg-gradient-to-br from-[#5aa9e6] to-[#7bb8f0] rounded-full flex items-center justify-center shadow-lg shadow-[#5aa9e6]/30 gentle-bounce">
+                          <svg className="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                          </svg>
+                        </div>
+                        {/* Decorative circles */}
+                        <div className="absolute -top-2 -right-2 w-6 h-6 bg-[#6bcf7f] rounded-full animate-ping"></div>
+                        <div className="absolute -bottom-2 -left-2 w-4 h-4 bg-[#ffb84d] rounded-full animate-ping" style={{ animationDelay: '0.5s' }}></div>
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Title */}
-                  <h2 className="text-2xl font-semibold text-gray-900 mb-3" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
-                    Get Started by Uploading Your Syllabus
-                  </h2>
-                  
-                  {/* Description */}
-                  <p className="text-gray-600 mb-8 leading-relaxed" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
-                    Upload your course syllabus to automatically extract important dates, assignments, and deadlines. 
-                    You can upload PDF files or paste a website link to your course page.
-                  </p>
+                    {/* Title */}
+                    <h2 className="text-3xl font-bold text-gray-900 mb-4" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                      Upload Your Syllabus
+                    </h2>
+                    
+                    {/* Description */}
+                    <p className="text-lg text-gray-600 mb-10 leading-relaxed max-w-2xl mx-auto" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                      Drop your course syllabus here and we'll automatically extract all important dates, assignments, and deadlines. 
+                      Stay organized and never miss a deadline again!
+                    </p>
 
-                  {/* Upload Area */}
-                  <div className="border-2 border-dashed border-gray-300 rounded-xl p-12 hover:border-[#5aa9e6] transition-colors cursor-pointer bg-gray-50 hover:bg-[#5aa9e6]/5 mb-6">
-                    <div className="flex flex-col items-center">
-                      <svg className="w-10 h-10 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                      </svg>
-                      <p className="text-gray-700 font-medium mb-2" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
-                        Drag and drop your syllabus here
-                      </p>
-                      <p className="text-sm text-gray-500 mb-4" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
-                        or click to browse
-                      </p>
-                      <p className="text-xs text-gray-400" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
-                        Supports PDF files up to 10MB
-                      </p>
+                    {/* Upload Area - Bubbly Design */}
+                    <div className="relative group">
+                      <div className="border-3 border-dashed border-[#5aa9e6]/40 rounded-3xl p-16 bg-gradient-to-br from-[#f0f7ff] via-white to-[#f0f7ff] hover:border-[#5aa9e6] hover:bg-gradient-to-br hover:from-[#e6f3ff] hover:via-white hover:to-[#e6f3ff] transition-all duration-300 cursor-pointer shadow-inner hover:shadow-lg">
+                        <div className="flex flex-col items-center">
+                          {/* Cloud Upload Icon */}
+                          <div className="mb-6">
+                            <svg className="w-20 h-20 text-[#5aa9e6] group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                            </svg>
+                          </div>
+                          
+                          <p className="text-xl font-semibold text-gray-800 mb-2 group-hover:text-[#5aa9e6] transition-colors" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                            Drag & Drop Your File Here
+                          </p>
+                          <p className="text-base text-gray-500 mb-6" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                            or click to browse your device
+                          </p>
+                          
+                          {/* File Type Badges */}
+                          <div className="flex gap-3 mb-6">
+                            <span className="px-4 py-2 bg-[#5aa9e6]/10 text-[#5aa9e6] rounded-full text-sm font-medium" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                              📄 PDF
+                            </span>
+                            <span className="px-4 py-2 bg-[#7bb8f0]/10 text-[#7bb8f0] rounded-full text-sm font-medium" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                              📑 DOCX
+                            </span>
+                            <span className="px-4 py-2 bg-[#a8d5ff]/20 text-[#4a8dd6] rounded-full text-sm font-medium" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                              🔗 Link
+                            </span>
+                          </div>
+                          
+                          <p className="text-sm text-gray-400" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                            Maximum file size: 10MB
+                          </p>
+                        </div>
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Alternative Option */}
-                  <div className="flex items-center justify-center gap-2 text-sm text-gray-600">
-                    <span style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>or</span>
-                    <button className="text-[#5aa9e6] font-medium hover:text-[#4a8dd6] transition-colors" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
-                      Paste a website link
+                    {/* Alternative Option */}
+                    <div className="mt-8 flex items-center justify-center gap-3">
+                      <div className="h-px w-16 bg-gray-300"></div>
+                      <span className="text-sm text-gray-500 font-medium" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>or</span>
+                      <div className="h-px w-16 bg-gray-300"></div>
+                    </div>
+                    
+                    <button className="mt-6 px-8 py-4 bg-gradient-to-r from-[#5aa9e6] to-[#7bb8f0] text-white font-semibold rounded-2xl hover:from-[#4a8dd6] hover:to-[#5aa9e6] transition-all duration-300 shadow-lg shadow-[#5aa9e6]/30 hover:shadow-xl hover:shadow-[#5aa9e6]/40 hover:scale-105 transform" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                      📋 Paste Website Link Instead
                     </button>
                   </div>
                 </div>
+
               </div>
             </div>
           )}
