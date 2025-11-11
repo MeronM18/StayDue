@@ -89,14 +89,6 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
     { name: 'David Oshodi', task: 'Working on Responsive Layout for Homepage', status: 'In Progress', statusColor: 'bg-yellow-500' },
   ]
 
-  const projects = [
-    { name: 'Develop API Endpoints', dueDate: 'Nov 26, 2024', color: 'bg-blue-500' },
-    { name: 'Onboarding Flow', dueDate: 'Nov 28, 2024', color: 'bg-teal-500' },
-    { name: 'Build Dashboard', dueDate: 'Nov 30, 2024', color: 'bg-purple-500' },
-    { name: 'Optimize Page Load', dueDate: 'Dec 5, 2024', color: 'bg-orange-500' },
-    { name: 'Cross-Browser Testing', dueDate: 'Dec 6, 2024', color: 'bg-pink-500' },
-  ]
-
   // Icon component helper
   const Icon = ({ name, className = "w-5 h-5" }: { name: string; className?: string }) => {
     const icons: Record<string, React.ReactElement> = {
@@ -557,62 +549,6 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
           </div>
         </main>
       </div>
-
-      {/* Right Sidebar */}
-      <aside className="w-[320px] bg-white border-l border-gray-200 overflow-y-auto">
-        <div className="p-6 space-y-6">
-          {/* Reminders Card */}
-          <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Reminders</h3>
-            <div className="space-y-3">
-              <div>
-                <div className="font-medium text-gray-900">Meeting with Arc Company</div>
-                <div className="text-sm text-gray-600 mt-1">Time: 02.00 pm - 04.00 pm</div>
-              </div>
-              <button className="w-full mt-4 px-4 py-2 bg-[#5aa9e6] text-white rounded-lg font-semibold hover:bg-[#4a8dd6] transition-colors">
-                Start Meeting
-              </button>
-            </div>
-          </div>
-
-          {/* Projects Card */}
-          <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-200">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">Project</h3>
-              <button className="px-3 py-1 text-sm font-semibold text-[#5aa9e6] hover:bg-[#5aa9e6]/10 rounded-lg transition-colors">
-                + New
-              </button>
-            </div>
-            <div className="space-y-3">
-              {projects.map((project, index) => (
-                <div key={index} className="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer">
-                  <div className={`w-2 h-2 rounded-full ${project.color}`}></div>
-                  <div className="flex-1">
-                    <div className="font-medium text-gray-900 text-sm">{project.name}</div>
-                    <div className="text-xs text-gray-500">Due date: {project.dueDate}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Time Tracker Card */}
-          <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Time Tracker</h3>
-            <div className="text-center">
-              <div className="text-5xl font-bold text-gray-900 mb-6">01:24:08</div>
-              <div className="flex justify-center gap-4">
-                <button className="w-12 h-12 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors">
-                  <span className="text-xl">⏸️</span>
-                </button>
-                <button className="w-12 h-12 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center transition-colors">
-                  <span className="text-xl text-white">⏹️</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </aside>
     </div>
   )
 }
