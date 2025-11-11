@@ -87,7 +87,7 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
     <div className="flex h-screen bg-[#F5F5F5] overflow-hidden">
       {/* Left Sidebar - Collapsible Design */}
       <aside className={`bg-white border-r border-gray-200 flex flex-col transition-all duration-300 ease-in-out ${
-        sidebarCollapsed ? 'w-[72px]' : 'w-[280px]'
+        sidebarCollapsed ? 'w-[72px] overflow-visible' : 'w-[280px]'
       }`}>
         {/* Header - Logo & Toggle */}
         <div className={`${sidebarCollapsed ? 'px-3' : 'px-6'} py-4 border-b border-gray-200 flex items-center ${sidebarCollapsed ? 'justify-center' : 'justify-between'}`}>
@@ -159,7 +159,7 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
         </div>
 
         {/* Navigation - Scrollable */}
-        <nav className="flex-1 overflow-y-auto">
+        <nav className={`flex-1 ${sidebarCollapsed ? 'overflow-x-visible overflow-y-auto' : 'overflow-y-auto'}`}>
           <div className={`py-3 ${sidebarCollapsed ? 'px-2' : 'px-4'}`}>
             {!sidebarCollapsed && (
               <div className="mb-3">
