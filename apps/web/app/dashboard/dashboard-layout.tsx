@@ -370,7 +370,7 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
 
                     {/* Get Started Section - Redesigned */}
                     {!hasCourses && (
-                      <div className="grid md:grid-cols-2 gap-6 mb-8">
+                      <div className="grid md:grid-cols-2 gap-6 mb-8 items-stretch">
                         {/* Left: CTA Card with Paper Theme */}
                         <div className="relative">
                           {/* Paper-like background with subtle texture */}
@@ -426,8 +426,8 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
                         {/* Right: Video Preview */}
                         <div className="relative">
                           <div className="absolute inset-0 bg-gradient-to-br from-[#5aa9e6]/10 to-transparent rounded-2xl"></div>
-                          <div className="relative bg-white/90 backdrop-blur-sm rounded-2xl border-2 border-[#5aa9e6]/20 p-4 shadow-xl overflow-hidden">
-                            <div className="aspect-video rounded-lg overflow-hidden bg-gray-100">
+                          <div className="relative bg-white/90 backdrop-blur-sm rounded-2xl border-2 border-[#5aa9e6]/20 shadow-xl overflow-hidden h-full">
+                            <div className="absolute inset-0 rounded-2xl overflow-hidden">
                               <video
                                 autoPlay
                                 loop
@@ -438,8 +438,8 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
                                 <source src="/e3WI6qIX8H56Uxs11f.mp4" type="video/mp4" />
                               </video>
                             </div>
-                            <div className="mt-4 text-center">
-                              <p className="text-sm font-medium text-gray-700" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/50 to-transparent p-4 text-center">
+                              <p className="text-sm font-medium text-white" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
                                 See how StayDue works
                               </p>
                             </div>
