@@ -425,23 +425,26 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
 
                         {/* Right: Video Preview */}
                         <div className="relative">
-                          <div className="absolute inset-0 bg-gradient-to-br from-[#5aa9e6]/10 to-transparent rounded-2xl"></div>
-                          <div className="relative bg-white/90 backdrop-blur-sm rounded-2xl border-2 border-[#5aa9e6]/20 p-4 shadow-xl overflow-hidden">
-                            <div className="aspect-video rounded-lg overflow-hidden bg-gray-100">
-                              <video
-                                autoPlay
-                                loop
-                                muted
-                                playsInline
-                                className="w-full h-full object-cover"
-                              >
-                                <source src="/e3WI6qIX8H56Uxs11f.mp4" type="video/mp4" />
-                              </video>
-                            </div>
-                            <div className="mt-4 text-center">
-                              <p className="text-sm font-medium text-gray-700" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
-                                See how StayDue works
-                              </p>
+                          {/* Paper-like background with subtle texture */}
+                          <div className="absolute inset-0 bg-gradient-to-br from-amber-50/40 via-white to-blue-50/40 rounded-2xl" style={{
+                            backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0,0,0,0.02) 10px, rgba(0,0,0,0.02) 11px)',
+                          }}></div>
+                          <div className="relative bg-white/90 backdrop-blur-sm rounded-2xl border-2 border-[#5aa9e6]/30 p-8 shadow-xl overflow-hidden">
+                            {/* Decorative corner fold */}
+                            <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-[#5aa9e6]/10 to-transparent rounded-bl-full"></div>
+                            
+                            <div className="relative z-10 h-full flex items-center justify-center">
+                              <div className="w-full h-full rounded-lg overflow-hidden bg-gray-100">
+                                <video
+                                  autoPlay
+                                  loop
+                                  muted
+                                  playsInline
+                                  className="w-full h-full object-contain"
+                                >
+                                  <source src="/e3WI6qIX8H56Uxs11f.mp4" type="video/mp4" />
+                                </video>
+                              </div>
                             </div>
                           </div>
                         </div>
