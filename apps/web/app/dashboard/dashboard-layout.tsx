@@ -333,11 +333,11 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
         {/* Main Content */}
         <main className="flex-1 overflow-y-auto bg-[#F5F5F5]">
           {activeMenu === 'home' && (
-            <div className="max-w-6xl mx-auto px-6 py-6">
+            <div className="max-w-6xl mx-auto px-6 pt-12 pb-6">
               {!uploadStep ? (
                 <>
                   {/* Welcome Section */}
-                  <div className="mb-8">
+                  <div className="mb-8 pt-4">
                     <div className="flex items-center justify-between mb-6">
                       <div>
                         <h1 className="text-4xl font-bold text-gray-900 mb-2" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
@@ -391,36 +391,39 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
                 </>
               ) : (
                 /* Upload Flow with Steps */
-                <div className="max-w-4xl mx-auto">
+                <div className="max-w-4xl mx-auto pt-8">
                   {/* Steps Indicator */}
                   <div className="mb-8">
-                    <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-start justify-between relative">
+                      {/* Connecting Lines - Background */}
+                      <div className="absolute top-5 left-[5%] right-[5%] h-0.5 bg-gray-200 z-0"></div>
+                      {uploadStep && uploadStep > 1 && (
+                        <div 
+                          className="absolute top-5 left-[5%] h-0.5 bg-green-500 z-0" 
+                          style={{ width: `${((uploadStep - 1) / 3) * 90}%` }}
+                        ></div>
+                      )}
+                      
+                      {/* Steps */}
                       {[1, 2, 3, 4].map((step) => (
-                        <div key={step} className="flex items-center flex-1">
-                          <div className="flex flex-col items-center flex-1">
-                            <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold text-sm transition-all ${
-                              uploadStep === step
-                                ? 'bg-[#5aa9e6] text-white ring-4 ring-[#5aa9e6]/20'
-                                : uploadStep && uploadStep > step
-                                ? 'bg-green-500 text-white'
-                                : 'bg-gray-200 text-gray-600'
-                            }`} style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
-                              {uploadStep && uploadStep > step ? '✓' : step}
-                            </div>
-                            <span className={`mt-2 text-xs font-medium ${
-                              uploadStep === step ? 'text-[#5aa9e6]' : uploadStep && uploadStep > step ? 'text-green-600' : 'text-gray-500'
-                            }`} style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
-                              {step === 1 && 'Upload Syllabi'}
-                              {step === 2 && 'Extract Assignments'}
-                              {step === 3 && 'Review Assignments'}
-                              {step === 4 && 'Add To Calendar'}
-                            </span>
+                        <div key={step} className="flex flex-col items-center relative z-10 flex-1">
+                          <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold text-sm transition-all ${
+                            uploadStep === step
+                              ? 'bg-[#5aa9e6] text-white ring-4 ring-[#5aa9e6]/20'
+                              : uploadStep && uploadStep > step
+                              ? 'bg-green-500 text-white'
+                              : 'bg-gray-200 text-gray-600'
+                          }`} style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                            {uploadStep && uploadStep > step ? '✓' : step}
                           </div>
-                          {step < 4 && (
-                            <div className={`flex-1 h-0.5 mx-2 ${
-                              uploadStep && uploadStep > step ? 'bg-green-500' : 'bg-gray-200'
-                            }`}></div>
-                          )}
+                          <span className={`mt-2 text-xs font-medium text-center ${
+                            uploadStep === step ? 'text-[#5aa9e6]' : uploadStep && uploadStep > step ? 'text-green-600' : 'text-gray-500'
+                          }`} style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                            {step === 1 && 'Upload Syllabi'}
+                            {step === 2 && 'Extract Assignments'}
+                            {step === 3 && 'Review Assignments'}
+                            {step === 4 && 'Add To Calendar'}
+                          </span>
                         </div>
                       ))}
                     </div>
@@ -536,36 +539,6 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
                       </button>
-
-                      {/* Import from Canvas Option */}
-                      <div className="relative">
-                        <button
-                          onClick={() => handleAddClassOption('canvas')}
-                          className="w-full p-4 border-2 border-gray-200 rounded-xl hover:border-[#5aa9e6] hover:bg-[#f0f7ff] transition-all duration-200 text-left flex items-center gap-4 group"
-                        >
-                          <div className="w-12 h-12 bg-[#5aa9e6]/10 rounded-lg flex items-center justify-center group-hover:bg-[#5aa9e6]/20 transition-colors">
-                            <svg className="w-6 h-6 text-[#5aa9e6]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                            </svg>
-                          </div>
-                          <div className="flex-1">
-                            <h3 className="font-semibold text-gray-900 mb-1" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
-                              Import from Canvas
-                            </h3>
-                            <p className="text-sm text-gray-600" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
-                              Connect your learning management system
-                            </p>
-                          </div>
-                          <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                          </svg>
-                        </button>
-                        <div className="mt-2 ml-16">
-                          <button className="px-4 py-1.5 bg-red-500 text-white text-xs font-semibold rounded-lg hover:bg-red-600 transition-colors" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
-                            Upgrade to Scholar Access to import from LMS
-                          </button>
-                        </div>
-                      </div>
                     </div>
 
                     <button
