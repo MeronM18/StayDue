@@ -336,54 +336,164 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
             <div className="max-w-6xl mx-auto px-6 pt-12 pb-6">
               {!uploadStep ? (
                 <>
-                  {/* Welcome Section */}
+                  {/* Welcome Section - Redesigned with School/Productivity Theme */}
                   <div className="mb-8 pt-4">
-                    <div className="flex items-center justify-between mb-6">
-                      <div>
-                        <h1 className="text-4xl font-bold text-gray-900 mb-2" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
-                          Welcome, {userName}! 👋
-                        </h1>
-                        <p className="text-lg text-gray-600" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
-                          Let's get you organized this semester
-                        </p>
+                    {/* Header with Paper-like Styling */}
+                    <div className="mb-8">
+                      <div className="relative inline-block mb-4">
+                        {/* Paper texture effect with subtle lines */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-amber-50/30 via-white to-blue-50/30 rounded-lg opacity-50" style={{
+                          backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 31px, rgba(0,0,0,0.03) 31px, rgba(0,0,0,0.03) 32px)',
+                        }}></div>
+                        <div className="relative bg-white/80 backdrop-blur-sm rounded-lg px-6 py-4 border-l-4 border-[#5aa9e6] shadow-sm">
+                          <h1 className="text-4xl font-bold text-gray-900 mb-1" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                            Welcome, {userName}! 👋
+                          </h1>
+                          <p className="text-lg text-gray-600" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                            Let's get you organized this semester
+                          </p>
+                        </div>
                       </div>
-                      <div className="flex gap-3">
-                        <button className="px-4 py-2 bg-white border-2 border-[#5aa9e6] text-[#5aa9e6] font-semibold rounded-lg hover:bg-[#5aa9e6]/5 transition-colors text-sm flex items-center gap-2" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                      
+                      {/* Quick Action Buttons - Styled like sticky notes */}
+                      <div className="flex gap-3 flex-wrap">
+                        <button className="px-5 py-2.5 bg-white border-2 border-[#5aa9e6] text-[#5aa9e6] font-semibold rounded-lg hover:bg-[#5aa9e6]/5 transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 flex items-center gap-2 transform" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
                           <FontAwesomeIcon icon={faCalendar} className="w-4 h-4" />
                           Calendar
                         </button>
-                        <button className="px-4 py-2 bg-white border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors text-sm flex items-center gap-2" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                        <button className="px-5 py-2.5 bg-white border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 flex items-center gap-2 transform" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
                           <FontAwesomeIcon icon={faClipboardList} className="w-4 h-4" />
                           Due Soon
                         </button>
                       </div>
                     </div>
 
-                    {/* Get Started CTA Card */}
+                    {/* Get Started Section - Redesigned */}
                     {!hasCourses && (
-                      <div className="bg-gradient-to-br from-[#f0f7ff] to-white rounded-2xl border-2 border-[#5aa9e6]/20 p-8 shadow-lg">
-                        <div className="flex items-center justify-between">
-                          <div className="flex-1">
-                            <h2 className="text-2xl font-bold text-gray-900 mb-3" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
-                              Ready to Add Your First Class?
-                            </h2>
-                            <p className="text-base text-gray-600 mb-6" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
-                              Upload your syllabus and let us help you stay organized this semester. We'll automatically extract all your assignments, deadlines, and important dates.
-                            </p>
-                            <button
-                              onClick={handleGetStarted}
-                              className="px-8 py-3 bg-[#5aa9e6] text-white font-semibold rounded-xl hover:bg-[#4a8dd6] transition-all duration-300 shadow-lg shadow-[#5aa9e6]/30 hover:shadow-xl hover:shadow-[#5aa9e6]/40 hover:scale-105 transform flex items-center gap-2"
-                              style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}
-                            >
-                              <FontAwesomeIcon icon={faBook} className="w-5 h-5" />
-                              Get Started
-                            </button>
-                          </div>
-                          <div className="ml-8 hidden md:block">
-                            <div className="w-32 h-32 bg-[#5aa9e6]/10 rounded-full flex items-center justify-center">
-                              <FontAwesomeIcon icon={faBook} className="w-16 h-16 text-[#5aa9e6]" />
+                      <div className="grid md:grid-cols-2 gap-6 mb-8">
+                        {/* Left: CTA Card with Paper Theme */}
+                        <div className="relative">
+                          {/* Paper-like background with subtle texture */}
+                          <div className="absolute inset-0 bg-gradient-to-br from-amber-50/40 via-white to-blue-50/40 rounded-2xl" style={{
+                            backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0,0,0,0.02) 10px, rgba(0,0,0,0.02) 11px)',
+                          }}></div>
+                          <div className="relative bg-white/90 backdrop-blur-sm rounded-2xl border-2 border-[#5aa9e6]/30 p-8 shadow-xl">
+                            {/* Decorative corner fold */}
+                            <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-[#5aa9e6]/10 to-transparent rounded-bl-full"></div>
+                            
+                            <div className="relative z-10">
+                              <div className="flex items-center gap-2 mb-4">
+                                <div className="w-10 h-10 bg-[#5aa9e6]/10 rounded-lg flex items-center justify-center">
+                                  <FontAwesomeIcon icon={faBook} className="w-5 h-5 text-[#5aa9e6]" />
+                                </div>
+                                <h2 className="text-2xl font-bold text-gray-900" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                                  Ready to Add Your First Class?
+                                </h2>
+                              </div>
+                              
+                              <p className="text-base text-gray-700 mb-6 leading-relaxed" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                                Upload your syllabus and let us help you stay organized this semester. We'll automatically extract all your assignments, deadlines, and important dates.
+                              </p>
+                              
+                              {/* Feature highlights */}
+                              <div className="space-y-2 mb-6">
+                                <div className="flex items-center gap-2 text-sm text-gray-600">
+                                  <div className="w-1.5 h-1.5 rounded-full bg-[#5aa9e6]"></div>
+                                  <span style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>Automatic assignment extraction</span>
+                                </div>
+                                <div className="flex items-center gap-2 text-sm text-gray-600">
+                                  <div className="w-1.5 h-1.5 rounded-full bg-[#5aa9e6]"></div>
+                                  <span style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>Smart deadline tracking</span>
+                                </div>
+                                <div className="flex items-center gap-2 text-sm text-gray-600">
+                                  <div className="w-1.5 h-1.5 rounded-full bg-[#5aa9e6]"></div>
+                                  <span style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>Calendar integration</span>
+                                </div>
+                              </div>
+                              
+                              <button
+                                onClick={handleGetStarted}
+                                className="w-full px-8 py-3.5 bg-[#5aa9e6] text-white font-semibold rounded-xl hover:bg-[#4a8dd6] transition-all duration-300 shadow-lg shadow-[#5aa9e6]/30 hover:shadow-xl hover:shadow-[#5aa9e6]/40 hover:scale-[1.02] transform flex items-center justify-center gap-2"
+                                style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}
+                              >
+                                <FontAwesomeIcon icon={faBook} className="w-5 h-5" />
+                                Get Started
+                              </button>
                             </div>
                           </div>
+                        </div>
+
+                        {/* Right: Video Preview */}
+                        <div className="relative">
+                          <div className="absolute inset-0 bg-gradient-to-br from-[#5aa9e6]/10 to-transparent rounded-2xl"></div>
+                          <div className="relative bg-white/90 backdrop-blur-sm rounded-2xl border-2 border-[#5aa9e6]/20 p-4 shadow-xl overflow-hidden">
+                            <div className="aspect-video rounded-lg overflow-hidden bg-gray-100">
+                              <video
+                                autoPlay
+                                loop
+                                muted
+                                playsInline
+                                className="w-full h-full object-cover"
+                              >
+                                <source src="/e3WI6qIX8H56Uxs11f.mp4" type="video/mp4" />
+                              </video>
+                            </div>
+                            <div className="mt-4 text-center">
+                              <p className="text-sm font-medium text-gray-700" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                                See how StayDue works
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Quick Stats/Preview Cards - Below Get Started */}
+                    {!hasCourses && (
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                        {/* Card 1: Organization */}
+                        <div className="bg-white/80 backdrop-blur-sm rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-1">
+                          <div className="flex items-center gap-3 mb-3">
+                            <div className="w-10 h-10 bg-[#5aa9e6]/10 rounded-lg flex items-center justify-center">
+                              <FontAwesomeIcon icon={faClipboardList} className="w-5 h-5 text-[#5aa9e6]" />
+                            </div>
+                            <h3 className="font-semibold text-gray-900" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                              Stay Organized
+                            </h3>
+                          </div>
+                          <p className="text-sm text-gray-600 leading-relaxed" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                            Never miss a deadline with automated tracking and reminders
+                          </p>
+                        </div>
+
+                        {/* Card 2: Productivity */}
+                        <div className="bg-white/80 backdrop-blur-sm rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-1">
+                          <div className="flex items-center gap-3 mb-3">
+                            <div className="w-10 h-10 bg-[#5aa9e6]/10 rounded-lg flex items-center justify-center">
+                              <FontAwesomeIcon icon={faBrain} className="w-5 h-5 text-[#5aa9e6]" />
+                            </div>
+                            <h3 className="font-semibold text-gray-900" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                              Boost Productivity
+                            </h3>
+                          </div>
+                          <p className="text-sm text-gray-600 leading-relaxed" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                            Focus on studying while we handle the scheduling and planning
+                          </p>
+                        </div>
+
+                        {/* Card 3: Collaboration */}
+                        <div className="bg-white/80 backdrop-blur-sm rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-1">
+                          <div className="flex items-center gap-3 mb-3">
+                            <div className="w-10 h-10 bg-[#5aa9e6]/10 rounded-lg flex items-center justify-center">
+                              <FontAwesomeIcon icon={faUsers} className="w-5 h-5 text-[#5aa9e6]" />
+                            </div>
+                            <h3 className="font-semibold text-gray-900" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                              Collaborate
+                            </h3>
+                          </div>
+                          <p className="text-sm text-gray-600 leading-relaxed" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                            Share schedules and study groups with classmates
+                          </p>
                         </div>
                       </div>
                     )}
