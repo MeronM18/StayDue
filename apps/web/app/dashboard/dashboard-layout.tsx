@@ -159,8 +159,8 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
         </div>
 
         {/* Navigation - Scrollable */}
-        <nav className={`flex-1 ${sidebarCollapsed ? 'overflow-x-visible overflow-y-auto' : 'overflow-y-auto'}`}>
-          <div className={`py-3 ${sidebarCollapsed ? 'px-2' : 'px-4'}`}>
+        <nav className="flex-1 overflow-y-auto">
+          <div className={`py-3 ${sidebarCollapsed ? 'px-2' : 'px-4'}`} style={sidebarCollapsed ? { position: 'relative', overflow: 'visible' } : {}}>
             {!sidebarCollapsed && (
               <div className="mb-3">
                 <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>Menu</h3>
@@ -173,7 +173,7 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
                 onClick={() => setActiveMenu(item.id)}
                 className={`w-full flex items-center ${sidebarCollapsed ? 'justify-center' : 'gap-3'} ${sidebarCollapsed ? 'px-2 py-2.5' : 'px-3 py-2.5'} relative group mb-0.5 ${
                   activeMenu === item.id
-                    ? 'bg-[#5aa9e6]/20 text-black'
+                    ? 'bg-[#5aa9e6] text-white'
                     : 'text-gray-700 hover:bg-[#5aa9e6]/10'
                 }`}
                 style={{
@@ -189,21 +189,21 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
                   <FontAwesomeIcon
                     icon={item.icon}
                     className={`${sidebarCollapsed ? 'w-5 h-5' : 'w-5 h-5'} transition-all duration-150 ${
-                      activeMenu === item.id ? 'text-black' : 'text-gray-700'
+                      activeMenu === item.id ? 'text-white' : 'text-gray-700'
                     }`}
                     style={{ fontWeight: activeMenu === item.id ? 600 : 400, cursor: 'pointer' }}
                   />
                 </div>
                 {!sidebarCollapsed && (
                   <span className={`flex-1 text-left text-sm font-medium transition-colors duration-150 ${
-                    activeMenu === item.id ? 'text-black font-semibold' : 'text-gray-700'
+                    activeMenu === item.id ? 'text-white font-semibold' : 'text-gray-700'
                   }`} style={{ cursor: 'pointer', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
                     {item.label}
                   </span>
                 )}
                 {/* Tooltip - shows on hover when collapsed */}
                 {sidebarCollapsed && (
-                  <div className="absolute left-full ml-3 px-3 py-2 bg-gray-900 text-white text-sm font-medium rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-300 ease-in-out whitespace-nowrap z-50 shadow-lg transform group-hover:translate-x-0 translate-x-[-4px]">
+                  <div className="absolute left-full ml-3 px-3 py-2 bg-gray-900 text-white text-sm font-medium rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-300 ease-in-out whitespace-nowrap z-[9999] shadow-lg" style={{ top: '50%', transform: 'translateY(-50%)' }}>
                     {item.label}
                   </div>
                 )}
