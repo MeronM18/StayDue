@@ -438,11 +438,6 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
                                 <source src="/e3WI6qIX8H56Uxs11f.mp4" type="video/mp4" />
                               </video>
                             </div>
-                            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/50 to-transparent p-4 text-center">
-                              <p className="text-sm font-medium text-white" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
-                                See how StayDue works
-                              </p>
-                            </div>
                           </div>
                         </div>
                       </div>
