@@ -15,9 +15,14 @@ export interface DashboardLayoutProps {
 export default function DashboardLayout({ user, profile }: DashboardLayoutProps) {
   const [activeMenu, setActiveMenu] = useState('home')
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const [showAddClassModal, setShowAddClassModal] = useState(false)
+  const [uploadStep, setUploadStep] = useState<number | null>(null) // 1, 2, 3, 4 or null
   const router = useRouter()
   const supabase = createClient()
   const searchInputRef = useRef<HTMLInputElement>(null)
+  
+  // For now, assume new user (no courses)
+  const hasCourses = false
 
   // Load sidebar state from localStorage on mount
   useEffect(() => {
@@ -49,6 +54,27 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
     await supabase.auth.signOut()
     router.push('/')
     router.refresh()
+  }
+
+  const handleGetStarted = () => {
+    setShowAddClassModal(true)
+  }
+
+  const handleAddClassOption = (option: 'upload' | 'manual' | 'canvas') => {
+    if (option === 'upload') {
+      setUploadStep(1)
+      setShowAddClassModal(false)
+    } else if (option === 'manual') {
+      // TODO: Navigate to manual entry
+      setShowAddClassModal(false)
+    } else if (option === 'canvas') {
+      // TODO: Show upgrade prompt or connect canvas
+      setShowAddClassModal(false)
+    }
+  }
+
+  const handleCancelUpload = () => {
+    setUploadStep(null)
   }
 
   const userName = user?.user_metadata?.full_name || 
@@ -308,60 +334,250 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
         <main className="flex-1 overflow-y-auto bg-[#F5F5F5]">
           {activeMenu === 'home' && (
             <div className="max-w-6xl mx-auto px-6 py-6">
-              {/* Page Header - Compact */}
-              <div className="mb-6">
-                <h1 className="text-3xl font-bold text-gray-900 mb-1" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
-                  Dashboard Overview
-                </h1>
-                <p className="text-base text-gray-600" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
-                  Welcome back! Upload your syllabus to get started.
-                </p>
-              </div>
-
-              {/* File Upload Section - Template Design */}
-              <div className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
-                <div className="max-w-2xl mx-auto p-6">
-                  {/* Header */}
-                  <h2 className="text-xl font-semibold text-gray-900 mb-6" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
-                    Upload Files
-                  </h2>
-
-                  {/* Drag and Drop Area */}
-                  <div className="border-2 border-dashed border-gray-300 rounded-xl p-10 bg-gray-50 hover:border-[#5aa9e6] hover:bg-[#f0f7ff] transition-all duration-300 cursor-pointer mb-6">
-                    <div className="flex flex-col items-center text-center">
-                      {/* Cloud Upload Icon */}
-                      <div className="mb-4">
-                        <svg className="w-14 h-14 text-[#5aa9e6]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                        </svg>
+              {!uploadStep ? (
+                <>
+                  {/* Welcome Section */}
+                  <div className="mb-8">
+                    <div className="flex items-center justify-between mb-6">
+                      <div>
+                        <h1 className="text-4xl font-bold text-gray-900 mb-2" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                          Welcome, {userName}! 👋
+                        </h1>
+                        <p className="text-lg text-gray-600" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                          Let's get you organized this semester
+                        </p>
                       </div>
-                      
-                      <p className="text-base font-medium text-gray-700 mb-2" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
-                        Select a file or drag and drop here
-                      </p>
-                      
-                      <p className="text-sm text-gray-500 mb-4" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
-                        Supported formats: PDF or DOCX, file size no more than 10MB
-                      </p>
-                      
-                      {/* Select File Button */}
-                      <button className="px-6 py-2 bg-[#5aa9e6] text-white font-medium rounded-lg hover:bg-[#4a8dd6] transition-colors text-sm" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
-                        Select file
-                      </button>
+                      <div className="flex gap-3">
+                        <button className="px-4 py-2 bg-white border-2 border-[#5aa9e6] text-[#5aa9e6] font-semibold rounded-lg hover:bg-[#5aa9e6]/5 transition-colors text-sm flex items-center gap-2" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                          <FontAwesomeIcon icon={faCalendar} className="w-4 h-4" />
+                          Calendar
+                        </button>
+                        <button className="px-4 py-2 bg-white border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors text-sm flex items-center gap-2" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                          <FontAwesomeIcon icon={faClipboardList} className="w-4 h-4" />
+                          Due Soon
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Get Started CTA Card */}
+                    {!hasCourses && (
+                      <div className="bg-gradient-to-br from-[#f0f7ff] to-white rounded-2xl border-2 border-[#5aa9e6]/20 p-8 shadow-lg">
+                        <div className="flex items-center justify-between">
+                          <div className="flex-1">
+                            <h2 className="text-2xl font-bold text-gray-900 mb-3" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                              Ready to Add Your First Class?
+                            </h2>
+                            <p className="text-base text-gray-600 mb-6" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                              Upload your syllabus and let us help you stay organized this semester. We'll automatically extract all your assignments, deadlines, and important dates.
+                            </p>
+                            <button
+                              onClick={handleGetStarted}
+                              className="px-8 py-3 bg-[#5aa9e6] text-white font-semibold rounded-xl hover:bg-[#4a8dd6] transition-all duration-300 shadow-lg shadow-[#5aa9e6]/30 hover:shadow-xl hover:shadow-[#5aa9e6]/40 hover:scale-105 transform flex items-center gap-2"
+                              style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}
+                            >
+                              <FontAwesomeIcon icon={faBook} className="w-5 h-5" />
+                              Get Started
+                            </button>
+                          </div>
+                          <div className="ml-8 hidden md:block">
+                            <div className="w-32 h-32 bg-[#5aa9e6]/10 rounded-full flex items-center justify-center">
+                              <FontAwesomeIcon icon={faBook} className="w-16 h-16 text-[#5aa9e6]" />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </>
+              ) : (
+                /* Upload Flow with Steps */
+                <div className="max-w-4xl mx-auto">
+                  {/* Steps Indicator */}
+                  <div className="mb-8">
+                    <div className="flex items-center justify-between mb-4">
+                      {[1, 2, 3, 4].map((step) => (
+                        <div key={step} className="flex items-center flex-1">
+                          <div className="flex flex-col items-center flex-1">
+                            <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold text-sm transition-all ${
+                              uploadStep === step
+                                ? 'bg-[#5aa9e6] text-white ring-4 ring-[#5aa9e6]/20'
+                                : uploadStep && uploadStep > step
+                                ? 'bg-green-500 text-white'
+                                : 'bg-gray-200 text-gray-600'
+                            }`} style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                              {uploadStep && uploadStep > step ? '✓' : step}
+                            </div>
+                            <span className={`mt-2 text-xs font-medium ${
+                              uploadStep === step ? 'text-[#5aa9e6]' : uploadStep && uploadStep > step ? 'text-green-600' : 'text-gray-500'
+                            }`} style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                              {step === 1 && 'Upload Syllabi'}
+                              {step === 2 && 'Extract Assignments'}
+                              {step === 3 && 'Review Assignments'}
+                              {step === 4 && 'Add To Calendar'}
+                            </span>
+                          </div>
+                          {step < 4 && (
+                            <div className={`flex-1 h-0.5 mx-2 ${
+                              uploadStep && uploadStep > step ? 'bg-green-500' : 'bg-gray-200'
+                            }`}></div>
+                          )}
+                        </div>
+                      ))}
                     </div>
                   </div>
 
-                  {/* Action Buttons */}
-                  <div className="flex justify-end gap-3">
-                    <button className="px-6 py-2.5 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors text-sm" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                  {/* Step Content */}
+                  {uploadStep === 1 && (
+                    <div className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+                      <div className="max-w-2xl mx-auto p-6">
+                        {/* Header */}
+                        <div className="mb-6">
+                          <h2 className="text-2xl font-semibold text-gray-900 mb-2" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                            Upload Your Syllabi or Course Schedule
+                          </h2>
+                          <p className="text-sm text-gray-600" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                            Start by uploading your course syllabi. Your plan allows you to add up to 5 files in PDF or DOCX format.
+                          </p>
+                        </div>
+
+                        {/* Drag and Drop Area */}
+                        <div className="border-2 border-dashed border-gray-300 rounded-xl p-12 bg-gray-50 hover:border-[#5aa9e6] hover:bg-[#f0f7ff] transition-all duration-300 cursor-pointer mb-6">
+                          <div className="flex flex-col items-center text-center">
+                            {/* Upload Arrow Icon */}
+                            <div className="mb-4">
+                              <svg className="w-16 h-16 text-[#5aa9e6]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                              </svg>
+                            </div>
+                            
+                            <p className="text-base font-medium text-gray-700 mb-1" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                              Drag 'n' drop some files here, or click to select files
+                            </p>
+                            
+                            <p className="text-sm text-gray-500" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                              (Only PDF and DOCX files are accepted, max 5 files)
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="flex justify-between items-center">
+                          <button
+                            onClick={handleCancelUpload}
+                            className="px-6 py-2.5 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors text-sm"
+                            style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}
+                          >
+                            Cancel
+                          </button>
+                          <button className="px-6 py-2.5 bg-gray-300 text-gray-500 font-medium rounded-lg cursor-not-allowed text-sm" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }} disabled>
+                            Upload 0 Files
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Add Class Modal */}
+              {showAddClassModal && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setShowAddClassModal(false)}>
+                  <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6" onClick={(e) => e.stopPropagation()}>
+                    <div className="mb-6">
+                      <h2 className="text-2xl font-bold text-gray-900 mb-2" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                        Add New Class
+                      </h2>
+                      <p className="text-sm text-gray-600" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                        Choose how you'd like to add your class information
+                      </p>
+                    </div>
+
+                    <div className="space-y-3 mb-6">
+                      {/* Upload Syllabus Option */}
+                      <button
+                        onClick={() => handleAddClassOption('upload')}
+                        className="w-full p-4 border-2 border-gray-200 rounded-xl hover:border-[#5aa9e6] hover:bg-[#f0f7ff] transition-all duration-200 text-left flex items-center gap-4 group"
+                      >
+                        <div className="w-12 h-12 bg-[#5aa9e6]/10 rounded-lg flex items-center justify-center group-hover:bg-[#5aa9e6]/20 transition-colors">
+                          <svg className="w-6 h-6 text-[#5aa9e6]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                          </svg>
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="font-semibold text-gray-900 mb-1" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                            Upload Syllabus
+                          </h3>
+                          <p className="text-sm text-gray-600" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                            Let us extract assignments automatically
+                          </p>
+                        </div>
+                        <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </button>
+
+                      {/* Start from Scratch Option */}
+                      <button
+                        onClick={() => handleAddClassOption('manual')}
+                        className="w-full p-4 border-2 border-gray-200 rounded-xl hover:border-[#5aa9e6] hover:bg-[#f0f7ff] transition-all duration-200 text-left flex items-center gap-4 group"
+                      >
+                        <div className="w-12 h-12 bg-[#5aa9e6]/10 rounded-lg flex items-center justify-center group-hover:bg-[#5aa9e6]/20 transition-colors">
+                          <FontAwesomeIcon icon={faPlus} className="w-6 h-6 text-[#5aa9e6]" />
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="font-semibold text-gray-900 mb-1" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                            Start from Scratch
+                          </h3>
+                          <p className="text-sm text-gray-600" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                            Add assignments manually
+                          </p>
+                        </div>
+                        <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </button>
+
+                      {/* Import from Canvas Option */}
+                      <div className="relative">
+                        <button
+                          onClick={() => handleAddClassOption('canvas')}
+                          className="w-full p-4 border-2 border-gray-200 rounded-xl hover:border-[#5aa9e6] hover:bg-[#f0f7ff] transition-all duration-200 text-left flex items-center gap-4 group"
+                        >
+                          <div className="w-12 h-12 bg-[#5aa9e6]/10 rounded-lg flex items-center justify-center group-hover:bg-[#5aa9e6]/20 transition-colors">
+                            <svg className="w-6 h-6 text-[#5aa9e6]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                            </svg>
+                          </div>
+                          <div className="flex-1">
+                            <h3 className="font-semibold text-gray-900 mb-1" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                              Import from Canvas
+                            </h3>
+                            <p className="text-sm text-gray-600" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                              Connect your learning management system
+                            </p>
+                          </div>
+                          <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                          </svg>
+                        </button>
+                        <div className="mt-2 ml-16">
+                          <button className="px-4 py-1.5 bg-red-500 text-white text-xs font-semibold rounded-lg hover:bg-red-600 transition-colors" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                            Upgrade to Scholar Access to import from LMS
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => setShowAddClassModal(false)}
+                      className="w-full px-6 py-2.5 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors text-sm"
+                      style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}
+                    >
                       Cancel
-                    </button>
-                    <button className="px-6 py-2.5 bg-gray-300 text-gray-500 font-medium rounded-lg cursor-not-allowed text-sm" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }} disabled>
-                      Done
                     </button>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
           )}
         </main>
