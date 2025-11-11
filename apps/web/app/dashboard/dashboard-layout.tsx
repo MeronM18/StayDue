@@ -120,7 +120,7 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
             </div>
             {/* Tooltip - only when collapsed */}
             {sidebarCollapsed && (
-              <div className="absolute left-full ml-3 px-3 py-2 bg-gray-900 text-white text-sm font-medium rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-300 ease-in-out whitespace-nowrap z-50 shadow-lg transform group-hover:translate-x-0 translate-x-[-4px]">
+              <div className="absolute left-full ml-3 px-2.5 py-1.5 bg-gray-900 text-white text-xs font-medium rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-300 ease-in-out whitespace-nowrap z-50 shadow-lg transform group-hover:translate-x-0 translate-x-[-4px]">
                 Toggle Sidebar
               </div>
             )}
@@ -137,7 +137,7 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
               {/* Tooltip */}
-              <div className="absolute left-full ml-3 px-3 py-2 bg-gray-900 text-white text-sm font-medium rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-300 ease-in-out whitespace-nowrap z-50 shadow-lg transform group-hover:translate-x-0 translate-x-[-4px]">
+              <div className="absolute left-full ml-3 px-2.5 py-1.5 bg-gray-900 text-white text-xs font-medium rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-300 ease-in-out whitespace-nowrap z-50 shadow-lg transform group-hover:translate-x-0 translate-x-[-4px]">
                 Search
               </div>
             </button>
@@ -194,7 +194,7 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
                       />
                     </div>
                     {/* Tooltip - shows on hover when collapsed */}
-                    <div className="absolute left-full ml-3 px-3 py-2 bg-gray-900 text-white text-sm font-medium rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-300 ease-in-out whitespace-nowrap z-50 shadow-lg transform group-hover:translate-x-0 translate-x-[-4px]">
+                    <div className="absolute left-full ml-3 px-2.5 py-1.5 bg-gray-900 text-white text-xs font-medium rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-300 ease-in-out whitespace-nowrap z-50 shadow-lg transform group-hover:translate-x-0 translate-x-[-4px]">
                       {item.label}
                     </div>
                   </button>
@@ -267,7 +267,7 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
               {userName.charAt(0).toUpperCase()}
               {/* Tooltip - only when collapsed */}
               {sidebarCollapsed && (
-                <div className="absolute left-full ml-3 px-3 py-2 bg-gray-900 text-white text-sm font-medium rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-300 ease-in-out whitespace-nowrap z-50 shadow-lg transform group-hover:translate-x-0 translate-x-[-4px]">
+                <div className="absolute left-full ml-3 px-2.5 py-1.5 bg-gray-900 text-white text-xs font-medium rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-300 ease-in-out whitespace-nowrap z-50 shadow-lg transform group-hover:translate-x-0 translate-x-[-4px]">
                   {userName}
                 </div>
               )}
