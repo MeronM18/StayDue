@@ -226,8 +226,7 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
           )}
           <button
             onClick={toggleSidebar}
-            className={`p-1.5 hover:bg-gray-100 rounded-lg transition-colors flex items-center justify-center cursor-pointer ${sidebarCollapsed ? 'w-full' : ''}`}
-            title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            className={`p-1.5 hover:bg-gray-50 rounded-lg transition-colors flex items-center justify-center cursor-pointer relative group ${sidebarCollapsed ? 'w-full' : ''}`}
           >
             <div className="w-5 h-5 flex items-center justify-center flex-shrink-0">
               <Image
@@ -237,6 +236,10 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
                 height={20}
                 className="object-contain"
               />
+            </div>
+            {/* Tooltip */}
+            <div className="absolute left-full ml-3 px-3 py-2 bg-gray-900 text-white text-sm font-medium rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-300 ease-in-out whitespace-nowrap z-50 shadow-lg transform group-hover:translate-x-0 translate-x-[-4px]">
+              Toggle Sidebar
             </div>
           </button>
         </div>
@@ -339,7 +342,7 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
         </nav>
 
         {/* Footer - User Profile */}
-        <div className={`border-t border-gray-200 ${sidebarCollapsed ? 'p-2' : 'p-4'}`}>
+        <div className={`${sidebarCollapsed ? 'p-2 pb-4' : 'p-4 pb-6'}`}>
           <div className={`${sidebarCollapsed ? 'p-2' : 'p-0'} flex items-center ${sidebarCollapsed ? 'justify-center' : 'gap-3'}`}>
             <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-gray-700 font-semibold text-sm flex-shrink-0 cursor-pointer">
               {userName.charAt(0).toUpperCase()}
