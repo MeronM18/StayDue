@@ -60,6 +60,11 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
       icon: faHome,
     },
     {
+      id: 'calendar',
+      label: 'Calendar',
+      icon: faCalendar,
+    },
+    {
       id: 'courses',
       label: 'Courses',
       icon: faBook,
@@ -68,11 +73,6 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
       id: 'tasks',
       label: 'Tasks',
       icon: faClipboardList,
-    },
-    {
-      id: 'calendar',
-      label: 'Calendar',
-      icon: faCalendar,
     },
     {
       id: 'studyTools',
@@ -212,8 +212,14 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
         <div className={`${sidebarCollapsed ? 'px-3' : 'px-6'} py-4 border-b border-gray-200 flex items-center ${sidebarCollapsed ? 'justify-center' : 'justify-between'}`}>
           {!sidebarCollapsed && (
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 bg-black rounded-full flex items-center justify-center">
-                <span className="text-white text-sm font-bold">S</span>
+              <div className="w-8 h-8 flex items-center justify-center">
+                <Image
+                  src="/assets/stayduelogo.png"
+                  alt="StayDue Logo"
+                  width={32}
+                  height={32}
+                  className="object-contain"
+                />
               </div>
               <span className="text-lg font-bold text-black" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>StayDue</span>
             </div>
@@ -256,12 +262,9 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
               <input
                 type="text"
                 placeholder="Search your courses"
-                className="w-full pl-9 pr-9 py-2.5 bg-gray-100 border-none rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300 text-sm text-gray-900 placeholder-gray-500"
+                className="w-full pl-9 pr-4 py-2.5 bg-gray-100 border-none rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300 text-sm text-gray-900 placeholder-gray-500"
                 style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}
               />
-              <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer">
-                <FontAwesomeIcon icon={faSlidersH} className="w-4 h-4" />
-              </div>
             </div>
           )}
         </div>
@@ -281,7 +284,7 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
                 onClick={() => setActiveMenu(item.id)}
                 className={`w-full flex items-center ${sidebarCollapsed ? 'justify-center' : 'gap-3'} ${sidebarCollapsed ? 'px-2 py-2.5' : 'px-3 py-2.5'} relative group mb-0.5 ${
                   activeMenu === item.id
-                    ? 'bg-gray-100 text-black'
+                    ? 'bg-gray-200 text-black'
                     : 'text-gray-700 hover:bg-gray-50'
                 }`}
                 style={{
@@ -320,13 +323,15 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
             
             {/* Add Syllabus Card */}
             {!sidebarCollapsed && (
-              <div className="mt-4 mb-4">
+              <div className="mt-6 mb-4">
+                <div className="mb-3">
+                  <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>Quick Action</h3>
+                </div>
                 <button className="w-full bg-gray-50 hover:bg-gray-100 rounded-lg p-4 flex flex-col items-center justify-center transition-colors cursor-pointer border border-gray-200">
                   <div className="w-12 h-12 bg-[#5aa9e6] rounded-full flex items-center justify-center mb-3">
                     <FontAwesomeIcon icon={faPlus} className="w-6 h-6 text-white" />
                   </div>
                   <span className="text-sm font-semibold text-gray-900 mb-1" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>Add Syllabus</span>
-                  <span className="text-xs text-gray-500" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>Or use website link</span>
                 </button>
               </div>
             )}
