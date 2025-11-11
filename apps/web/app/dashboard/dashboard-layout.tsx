@@ -370,42 +370,42 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
 
                     {/* Get Started Section - Redesigned */}
                     {!hasCourses && (
-                      <div className="grid md:grid-cols-2 gap-6 mb-8 items-stretch">
+                      <div className="grid md:grid-cols-2 gap-6 mb-8">
                         {/* Left: CTA Card with Paper Theme */}
-                        <div className="relative flex">
+                        <div className="relative">
                           {/* Paper-like background with subtle texture */}
                           <div className="absolute inset-0 bg-gradient-to-br from-amber-50/40 via-white to-blue-50/40 rounded-2xl" style={{
                             backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0,0,0,0.02) 10px, rgba(0,0,0,0.02) 11px)',
                           }}></div>
-                          <div className="relative bg-white/90 backdrop-blur-sm rounded-2xl border-2 border-[#5aa9e6]/30 p-6 shadow-xl w-full">
+                          <div className="relative bg-white/90 backdrop-blur-sm rounded-2xl border-2 border-[#5aa9e6]/30 p-8 shadow-xl">
                             {/* Decorative corner fold */}
-                            <div className="absolute top-0 right-0 w-12 h-12 bg-gradient-to-br from-[#5aa9e6]/10 to-transparent rounded-bl-full"></div>
+                            <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-[#5aa9e6]/10 to-transparent rounded-bl-full"></div>
                             
                             <div className="relative z-10">
-                              <div className="flex items-center gap-2 mb-3">
-                                <div className="w-8 h-8 bg-[#5aa9e6]/10 rounded-lg flex items-center justify-center">
-                                  <FontAwesomeIcon icon={faBook} className="w-4 h-4 text-[#5aa9e6]" />
+                              <div className="flex items-center gap-2 mb-4">
+                                <div className="w-10 h-10 bg-[#5aa9e6]/10 rounded-lg flex items-center justify-center">
+                                  <FontAwesomeIcon icon={faBook} className="w-5 h-5 text-[#5aa9e6]" />
                                 </div>
-                                <h2 className="text-xl font-bold text-gray-900" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                                <h2 className="text-2xl font-bold text-gray-900" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
                                   Ready to Add Your First Class?
                                 </h2>
                               </div>
                               
-                              <p className="text-sm text-gray-700 mb-4 leading-relaxed" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                              <p className="text-base text-gray-700 mb-6 leading-relaxed" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
                                 Upload your syllabus and let us help you stay organized this semester. We'll automatically extract all your assignments, deadlines, and important dates.
                               </p>
                               
                               {/* Feature highlights */}
-                              <div className="space-y-1.5 mb-4">
-                                <div className="flex items-center gap-2 text-xs text-gray-600">
+                              <div className="space-y-2 mb-6">
+                                <div className="flex items-center gap-2 text-sm text-gray-600">
                                   <div className="w-1.5 h-1.5 rounded-full bg-[#5aa9e6]"></div>
                                   <span style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>Automatic assignment extraction</span>
                                 </div>
-                                <div className="flex items-center gap-2 text-xs text-gray-600">
+                                <div className="flex items-center gap-2 text-sm text-gray-600">
                                   <div className="w-1.5 h-1.5 rounded-full bg-[#5aa9e6]"></div>
                                   <span style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>Smart deadline tracking</span>
                                 </div>
-                                <div className="flex items-center gap-2 text-xs text-gray-600">
+                                <div className="flex items-center gap-2 text-sm text-gray-600">
                                   <div className="w-1.5 h-1.5 rounded-full bg-[#5aa9e6]"></div>
                                   <span style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>Calendar integration</span>
                                 </div>
@@ -413,10 +413,10 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
                               
                               <button
                                 onClick={handleGetStarted}
-                                className="w-full px-6 py-2.5 bg-[#5aa9e6] text-white font-semibold rounded-xl hover:bg-[#4a8dd6] transition-all duration-300 shadow-lg shadow-[#5aa9e6]/30 hover:shadow-xl hover:shadow-[#5aa9e6]/40 hover:scale-[1.02] transform flex items-center justify-center gap-2 text-sm"
+                                className="w-full px-8 py-3.5 bg-[#5aa9e6] text-white font-semibold rounded-xl hover:bg-[#4a8dd6] transition-all duration-300 shadow-lg shadow-[#5aa9e6]/30 hover:shadow-xl hover:shadow-[#5aa9e6]/40 hover:scale-[1.02] transform flex items-center justify-center gap-2"
                                 style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}
                               >
-                                <FontAwesomeIcon icon={faBook} className="w-4 h-4" />
+                                <FontAwesomeIcon icon={faBook} className="w-5 h-5" />
                                 Get Started
                               </button>
                             </div>
@@ -424,27 +424,24 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
                         </div>
 
                         {/* Right: Video Preview */}
-                        <div className="relative flex">
-                          {/* Paper-like background with subtle texture */}
-                          <div className="absolute inset-0 bg-gradient-to-br from-amber-50/40 via-white to-blue-50/40 rounded-2xl" style={{
-                            backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0,0,0,0.02) 10px, rgba(0,0,0,0.02) 11px)',
-                          }}></div>
-                          <div className="relative bg-white/90 backdrop-blur-sm rounded-2xl border-2 border-[#5aa9e6]/30 p-6 shadow-xl overflow-hidden w-full flex flex-col">
-                            {/* Decorative corner fold */}
-                            <div className="absolute top-0 right-0 w-12 h-12 bg-gradient-to-br from-[#5aa9e6]/10 to-transparent rounded-bl-full"></div>
-                            
-                            <div className="relative z-10 flex-1 flex items-center justify-center">
-                              <div className="w-full rounded-lg overflow-hidden bg-gray-100">
-                                <video
-                                  autoPlay
-                                  loop
-                                  muted
-                                  playsInline
-                                  className="w-full h-auto object-contain"
-                                >
-                                  <source src="/e3WI6qIX8H56Uxs11f.mp4" type="video/mp4" />
-                                </video>
-                              </div>
+                        <div className="relative">
+                          <div className="absolute inset-0 bg-gradient-to-br from-[#5aa9e6]/10 to-transparent rounded-2xl"></div>
+                          <div className="relative bg-white/90 backdrop-blur-sm rounded-2xl border-2 border-[#5aa9e6]/20 p-4 shadow-xl overflow-hidden">
+                            <div className="aspect-video rounded-lg overflow-hidden bg-gray-100">
+                              <video
+                                autoPlay
+                                loop
+                                muted
+                                playsInline
+                                className="w-full h-full object-cover"
+                              >
+                                <source src="/e3WI6qIX8H56Uxs11f.mp4" type="video/mp4" />
+                              </video>
+                            </div>
+                            <div className="mt-4 text-center">
+                              <p className="text-sm font-medium text-gray-700" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                                See how StayDue works
+                              </p>
                             </div>
                           </div>
                         </div>
