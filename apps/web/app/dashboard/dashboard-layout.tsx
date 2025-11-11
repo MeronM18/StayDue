@@ -161,45 +161,43 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
         {/* Navigation - Scrollable */}
         <nav className="flex-1" style={sidebarCollapsed ? { overflow: 'visible', position: 'relative' } : { overflowY: 'auto' }}>
           {sidebarCollapsed ? (
-            <div style={{ height: '100%', overflowY: 'auto', overflowX: 'visible' }}>
-              <div className="py-3 px-2" style={{ overflow: 'visible' }}>
-                {/* Menu Items */}
-                {menuItems.map((item) => (
-                  <button
-                    key={item.id}
-                    onClick={() => setActiveMenu(item.id)}
-                    className={`w-full flex items-center justify-center px-2 py-2.5 relative group mb-0.5 ${
-                      activeMenu === item.id
-                        ? 'bg-[#5aa9e6] text-white'
-                        : 'text-gray-700 hover:bg-[#5aa9e6]/10'
-                    }`}
-                    style={{
-                      borderRadius: '0.5rem',
-                      transitionProperty: 'background-color',
-                      transitionDuration: '150ms',
-                      transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
-                      cursor: 'pointer',
-                      fontFamily: 'system-ui, -apple-system, sans-serif'
-                    }}
-                  >
-                    <div className="w-5 h-5 flex items-center justify-center flex-shrink-0" style={{ cursor: 'pointer' }}>
-                      <FontAwesomeIcon
-                        icon={item.icon}
-                        className="w-5 h-5 transition-all duration-150"
-                        style={{ 
-                          fontWeight: activeMenu === item.id ? 600 : 400, 
-                          cursor: 'pointer',
-                          color: activeMenu === item.id ? 'white' : '#374151'
-                        }}
-                      />
-                    </div>
-                    {/* Tooltip - shows on hover when collapsed */}
-                    <div className="absolute left-full ml-3 px-2.5 py-1.5 bg-gray-900 text-white text-xs font-medium rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-300 ease-in-out whitespace-nowrap z-50 shadow-lg transform group-hover:translate-x-0 translate-x-[-4px]">
-                      {item.label}
-                    </div>
-                  </button>
-                ))}
-              </div>
+            <div className="py-3 px-2" style={{ overflow: 'visible' }}>
+              {/* Menu Items */}
+              {menuItems.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => setActiveMenu(item.id)}
+                  className={`w-full flex items-center justify-center px-2 py-2.5 relative group mb-0.5 ${
+                    activeMenu === item.id
+                      ? 'bg-[#5aa9e6] text-white'
+                      : 'text-gray-700 hover:bg-[#5aa9e6]/10'
+                  }`}
+                  style={{
+                    borderRadius: '0.5rem',
+                    transitionProperty: 'background-color',
+                    transitionDuration: '150ms',
+                    transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+                    cursor: 'pointer',
+                    fontFamily: 'system-ui, -apple-system, sans-serif'
+                  }}
+                >
+                  <div className="w-5 h-5 flex items-center justify-center flex-shrink-0" style={{ cursor: 'pointer' }}>
+                    <FontAwesomeIcon
+                      icon={item.icon}
+                      className="w-5 h-5 transition-all duration-150"
+                      style={{ 
+                        fontWeight: activeMenu === item.id ? 600 : 400, 
+                        cursor: 'pointer',
+                        color: activeMenu === item.id ? 'white' : '#374151'
+                      }}
+                    />
+                  </div>
+                  {/* Tooltip - shows on hover when collapsed */}
+                  <div className="absolute left-full ml-3 px-2.5 py-1.5 bg-gray-900 text-white text-xs font-medium rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-300 ease-in-out whitespace-nowrap z-50 shadow-lg transform group-hover:translate-x-0 translate-x-[-4px]">
+                    {item.label}
+                  </div>
+                </button>
+              ))}
             </div>
           ) : (
             <div className="py-3 px-4">
