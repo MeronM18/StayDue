@@ -173,8 +173,8 @@ export default function DashboardLayout({ user, profile }: DashboardLayoutProps)
                 onClick={() => setActiveMenu(item.id)}
                 className={`w-full flex items-center ${sidebarCollapsed ? 'justify-center' : 'gap-3'} ${sidebarCollapsed ? 'px-2 py-2.5' : 'px-3 py-2.5'} relative group mb-0.5 ${
                   activeMenu === item.id
-                    ? 'bg-gray-200 text-black'
-                    : 'text-gray-700 hover:bg-gray-50'
+                    ? 'bg-[#5aa9e6]/20 text-black'
+                    : 'text-gray-700 hover:bg-[#5aa9e6]/10'
                 }`}
                 style={{
                   borderRadius: '0.5rem',
