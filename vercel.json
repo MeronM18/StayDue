@@ -1,1 +1,11 @@
-{"git":{"deploymentEnabled":{"main":true,"backend":false,"frontend":false}}}
+{
+  "git": {
+    "deploymentEnabled": {
+      "main": true,
+      "backend": false,
+      "frontend": false
+    }
+  },
+  "buildCommand": "next build",
+  "outputDirectory": ".next"
+}
