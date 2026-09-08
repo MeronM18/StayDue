@@ -1,16 +1,799 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>StayDue - Live</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StayDue Dashboard</title>
     <style>
-        body { font-family: system-ui; padding: 3rem; max-width: 600px; margin: 0 auto; }
-        h1 { color: #2563eb; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #e8e6e1;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #6b8e65, #8faa89);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .logo-icon::before {
+            content: '';
+            width: 24px;
+            height: 24px;
+            background: white;
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+        }
+        
+        .greeting h1 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 0.25rem;
+        }
+        
+        .greeting p {
+            font-size: 0.95rem;
+            color: #666;
+        }
+        
+        .header-right {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .search-box {
+            position: relative;
+        }
+        
+        .search-box input {
+            padding: 0.75rem 3rem 0.75rem 1.25rem;
+            border: none;
+            border-radius: 12px;
+            background: white;
+            width: 300px;
+            font-size: 0.95rem;
+        }
+        
+        .search-btn {
+            position: absolute;
+            right: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            background: #1a1a1a;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+        }
+        
+        .icon-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            border: 2px solid #d0cec9;
+            background: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+        
+        .sidebar {
+            position: fixed;
+            left: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem 0;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .sidebar-icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .sidebar-icon:first-child {
+            background: #1a1a1a;
+            color: white;
+            border-radius: 12px;
+            margin: 0 0.75rem;
+        }
+        
+        .sidebar-icon:hover {
+            color: #1a1a1a;
+        }
+        
+        .main-content {
+            margin-left: 100px;
+        }
+        
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .stat-card.activity {
+            background: linear-gradient(135deg, #6b8e65, #8faa89);
+            color: white;
+        }
+        
+        .stat-info h3 {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-card.activity h3 {
+            color: rgba(255,255,255,0.8);
+        }
+        
+        .stat-info .amount {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+        
+        .stat-card.activity .amount {
+            color: white;
+        }
+        
+        .stat-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            background: #f5f4f1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .stat-card.activity .stat-icon {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .chart-mini {
+            width: 80px;
+            height: 40px;
+        }
+        
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1.5rem;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card-header h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: #e8f5e9;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: #2e7d32;
+        }
+        
+        .badge::before {
+            content: '●';
+            color: #4caf50;
+        }
+        
+        .balance-stats {
+            display: flex;
+            gap: 3rem;
+            margin-bottom: 2rem;
+        }
+        
+        .balance-item h4 {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+        
+        .balance-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+        
+        .change {
+            font-size: 0.9rem;
+            margin-left: 0.5rem;
+        }
+        
+        .change.positive {
+            color: #4caf50;
+        }
+        
+        .change.negative {
+            color: #f44336;
+        }
+        
+        .chart-area {
+            height: 120px;
+            background: linear-gradient(to bottom, rgba(139,195,74,0.1), transparent);
+            border-radius: 12px;
+            position: relative;
+        }
+        
+        .chart-area svg {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .earnings-circle {
+            width: 180px;
+            height: 180px;
+            margin: 2rem auto;
+            position: relative;
+        }
+        
+        .circle-bg {
+            fill: none;
+            stroke: #e0e0e0;
+            stroke-width: 20;
+        }
+        
+        .circle-progress {
+            fill: none;
+            stroke: url(#gradient);
+            stroke-width: 20;
+            stroke-linecap: round;
+            transform: rotate(-90deg);
+            transform-origin: center;
+        }
+        
+        .circle-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+        
+        .circle-percent {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+        
+        .earnings-total {
+            margin-top: 1rem;
+            text-align: center;
+        }
+        
+        .earnings-total h4 {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+        
+        .earnings-total .amount {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+        
+        .earnings-note {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 1rem;
+        }
+        
+        .profile-card {
+            text-align: center;
+        }
+        
+        .avatar {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 1.5rem;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #f9d776, #f5a623);
+        }
+        
+        .profile-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 0.25rem;
+        }
+        
+        .profile-email {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 2rem;
+        }
+        
+        .profile-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 2rem;
+        }
+        
+        .profile-stat {
+            text-align: center;
+        }
+        
+        .profile-stat-label {
+            font-size: 0.75rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+        
+        .profile-stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+        
+        .security-card {
+            background: #f5f4f1;
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .fingerprint {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+        }
+        
+        .security-card h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+        }
+        
+        .security-card p {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+        
+        .btn {
+            padding: 0.875rem 1.75rem;
+            border: none;
+            border-radius: 10px;
+            background: #6b8e65;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+        
+        .card-list {
+            position: relative;
+            height: 200px;
+            margin: 1.5rem 0;
+        }
+        
+        .credit-card {
+            position: absolute;
+            width: 100%;
+            height: 160px;
+            border-radius: 16px;
+            padding: 1.5rem;
+            color: white;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        }
+        
+        .credit-card:nth-child(1) {
+            background: linear-gradient(135deg, #6b8e65, #4a6b45);
+            transform: rotate(-3deg);
+            z-index: 3;
+        }
+        
+        .credit-card:nth-child(2) {
+            background: linear-gradient(135deg, #2a3f2a, #1a2f1a);
+            transform: translateY(10px) rotate(2deg);
+            z-index: 2;
+        }
+        
+        .card-chip {
+            width: 40px;
+            height: 32px;
+            background: linear-gradient(135deg, #d4af37, #f9d776);
+            border-radius: 6px;
+            margin-bottom: 1rem;
+        }
+        
+        .card-number {
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+            margin-bottom: 0.75rem;
+        }
+        
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .card-holder {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+        
+        .card-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .add-card-btn {
+            background: #6b8e65;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .transfer-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .transfer-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-left: 3px solid #e0e0e0;
+            padding-left: 1rem;
+        }
+        
+        .transfer-info h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 0.25rem;
+        }
+        
+        .transfer-info p {
+            font-size: 0.85rem;
+            color: #999;
+        }
+        
+        .transfer-amount {
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+        
+        .transfer-amount.positive {
+            color: #4caf50;
+        }
+        
+        .transfer-amount.negative {
+            color: #f44336;
+        }
+        
+        @media (max-width: 1200px) {
+            .content-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .stats-row {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+        }
     </style>
 </head>
 <body>
-    <h1>✅ StayDue is LIVE</h1>
-    <p>This is your working site at staydue.com</p>
-    <p>Everything deployed successfully!</p>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <div class="logo-icon"></div>
+                <div class="greeting">
+                    <h1>Hello, Carlic!</h1>
+                    <p>Explore information and activity about your property</p>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="search-box">
+                    <input type="text" placeholder="Search...">
+                    <button class="search-btn">🔍</button>
+                </div>
+                <button class="icon-btn">💬</button>
+                <button class="icon-btn">🔔</button>
+            </div>
+        </header>
+        
+        <div class="sidebar">
+            <div class="sidebar-icon">⊞</div>
+            <div class="sidebar-icon">📊</div>
+            <div class="sidebar-icon">📈</div>
+            <div class="sidebar-icon">👥</div>
+            <div class="sidebar-icon">📋</div>
+        </div>
+        
+        <div class="main-content">
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <h3>Spent this month</h3>
+                        <div class="amount">$682.5</div>
+                    </div>
+                    <div class="chart-mini">
+                        <svg viewBox="0 0 80 40">
+                            <path d="M 0 30 Q 10 25 20 28 T 40 26 T 60 30 T 80 24" stroke="#6b8e65" stroke-width="2" fill="none"/>
+                        </svg>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <h3>New clients</h3>
+                        <div class="amount">321</div>
+                    </div>
+                    <div class="chart-mini">
+                        <svg viewBox="0 0 80 40">
+                            <path d="M 0 35 Q 20 20 40 30 T 80 15" stroke="#999" stroke-width="2" fill="none"/>
+                        </svg>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <h3>Earnings</h3>
+                        <div class="amount">$350.40</div>
+                    </div>
+                    <div class="stat-icon">💰</div>
+                </div>
+                
+                <div class="stat-card activity">
+                    <div class="stat-info">
+                        <h3>Activity</h3>
+                        <div class="amount">$540.50</div>
+                    </div>
+                    <div class="chart-mini">
+                        <svg viewBox="0 0 80 40">
+                            <path d="M 0 30 Q 20 15 40 25 T 80 20" stroke="rgba(255,255,255,0.8)" stroke-width="2" fill="none"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="content-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Balance</h2>
+                        <span class="badge">On track</span>
+                    </div>
+                    <div class="balance-stats">
+                        <div class="balance-item">
+                            <h4>Spend</h4>
+                            <div>
+                                <span class="balance-value">43.50%</span>
+                                <span class="change positive">+2.45%</span>
+                            </div>
+                        </div>
+                        <div class="balance-item">
+                            <h4>Balance</h4>
+                            <div>
+                                <span class="balance-value">$52,422</span>
+                                <span class="change negative">-4.75%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chart-area">
+                        <svg viewBox="0 0 400 100">
+                            <path d="M 0 70 Q 50 50 100 60 T 200 45 T 300 55 T 400 40" stroke="#8faa89" stroke-width="2" fill="none"/>
+                        </svg>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Earnings</h2>
+                    </div>
+                    <div class="earnings-total">
+                        <h4>Total Expense</h4>
+                        <div class="amount">$6078.76</div>
+                    </div>
+                    <div class="earnings-circle">
+                        <svg width="180" height="180">
+                            <defs>
+                                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#6b8e65" />
+                                    <stop offset="100%" style="stop-color:#8faa89" />
+                                </linearGradient>
+                            </defs>
+                            <circle class="circle-bg" cx="90" cy="90" r="70"/>
+                            <circle class="circle-progress" cx="90" cy="90" r="70" 
+                                stroke-dasharray="440" stroke-dashoffset="88"/>
+                        </svg>
+                        <div class="circle-text">
+                            <div class="circle-percent">80%</div>
+                        </div>
+                    </div>
+                    <p class="earnings-note">Profit is 34% More than last Month</p>
+                </div>
+                
+                <div class="card">
+                    <div class="profile-card">
+                        <div class="avatar">👤</div>
+                        <h3 class="profile-name">Carlic Bolomboy</h3>
+                        <p class="profile-email">carlic@gmail.com</p>
+                        <div class="profile-stats">
+                            <div class="profile-stat">
+                                <div class="profile-stat-label">Projects</div>
+                                <div class="profile-stat-value">26</div>
+                            </div>
+                            <div class="profile-stat">
+                                <div class="profile-stat-label">Followers</div>
+                                <div class="profile-stat-value">356</div>
+                            </div>
+                            <div class="profile-stat">
+                                <div class="profile-stat-label">Following</div>
+                                <div class="profile-stat-value">68</div>
+                            </div>
+                        </div>
+                        <div class="security-card">
+                            <div class="fingerprint">🔐</div>
+                            <h3>Keep you safe!</h3>
+                            <p>Update your security password</p>
+                            <button class="btn">Update Your Security</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Available Credit Card in Wallet</h2>
+                    </div>
+                    <p style="color: #666; font-size: 0.9rem; margin-bottom: 1.5rem; line-height: 1.6;">
+                        Lorem ipsum dolor sit amet consectetur. Facilisis tincidunt pellentesque 
+                        adipiscing adipiscing.
+                    </p>
+                    <div class="card-list">
+                        <div class="credit-card">
+                            <div class="card-chip"></div>
+                            <div class="card-number">5789 **** **** 2847</div>
+                            <div class="card-footer">
+                                <div class="card-holder">Carlic Bolomboy</div>
+                                <div class="card-logo">●●</div>
+                            </div>
+                        </div>
+                        <div class="credit-card">
+                            <div class="card-chip"></div>
+                            <div class="card-number">4532 **** **** 9186</div>
+                        </div>
+                    </div>
+                    <button class="add-card-btn">Add New Card +</button>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Your Transfers</h2>
+                    </div>
+                    <div class="transfer-list">
+                        <div class="transfer-item">
+                            <div class="transfer-info">
+                                <h4>From Anna Jones</h4>
+                                <p>Friday, 16:43</p>
+                            </div>
+                            <div class="transfer-amount positive">+2.45%</div>
+                        </div>
+                        <div class="transfer-item">
+                            <div class="transfer-info">
+                                <h4>To Carlos Brown III</h4>
+                                <p>Friday, 14:32</p>
+                            </div>
+                            <div class="transfer-amount negative">-4.76%</div>
+                        </div>
+                        <div class="transfer-item">
+                            <div class="transfer-info">
+                                <h4>From Joel Cannan</h4>
+                                <p>Tuesday, 09:51</p>
+                            </div>
+                            <div class="transfer-amount positive">+2.45%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
