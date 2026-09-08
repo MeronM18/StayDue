@@ -5,7 +5,5 @@
       "backend": false,
       "frontend": false
     }
-  },
-  "buildCommand": "next build",
-  "outputDirectory": ".next"
+  }
 }
