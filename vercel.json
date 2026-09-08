@@ -5,5 +5,9 @@
       "backend": false,
       "frontend": false
     }
+  },
+  "github": {
+    "enabled": false,
+    "silent": true
   }
 }
