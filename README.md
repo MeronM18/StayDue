@@ -1,24 +1,46 @@
 # StayDue
 
-Fresh start for StayDue. Application planning and implementation are pending.
+Private-beta academic planner: upload a PDF syllabus, review extracted course information, and confirm coursework into a unified dashboard and calendar.
 
-- GitHub: https://github.com/MeronM18/StayDue
-- Production domain: https://staydue.com
-- Hosting: Vercel
+**Stack:** Next.js 16, TypeScript, Supabase Postgres/Auth/Storage, Zod, OpenAI structured extraction. V1 is free; integrations and billing are deferred.
+
+## Start locally
+
+```sh
+nvm use
+npm ci
+# Start Docker Desktop first.
+npm run db:start
+npm run db:reset
+npm run db:env
+npm run dev
+```
+
+Google sign-in and real syllabus analysis need credentials. See [setup and release instructions](docs/SETUP.md). Local API: `http://127.0.0.1:55321`. Local Studio: `http://127.0.0.1:55323`.
+
+## Contracts and verification
+
+- [OpenAPI](docs/openapi.json): versioned HTTP interfaces.
+- [Shared schemas and types](src/lib/contracts.ts): frontend integration contract.
+- [Synthetic extraction fixture](tests/fixtures/extraction.json): frontend review examples.
+- [Beta metrics](docs/metrics.sql): administrative aggregate queries.
+- [Implementation status](docs/STATUS.md): tested behavior and external prerequisites.
+
+```sh
+npm run lint
+npm run typecheck
+npm test
+npm run db:test
+npm run test:e2e
+npm run build
+```
 
 ## Repository workflow
 
-Use `origin` at `https://github.com/MeronM18/StayDue.git` for this project.
-Push completed commits to GitHub; `main` is the intended production branch.
-Keep credentials, environment files, and local Vercel metadata out of Git.
+Repository: https://github.com/MeronM18/StayDue
 
-## Supabase
+This workspace uses **backend**. Your collaborator uses **frontend**. Production uses **main**, with merges/releases only when explicitly authorized. All completed changes in this workspace are pushed to `origin/backend`.
 
-- Project: `nugmoaniewzlinfgyhrf` (StayDue)
-- URL: https://nugmoaniewzlinfgyhrf.supabase.co
-- Local configuration: `supabase/config.toml`
-- Local API credentials: `.env.local` (ignored by Git)
+Vercel project: `stay-due`. Domain: `staydue.com`. Production Supabase: `nugmoaniewzlinfgyhrf`. Development and CI use local Supabase exclusively. `backend` and `frontend` deployments are disabled in `vercel.json`.
 
-To link another checkout, authenticate with `supabase login`, then run
-`supabase link --project-ref nugmoaniewzlinfgyhrf`.
-The CLI stores the workspace link in ignored local metadata.
+Credentials, local connection metadata, and environment files are excluded from Git. No production schema changes or deployments are part of local implementation.

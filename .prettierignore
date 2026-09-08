@@ -1,0 +1,8 @@
+.next
+node_modules
+src/lib/database.types.ts
+package-lock.json
+test-results
+playwright-report
+supabase/.temp
+supabase/.linked-metadata

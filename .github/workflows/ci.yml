@@ -1,0 +1,33 @@
+name: Verify V1
+on:
+  pull_request:
+  push:
+    branches: [backend, frontend, main]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - name: Start disposable local Supabase
+        run: npm run db:start > /tmp/staydue-local-start.log 2>&1
+      - run: npm run db:reset
+      - run: npm run db:test
+      - run: npm run db:types && git diff --exit-code src/lib/database.types.ts
+      - run: npm run db:env
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+      - name: Stop local services
+        if: always()
+        run: npx supabase stop --no-backup
